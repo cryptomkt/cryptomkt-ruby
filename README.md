@@ -7,7 +7,7 @@
 # Installation
 To install Cryptomarket use pip
 ```
-gem install cryptomarket-sdk
+gem install cryptomarket
 ```
 # Documentation
 
@@ -18,7 +18,7 @@ gem install cryptomarket-sdk
 
 ## rest client
 ```ruby
-require "cryptomarket-sdk"
+require "cryptomarket"
 
 # instance a client
 api_key='AB32B3201'
