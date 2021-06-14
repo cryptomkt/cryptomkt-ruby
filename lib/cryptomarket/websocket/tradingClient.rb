@@ -13,8 +13,19 @@ module Cryptomarket
         class TradingClient < AuthClient
             include Utils
             # Creates a new client
+            
             def initialize(apiKey:, apiSecret:)
-                super(url:"wss://api.exchange.cryptomkt.com/api/2/ws/trading", apiKey:apiKey, apiSecret:apiSecret)
+                reports = "reports"
+                super(
+                    url:"wss://api.exchange.cryptomkt.com/api/2/ws/trading", 
+                    apiKey:apiKey, 
+                    apiSecret:apiSecret, 
+                    subscriptionKeys:{
+                        "subscribeReports" => reports,
+                        "unsubscribeReports" => reports,
+                        "activeOrders" => reports,
+                        "report" => reports,
+                    })
             end
 
             # Subscribe to a feed of trading events of the account

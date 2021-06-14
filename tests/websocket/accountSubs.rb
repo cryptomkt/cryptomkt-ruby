@@ -19,6 +19,7 @@ class TestWSaccount < Test::Unit::TestCase
     def test_transaction_subscription
         msg = ""
         callback = Proc.new {|feed|
+            print feed
             if not goodTransaction(feed)
                 msg = "bad transaction"
                 return
@@ -29,8 +30,28 @@ class TestWSaccount < Test::Unit::TestCase
         sleep(3)
         @restclient.transferMoneyFromExchangeToBank("EOS", "0.1")
         sleep(3)
+        @wsclient.subscribeToBalance(Proc.new {|feed|
+            print feed
+        })
+        sleep(3)
         @restclient.transferMoneyFromBankToExchange("EOS", "0.1")
         sleep(3)
+        @wsclient.unsubscribeToTransactions()
         assert(msg == "", msg)
     end 
+
+    def test_balance_subscription
+        msg = ""
+        callback = Proc.new {|feed|
+            print feed
+            # if not goodBalances(feed)
+            #     msg = "bad balances"
+            #     return
+            # print feed
+            # end 
+        }
+        @wsclient.subscribeToBalance(callback)
+        sleep(3)
+        @wsclient.unsubscribeToBalance()
+    end
 end

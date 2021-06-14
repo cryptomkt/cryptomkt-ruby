@@ -3,7 +3,7 @@ require_relative"../utils"
 
 module Cryptomarket
     module Websocket
-            
+
         # AccountClient connects via websocket to cryptomarket to get account information of the user. uses SHA256 as auth method and authenticates automatically.
         #
         # +string+ +apiKey+:: the user api key
@@ -12,9 +12,24 @@ module Cryptomarket
 
         class AccountClient < AuthClient
             include Utils
+            
             # Creates a new client and authenticates it to the server
             def initialize(apiKey:, apiSecret:)
-                super(url:"wss://api.exchange.cryptomkt.com/api/2/ws/account", apiKey:apiKey, apiSecret:apiSecret)
+                transaction = "transaction"
+                balance = "balance"
+                super(
+                    url:"wss://api.exchange.cryptomkt.com/api/2/ws/account", 
+                    apiKey:apiKey, 
+                    apiSecret:apiSecret, 
+                    subscriptionKeys:{
+                        "unsubscribeTransactions" => transaction,
+                        "subscribeTransactions" => transaction,
+                        "updateTransaction" => transaction,
+        
+                        "unsubscribeBalance" => balance,
+                        "subscribeBalance" => balance,
+                        "balance" => balance,
+                    })
             end
 
             # get the account balance as a list of balances. non-zero balances only
@@ -104,6 +119,31 @@ module Cryptomarket
             
             def unsubscribeToTransactions(callback:nil)
                 sendUnsubscription('unsubscribeTransactions', callback, {})
+            end
+
+            # subscribes to a feed of balances
+            #
+            # This subscription aims to provide an easy way to be informed of the current balance state. 
+            # If the state has been changed or potentially changed the "balance" event will come with the actual state. 
+            # Please be aware that only non-zero values present.
+            #
+            # https://api.exchange.cryptomkt.com/#subscription-to-the-balance
+            #
+            # +Proc+ +callback+:: A +Proc+ to call with the result data. It takes one argument. a feed of balances
+            # +Proc+ +resultCallback+:: Optional. A +Proc+ to call with the result data. It takes two arguments, err and result. err is None for successful calls, result is None for calls with error: Proc.new {|err, result| ...}
+            
+            def subscribeToBalance(callback, resultCallback:nil)
+                sendSubscription('subscribeBalance', callback, {}, resultCallback)
+            end
+
+            # unsubscribe to the balance feed.
+            #
+            # https://api.exchange.cryptomkt.com/#subscription-to-the-balance
+            #
+            # +Proc+ +callback+:: Optional. A +Proc+ to call with the result data. It takes two arguments, err and result. err is None for successful calls, result is None for calls with error: Proc.new {|err, result| ...}
+            
+            def unsubscribeToBalance(callback:nil)
+                sendUnsubscription('unsubscribeBalance', callback, {})
             end
         end
     end

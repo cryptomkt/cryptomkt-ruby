@@ -5,10 +5,10 @@ module Cryptomarket
     module Websocket
         class AuthClient < ClientBase
             # Creates a new client
-            def initialize(url:, apiKey:, apiSecret:)
+            def initialize(url:, apiKey:, apiSecret:, subscriptionKeys:)
                 @apiKey = apiKey
                 @apiSecret = apiSecret
-                super url:url
+                super url:url, subscriptionKeys:subscriptionKeys
                 @authed = false
             end
 

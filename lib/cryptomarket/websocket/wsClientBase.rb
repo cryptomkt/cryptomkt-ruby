@@ -1,5 +1,4 @@
 require_relative "callbackCache"
-require_relative "methods"
 require_relative "orderbookCache"
 require_relative "wsManager"
 require_relative '../exceptions'
@@ -7,9 +6,8 @@ require_relative '../exceptions'
 module Cryptomarket
     module Websocket
         class ClientBase
-            include Methods
-
-            def initialize(url:)
+            def initialize(url:, subscriptionKeys:)
+                @subscriptionKeys = subscriptionKeys
                 @callbackCache = CallbackCache.new
                 @wsmanager = WSManager.new self, url:url
                 @onconnect = ->{}
@@ -98,7 +96,7 @@ module Cryptomarket
             end
 
             def handleNotification(notification)
-                key = "subscription"
+                key = buildKey(notification["method"])
                 callback = @callbackCache.getSubscriptionCallback(key)
                 if callback.nil?
                     return
@@ -107,6 +105,9 @@ module Cryptomarket
             end
             
             def buildKey(method=nil, params=nil)
+                if @subscriptionKeys.key? method
+                    return @subscriptionKeys[method]
+                end
                 return "subscription"
             end
 

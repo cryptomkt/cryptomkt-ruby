@@ -2,7 +2,6 @@ require "securerandom"
 
 require_relative "wsClientBase"
 require_relative"../utils"
-require_relative "methods"
 
 
 
@@ -15,11 +14,35 @@ module Cryptomarket
         
         class PublicClient < ClientBase
             include Utils
-            include Methods
 
             def initialize()
+                orderbook = "orderbook"
+                tickers = "tickers"
+                trades = "trades"
+                candles = "candles"
+                super(
+                    url:"wss://api.exchange.cryptomkt.com/api/2/ws/public", 
+                    subscriptionKeys:{
+                        "subscribeTicker" => tickers,
+                        "unsubscribeTicker" => tickers,
+                        "ticker" => tickers,
+    
+                        "subscribeOrderbook" => orderbook,
+                        "unsubscribeOrderbook" => orderbook,
+                        "snapshotOrderbook" => orderbook,
+                        "updateOrderbook" => orderbook,
+    
+                        "subscribeTrades" => trades,
+                        "unsubscribeTrades" => trades,
+                        "snapshotTrades" => trades,
+                        "updateTrades" => trades,
+                        
+                        "subscribeCandles" => candles,
+                        "unsubscribeCandles" => candles,
+                        "snapshotCandles" => candles,
+                        "updateCandles" => candles
+                    })
                 @OBCache = OrderbookCache.new
-                super url:"wss://api.exchange.cryptomkt.com/api/2/ws/public"
             end
 
             def handleNotification(notification)
@@ -49,7 +72,7 @@ module Cryptomarket
             end
 
             def buildKey(method, params)
-                methodKey = mapping(method)
+                methodKey = @subscriptionKeys[method]
 
                 symbol =  ''
                 if params.has_key? 'symbol'
@@ -62,6 +85,19 @@ module Cryptomarket
                 key = methodKey + ':' + symbol + ':' + period
                 return key.upcase
             end
+
+            def orderbookFeed(method)
+                return @subscriptionKeys[method] == "orderbook"
+            end
+
+            def tradesFeed(method)
+                return @subscriptionKeys[method] == "trades"
+            end
+
+            def candlesFeed(method)
+                return @subscriptionKeys[method] == "candles"
+            end
+
 
             # Get a list all available currencies on the exchange
             # 
