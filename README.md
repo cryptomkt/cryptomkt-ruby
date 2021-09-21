@@ -5,9 +5,9 @@
 [sign up in CryptoMarket](https://www.cryptomkt.com/account/register).
 
 # Installation
-To install Cryptomarket use pip
+To install Cryptomarket use gem
 ```
-gem install cryptomarket
+gem install cryptomarket-sdk
 ```
 # Documentation
 
@@ -166,12 +166,11 @@ wsclient.connect
 
 ```
 # Checkout our other SDKs
-<!-- agregar links -->
 
-python sdk
+[node sdk](https://github.com/cryptomkt/cryptomkt-node)
 
-node sdk
+[java sdk](https://github.com/cryptomkt/cryptomkt-java)
 
-java sdk
+[go sdk](https://github.com/cryptomkt/cryptomkt-go)
 
-go sdk
+[python sdk](https://github.com/cryptomkt/cryptomkt-python)
