@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 require 'base64'
 require 'rest-client'
+require_relative 'exceptions'
 
 module Cryptomarket
     class HttpManager

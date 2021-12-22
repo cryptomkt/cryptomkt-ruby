@@ -630,8 +630,8 @@ module Cryptomarket
         # +String+ +currency+:: the currency code for withdraw
         # +Integer+ +amount+:: the expected withdraw amount
         
-        def getEstimatesWithdrawFee(currency, amount)
-            params = {currency:currency, amount:amount}
+        def getEstimateWithdrawFee(currency, amount)
+            params = {amount:amount, currency:currency}
             return get('account/crypto/estimate-withdraw', params)
         end
 
