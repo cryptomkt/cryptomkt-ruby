@@ -47,7 +47,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
     end
 
     def test_get_estimate_withdraw_fee
-        result = @client.getEstimatesWithdrawFee "EOS", "100"
+        result = @client.getEstimateWithdrawFee "EOS", "100"
         # puts result
     end
 
