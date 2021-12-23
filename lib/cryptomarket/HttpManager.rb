@@ -20,7 +20,7 @@ module Cryptomarket
             timestamp = Time.now.to_i.to_s
             msg = httpMethod + timestamp + @@apiVersion + method
             if not params.nil? and params.keys.any?
-                if httpMethod == 'GET'
+                if httpMethod.upcase == 'GET' or httpMethod.upcase == 'PUT'
                     msg += '?'
                 end
                 msg += URI.encode_www_form params
@@ -33,11 +33,14 @@ module Cryptomarket
         
         def makeRequest(method:, endpoint:, params:nil, public:false)
             uri = URI(@@apiUrl + @@apiVersion + endpoint)
+            if not params.nil?
+                params = Hash[params.sort_by {|key, val| key.to_s }]
+            end
             headers = Hash.new
             if not public
                 headers['Authorization'] = getCredential(method.upcase, endpoint, params)
             end
-            if method.upcase == 'GET' and not params.nil?
+            if (method.upcase == 'GET' or method.upcase =='PUT') and not params.nil?
                 uri.query = URI.encode_www_form params
                 params = nil
             end
