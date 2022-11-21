@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'lib/websocket/publicClient'
+require 'lib/websocket/MarketDataClient'
 require_relative '../rest/keyloader'
 require_relative 'sequenceFlow'
 require_relative 'timeFlow'
@@ -11,7 +11,7 @@ class TestWSClientLifetime < Test::Unit::TestCase
     @@HOUR = 3600
 
     def test_public_client_lifetime
-        @wsclient = PublicClient.new
+        @wsclient = MarketDataClient.new
 
         @wsclient.onclose = Proc.new {puts "closing";}
         @wsclient.onconnect = Proc.new {puts "connected"}

@@ -20,5 +20,9 @@ module Cryptomarket
         def description
             return @description
         end
+
+        def to_s
+            return "#{self.class().name} (code=#{@code}): #{@message}: #{@description}"
+        end
     end
 end

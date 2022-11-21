@@ -1,6 +1,6 @@
 require 'test/unit'
-require 'lib/cryptomarket/websocket/publicClient'
-require_relative '../rest/keyloader'
+require_relative '../../lib/cryptomarket/websocket/marketDataClient'
+require_relative '../rest/key_loader'
 require_relative 'sequenceFlow'
 require_relative 'timeFlow'
 require_relative '../rest/checks'
@@ -10,7 +10,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
     @@MINUTE = 60
     @@HOUR = 3600
     def setup
-        @wsclient = Cryptomarket::Websocket::PublicClient.new
+        @wsclient = Cryptomarket::Websocket::MarketDataClient.new
         @wsclient.connect
     end
 
@@ -19,67 +19,143 @@ class TestWSPublicSubs < Test::Unit::TestCase
         sleep(2)
     end
 
-    def test_ticker_subscription
-        puts "***TICKER TEST***"
-        checker = TimeFlow.new
-        callback = Proc.new {|result| 
-            puts "ticker: " + Time.now.to_s()
-            if not goodTicker(result)
-                puts "not a good ticker"
-            end
-            if not checker.checkNextTime(result["timestamp"])
-                puts "wrong flow"
-            end
-        }
-        sleep(3 * @@SECOND)
-        @wsclient.subscribeToTicker('EOSETH', callback, nil)
-        sleep(10 * @@MINUTE)
-        @wsclient.unsubscribeToTicker('EOSETH', nil)
-        sleep(3 * @@SECOND)
-    end
-    
-    def test_orderbook_subcsription
-        puts "***ORDERBOOK TEST ***"
-        checker = SequenceFlow.new
-        callback = Proc.new {|feed|
-            puts "orderbook: " + Time.now.to_s
-            if not checker.checkNextSequence(feed["sequence"])
-                puts "wrong sequence"
-            end
-            if not goodOrderbook(feed)
-                puts "not a good orderbook"
-            end
-        }
-        @wsclient.subscribeToOrderbook('EOSETH', callback)
-        sleep(10 * @@MINUTE)
-        @wsclient.unsubscribeToOrderbook('EOSETH')
-        sleep(3 * @@SECOND)
+    def gen_result_callback
+      return Proc.new {|err, result|
+        if not err.nil?
+          puts err
+        else
+          puts result
+        end
+      }
     end
 
-    def test_trades_subscription
-        puts "***TRADES TEST***"
-        callback = Proc.new {|feed|
-            puts "trade: " + Time.now.to_s
-        }
-        @wsclient.subscribeToTrades('ETHBTC', callback, 2)
-        sleep(10 * @@MINUTE)
-        @wsclient.unsubscribeToTrades('ETHBTC')
-        sleep(3 * @@SECOND)
+    def gen_print_callback
+      return Proc.new {|feed, type|
+        puts "notification"
+        puts type
+        puts feed
+      }
     end
-    
-    def test_candles_subscription
-        puts "***CANDLE TEST***"
-        callback = Proc.new {|feed|
-            puts "candles: " + Time.now.to_s
-            feed.each{|val| 
-                if not goodCandle(val) 
-                    puts "not good candle" 
-                end
-            }  
-        }
-        @wsclient.subscribeToCandles('ETHBTC', 'M1', 2,callback)
-        sleep(10 * @@SECOND)
-        @wsclient.unsubscribeToCandles('ETHBTC', 'M1')
-        sleep(3 * @@SECOND)
+
+
+    def test_trades_subscription
+      puts "***TRADES TEST***"
+      @wsclient.subscribe_to_trades(
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        limit:2,
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_candles_subscriptions
+      puts "***CANDLES TEST***"
+      @wsclient.subscribe_to_candles(
+        period:"M1",
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        limit:2,
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_mini_ticker
+      puts "***MINI TICKER TEST***"
+      @wsclient.subscribe_to_mini_ticker(
+        speed:"1s",
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_mini_ticker_in_batches
+      puts "***MINI TICKER IN BATCHES TEST***"
+      @wsclient.subscribe_to_mini_ticker_in_batches(
+        speed:"1s",
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_ticker
+      puts "***TICKER TEST***"
+      @wsclient.subscribe_to_ticker(
+        speed:"1s",
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_ticker_in_batches
+      puts "***TICKER IN BATCHES TEST***"
+      @wsclient.subscribe_to_ticker_in_batches(
+        speed:"1s",
+        callback:gen_print_callback(),
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_full_order_book
+      puts "***FULL ORDERBOOK TEST***"
+      @wsclient.subscribe_to_full_order_book(
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_partial_order_book
+      puts "***PARTIAL ORDERBOOK TEST***"
+      @wsclient.subscribe_to_partial_order_book(
+        speed:"100ms",
+        depth:"D5",
+        callback:gen_print_callback(),
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_partial_order_book_in_batches
+      puts "***PARTIAL ORDERBOOK IN BATCHES TEST***"
+      @wsclient.subscribe_to_partial_order_book_in_batches(
+        speed:"100ms",
+        depth:"D5",
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_top_of_book
+      puts "***TOP OF BOOK TEST***"
+      @wsclient.subscribe_to_top_of_book(
+        speed:"100ms",
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+    def test_subscribe_to_top_of_book_in_batches
+      puts "***TOP OF BOOK IN BATCHES TEST***"
+      @wsclient.subscribe_to_top_of_book_in_batches(
+        speed:"100ms",
+        callback:gen_print_callback(),
+        symbols:['eoseth', 'ethbtc'],
+        resultCallback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
     end
 end

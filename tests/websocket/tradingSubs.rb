@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'lib/cryptomarket/websocket/tradingClient'
-require_relative '../rest/keyloader'
+require_relative '../rest/key_loader'
 require_relative 'sequenceFlow'
 require_relative 'timeFlow'
 require_relative '../rest/checks'
@@ -25,11 +25,11 @@ class TestWSTradingSubs < Test::Unit::TestCase
             puts Time.now.to_s + " report"
             puts feed
         }
-        @wsclient.subscribeToReports(callback)
+        @wsclient.subscribe_to_reports(callback:callback)
         sleep(10 * @@SECOND)
         timestamp = Time.now.to_i.to_s
         symbol = 'EOSETH'
-        callback = Proc.new {|error, result| 
+        callback = Proc.new {|error, result|
             if not error.nil?
                 puts 'an error arrived'
                 puts error
@@ -37,9 +37,9 @@ class TestWSTradingSubs < Test::Unit::TestCase
                 puts result
             end
         }
-        @wsclient.createOrder(symbol: symbol, price:'10000', quantity:'0.01', side:'sell', clientOrderId:timestamp)
+        @wsclient.create_spot_order(symbol: symbol, price:'10000', quantity:'0.01', side:'sell', client_order_id:timestamp)
         sleep(10 * @@SECOND)
-        @wsclient.cancelOrder(timestamp)
+        @wsclient.cancel_spot_order(client_order_id:timestamp)
         sleep(5 * @@SECOND)
     end
 end

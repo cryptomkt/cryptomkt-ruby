@@ -62,27 +62,36 @@ module Cryptomarket
                 @onclose.call()
             end
 
+            def close()
+              @wsmanager.close()
+            end
+
             def sendSubscription(method, callback, params, resultCallback)
-                key = buildKey(method, params)
+                methodData = @subscriptionKeys[method]
+                key = methodData[0]
                 @callbackCache.storeSubscriptionCallback(key, callback)
                 storeAndSend(method, params, resultCallback)
             end
 
             def sendUnsubscription(method, callback, params)
-                key = buildKey(method, params)
+                methodData = @subscriptionKeys[method]
+                key = methodData[0]
                 @callbackCache.deleteSubscriptionCallback(key)
                 storeAndSend(method, params, callback)
             end
-            
+
             def sendById(method, callback, params={})
                 storeAndSend(method, params, callback)
             end
-            
+
             def storeAndSend(method, params, callbackToStore=nil)
+                if !params.nil?
+                  params = params.compact
+                end
                 payload = {'method' => method, 'params' => params}
                 if not callbackToStore.nil?
-                    id = @callbackCache.storeCallback(callbackToStore)
-                    payload['id'] = id
+                  id = @callbackCache.storeCallback(callbackToStore)
+                  payload['id'] = id
                 end
                 @wsmanager.send(payload)
             end
@@ -96,25 +105,21 @@ module Cryptomarket
             end
 
             def handleNotification(notification)
-                key = buildKey(notification["method"])
+                method = notification['method']
+                methodData = @subscriptionKeys[method]
+                key = methodData[0]
+                notificationType = methodData[1]
                 callback = @callbackCache.getSubscriptionCallback(key)
                 if callback.nil?
                     return
                 end
-                callback.call(notification["params"]) 
-            end
-            
-            def buildKey(method=nil, params=nil)
-                if @subscriptionKeys.key? method
-                    return @subscriptionKeys[method]
-                end
-                return "subscription"
+                callback.call(notification["params"], notificationType)
             end
 
             def handleResponse(response)
                 id = response['id']
-                if id.nil? 
-                    return 
+                if id.nil?
+                    return
                 end
                 callback = @callbackCache.popCallback(id)
                 if callback.nil?
@@ -131,27 +136,6 @@ module Cryptomarket
                         callback.call(nil, result)
                     end
                 end
-            end
-
-            def handleNotification(notification)
-                key = "subscription"
-                callback = @callbackCache.getSubscriptionCallback(key)
-                if callback.nil?
-                    return
-                end
-                if notification["params"].kind_of?(Array)
-                    notification["params"].each{|feed| callback.call(feed)}
-                else
-                    callback.call(notification["params"]) 
-                end
-            end
-
-            def buildKey(method=nil, params=nil)
-                return "subscription"
-            end
-
-            def close()
-                @wsmanager.close()
             end
         end
     end

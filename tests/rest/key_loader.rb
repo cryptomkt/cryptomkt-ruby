@@ -1,7 +1,7 @@
 require 'json'
 
 class Keyloader
-    file = File.open "/home/ismael/cryptomarket/apis/keys.json"
+    file = File.open "/home/ismael/cryptomarket/keys-v3.json"
     keys = JSON.load file
     @@apiKey = keys['apiKey']
     @@apiSecret = keys['apiSecret']

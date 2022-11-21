@@ -13,14 +13,14 @@ def defined(aHash, key)
     return true
 end
 
-# goodHash checks all of the values in the fields list to be present in the dict, and if they are 
-# present, check the defined() condition to be true. if any of the fields fails to be defined(), then 
+# goodParams checks all of the values in the fields list to be present in the dict, and if they are
+# present, check the defined() condition to be true. if any of the fields fails to be defined(), then
 # this def returns false
-def goodHash(aHash, fields)
+def goodParams(aHash, fields)
     if aHash.nil?
         return false
     end
-    fields.each {|field| 
+    fields.each {|field|
         if not defined(aHash, field)
             return false
         end
@@ -28,39 +28,80 @@ def goodHash(aHash, fields)
     return true
 end
 
+def goodList(checkFn, list)
+  list.each{|elem|
+    if not checkFn.(elem)
+      return false
+    end
+  }
+  return true
+end
+
+def goodHash(checkFn, hash)
+  hash.each{|key, elem|
+    if not checkFn(elem)
+      return false
+    end
+  }
+  return true
+end
+
 
 # goodCurrency checks the precence of every field in the currency dict
 def goodCurrency(currency)
-    return goodHash(currency,
+    good = goodParams(currency,
         [
-            "id",
-            "fullName",
-            "crypto",
-            "payinEnabled",
-            "payinPaymentId",
-            "payinConfirmations",
-            "payoutEnabled",
-            "payoutIsPaymentId",
-            "transferEnabled",
-            "delisted",
-            # "precisionPayout",
-            # "precisionTransfer",
+            "full_name",
+            "payin_enabled",
+            "payout_enabled",
+            "transfer_enabled",
+            "precision_transfer",
+            "networks",
+        ]
+    )
+    if not good
+        return false
+    end
+
+    currency["networks"].each {|level|
+        if not goodNetwork(level)
+            return false
+        end
+    }
+    return true
+end
+
+def goodNetwork(network)
+    return goodParams(network,
+        [
+            "network",
+            "default",
+            "payin_enabled",
+            "payout_enabled",
+            "precision_payout",
+            "payout_fee",
+            "payout_is_payment_id",
+            "payin_payment_id",
+            "payin_confirmations",
         ]
     )
 end
 
 # goodSymbol check the precence of every field in the symbol dict
 def goodSymbol(symbol)
-    return goodHash(symbol, 
+    return goodParams(symbol,
         [
-            'id',
-            'baseCurrency',
-            'quoteCurrency',
-            'quantityIncrement',
-            'tickSize',
-            'takeLiquidityRate',
-            'provideLiquidityRate',
-            # 'feeCurrency'
+            "type",
+            "base_currency",
+            "quote_currency",
+            "status",
+            "quantity_increment",
+            "tick_size",
+            "take_rate",
+            "make_rate",
+            "fee_currency",
+            # "margin_trading",
+            # "max_initial_leverage",
         ]
     )
 end
@@ -68,30 +109,80 @@ end
 
 # goodTicker check the precence of every field in the ticker dict
 def goodTicker(ticker)
-    return goodHash(ticker, 
+    return goodParams(ticker,
         [
-            "symbol",
-            "ask",
-            "bid",
-            "last",
             "low",
             "high",
-            "open",
             "volume",
-            "volumeQuote",
+            "volume_quote",
+            "timestamp",
+        ]
+    )
+end
+
+# goodTicker check the precence of every field in the ticker dict
+def goodPrice(price)
+    return goodParams(price,
+        [
+            "currency",
+            "price",
+            "timestamp",
+        ]
+    )
+end
+
+# goodTicker check the precence of every field in the ticker dict
+def goodPriceHistory(priceHistory)
+    good = goodParams(priceHistory,
+        [
+            "currency",
+            "history",
+        ]
+    )
+    if not good
+        return false
+    end
+    for point in priceHistory["history"]
+        if not goodHistoryPoint(point)
+            return false
+        end
+    end
+    return true
+end
+
+# goodTicker check the precence of every field in the ticker dict
+def goodHistoryPoint(point)
+    return goodParams(point,
+        [
+            "open",
+            "close",
+            "min",
+            "max",
             "timestamp",
         ]
     )
 end
 
 
+# goodTicker check the precence of every field in the ticker dict
+def goodTickerPrice(price)
+    return goodParams(price,
+        [
+            "price",
+            "timestamp",
+        ]
+    )
+end
+
+
+
 # goodPublicTrade check the precence of every field in the trade dict
 def goodPublicTrade(trade)
-    return goodHash(trade, 
+    return goodParams(trade,
         [
             "id",
             "price",
-            "quantity",
+            "qty",
             "side",
             "timestamp",
         ]
@@ -100,20 +191,14 @@ end
 
 # goodOrderbookLevel check the precence of every field in the level dict
 def goodOrderbookLevel(level)
-    return goodHash(level, 
-        [
-            "price",
-            "size",
-        ]
-    )
+    return level.length() == 2
 end
 
 # goodOrderbook check the precence of every field in the orderbook dict
 # and the fields of each level in each side of the orderbook
 def goodOrderbook(orderbook)
-    goodOrderbook = goodHash(orderbook, 
+    goodOrderbook = goodParams(orderbook,
         [
-            "symbol",
             "timestamp",
             # "batchingTime",
             "ask",
@@ -124,7 +209,7 @@ def goodOrderbook(orderbook)
         return false
     end
 
-    orderbook["ask"].each {|level| 
+    orderbook["ask"].each {|level|
         if not goodOrderbookLevel(level)
             return false
         end
@@ -134,20 +219,13 @@ def goodOrderbook(orderbook)
             return false
         end
     }
-    for side in [orderbook['bid'], orderbook['ask']]
-        for level in side
-            if BigDecimal(level['size']) === BigDecimal('0.00')
-                return false
-            end
-        end
-    end
     return true
 end
 
 
 # goodCandle check the precence of every field in the candle dict
 def goodCandle(candle)
-    return goodHash(candle, 
+    return goodParams(candle,
         [
             "timestamp",
             "open",
@@ -155,30 +233,13 @@ def goodCandle(candle)
             "min",
             "max",
             "volume",
-            "volumeQuote",
+            "volume_quote",
         ]
     )
 end
 
-# goodBalances check the precence of every field on every balance dict
-def goodBalances(balances)
-    balances.each {|balance|
-        goodBalance = goodHash(balance, 
-            [
-                "currency",
-                "available",
-                "reserved",
-            ]
-        )
-        if not goodBalance 
-            return false
-        end
-    }
-    return true
-end
-
 def goodBalance(balance)
-    return goodHash(balance, 
+    return goodParams(balance,
         [
             "currency",
             "available",
@@ -189,21 +250,20 @@ end
 
 # goodOrder check the precence of every field in the order dict
 def goodOrder(order)
-    return goodHash(order, 
+    return goodParams(order,
         [
             "id",
-            "clientOrderId",
+            "client_order_id",
             "symbol",
             "side",
             "status",
             "type",
-            "timeInForce",
+            "time_in_force",
             "quantity",
             "price",
-            "cumQuantity",
-            # "postOnly", # does not appears in the orders in orders history
-            "createdAt",
-            "updatedAt",
+            "quantity_cumulative",
+            "created_at",
+            "updated_at",
         ]
     )
 end
@@ -211,7 +271,7 @@ end
 
 # goodTrade check the precence of every field in the trade dict
 def goodTrade(trade)
-    return goodHash(trade, 
+    return goodParams(trade,
         [
             "id",
             "orderId",
@@ -230,20 +290,91 @@ end
 
 # goodTransaction check the precence of every field in the transaction dict
 def goodTransaction(transaction)
-    return goodHash(transaction, 
-        [
-            "id",
-            "index",
-            "currency",
-            "amount",
-            # "fee",
-            # "address",
-            # "hash",
-            "status",
-            "type",
-            "createdAt",
-            "updatedAt",
-        ]
+    good = goodParams(transaction,
+      [
+        "id",
+        "status",
+        "type",
+        "subtype",
+        "created_at",
+        "updated_at",
+        # "native", # optional
+        # "primetrust", # optional
+        # "meta" # optional
+      ]
     )
+    if not good
+      return false
+    end
+    if transaction.key? "native"
+      if not goodNativeTransaction(transaction["native"])
+        return false
+      end
+    end
+    if transaction.key? "meta"
+      if not goodMetaTransaction(transaction["meta"])
+        return false
+      end
+    end
+    return true
+end
+
+def goodNativeTransaction(nativeTransaction)
+  return goodParams(nativeTransaction,
+    [
+      "tx_id",
+      "index",
+      "currency",
+      "amount",
+      # "fee", # optional
+      # "address", # optional
+      # "payment_id", # optional
+      # "hash", # optional
+      # "offchain_id", # optional
+      # "confirmations", # optional
+      # "public_comment", # optional
+      # "error_code", # optional
+      # "senders" # optional
+    ]
+  )
+end
+
+def goodMetaTransaction(metaTransaction)
+  return goodParams(metaTransaction,
+    [
+      "fiat_to_crypto",
+      "id",
+      "provider_name",
+      "order_type",
+      "source_currency",
+      "status",
+      "created_at",
+      "updated_at",
+      "deleted_at",
+      "payment_method_type"
+    ]
+  )
+end
+
+def goodAddress(address)
+  return goodParams(address,
+    [
+      "currency",
+      "address",
+      # "payment_ids", # optional
+      # "public_key", # optional
+    ]
+  )
+end
+
+
+def goodTradingCommission(commission)
+  return goodParams(commission,
+    [
+      "symbol",
+      "make_rate",
+      "take_rate"
+    ]
+  )
 end
 
