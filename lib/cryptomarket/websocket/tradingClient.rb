@@ -128,16 +128,19 @@ module Cryptomarket
             # = Types or contingency
             # - Contingency.ALL_OR_NONE (Contingency.AON)
             # - Contingency.ONE_CANCEL_OTHER (Contingency.OCO)
+            # - Contingency.ONE_TRIGGER_OTHER (Contingency.OTO)
             # - Contingency.ONE_TRIGGER_ONE_CANCEL_OTHER (Contingency.OTOCO)
             #
             # = Restriction in the number of orders:
             # - An AON list must have 2 or 3 orders
             # - An OCO list must have 2 or 3 orders
+            # - An OTO list must have 2 or 3 orders
             # - An OTOCO must have 3 or 4 orders
             #
             # = Symbol restrictions
             # - For an AON order list, the symbol code of orders must be unique for each order in the list.
             # - For an OCO order list, there are no symbol code restrictions.
+            # - For an OTO order list, there are no symbol code restrictions.
             # - For an OTOCO order list, the symbol code of orders must be the same for all orders in the list (placing orders in different order books is not supported).
             #
             # = OrderType restrictions
@@ -145,6 +148,7 @@ module Cryptomarket
             # - For an OCO order list, orders must be OrderType.LIMIT, OrderType.STOP_LIMIT, OrderType.STOP_MARKET, OrderType.TAKE_PROFIT_LIMIT or OrderType.TAKE_PROFIT_MARKET.
             # - An OCO order list cannot include more than one limit order (the same
             # applies to secondary orders in an OTOCO order list).
+            # - For OTO order list, there are no order type restrictions.
             # - For an OTOCO order list, the first order must be OrderType.LIMIT, OrderType.MARKET, OrderType.STOP_LIMIT, OrderType.STOP_MARKET, OrderType.TAKE_PROFIT_LIMIT or OrderType.TAKE_PROFIT_MARKET.
             # - For an OTOCO order list, the secondary orders have the same restrictions as an OCO order
             # - Default is OrderType.Limit

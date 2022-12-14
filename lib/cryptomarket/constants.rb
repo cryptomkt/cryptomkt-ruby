@@ -111,6 +111,8 @@ module Cryptomarket
       AON = 'allOrNone'
       ONE_CANCEL_OTHER = 'oneCancelOther'
       OCO = 'oneCancelOther'
+      ONE_TRIGGER_OTHER = 'oneTriggerOther'
+      OTO = 'oneTriggerOther'
       ONE_TRIGGER_ONE_CANCEL_OTHER = 'oneTriggerOneCancelOther'
       OTOCO = 'oneTriggerOneCancelOther'
     end
