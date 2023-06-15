@@ -1,11 +1,11 @@
 require 'test/unit'
-require_relative 'key_loader'
-require_relative 'checks'
+require_relative '../keyLoader'
+require_relative '../checks'
 require_relative '../../lib/cryptomarket/client'
 
 class TestRestTradingMethods < Test::Unit::TestCase
     def setup
-        @client = Cryptomarket::Client.new apiKey:Keyloader.apiKey, apiSecret:Keyloader.apiSecret
+        @client = Cryptomarket::Client.new api_key:Keyloader.api_key, api_secret:Keyloader.api_secret
     end
 
     def test_get_wallet_balance
@@ -18,7 +18,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
 
     def test_get_wallet_balance_of_currency
       result = @client.get_wallet_balance_of_currency currency:"EOS"
-      assert(goodParams(result, ["reserved", "available"]))
+      assert(good_params(result, ["reserved", "available"]))
     end
 
     def test_get_deposit_crypto_addresses
@@ -94,23 +94,6 @@ class TestRestTradingMethods < Test::Unit::TestCase
       assert(!result.empty?)
     end
 
-    def test_convert_between_currencies
-      #TODO: not working, responds with error: Action is forbidden for this API key
-      # result = @client.convert_between_currencies(
-      #   from_currency:"ADA",
-      #   to_currency:"XLM",
-      #   amount:"0.1",
-      # )
-      # puts result
-
-      # result = @client.convert_between_currencies(
-      #   from_currency:"XLM",
-      #   to_currency:"ADA",
-      #   amount:"0.1",
-      # )
-      # puts result
-    end
-
     def test_crypto_address_belongs_to_current_account
       ada_address = @client.get_deposit_crypto_address_of_currency(currency:"ADA")["address"]
       it_belongs = @client.crypto_address_belongs_to_current_account? address: ada_address
@@ -134,17 +117,6 @@ class TestRestTradingMethods < Test::Unit::TestCase
       assert(!result.empty?)
     end
 
-    def test_transfer_money_to_another_user
-      # Good
-      # result = @client.transfer_money_to_another_user(
-      #   currency:"CRO",
-      #   amount:"0.1",
-      #   by:"email",
-      #   identifier:"the_email",
-      # )
-      # puts result
-    end
-
     def test_get_transaction_history
       result = @client.get_transaction_history
       assert(goodList(
@@ -154,11 +126,10 @@ class TestRestTradingMethods < Test::Unit::TestCase
     end
 
     def test_get_transaction
-      # TODO: change it form transaciton["native"]["tx_id"] to transaction["id"], not working as intended
-      # transaction_list = @client.get_transaction_history
-      # first_transaction_id = transaction_list[0]["native"]["tx_id"]
-      # result = @client.get_transaction id: first_transaction_id
-      # assert(goodTransaction(result))
+      transaction_list = @client.get_transaction_history
+      first_transaction_id = transaction_list[0]["native"]["tx_id"]
+      result = @client.get_transaction id: first_transaction_id
+      assert(goodTransaction(result))
     end
 
     def test_offchain_available
@@ -168,16 +139,6 @@ class TestRestTradingMethods < Test::Unit::TestCase
         address:eos_address
       )
       assert(!result.nil?)
-    end
-
-    def test_get_airdrops
-      # TODO: have airdrops to get
-      result = @client.get_airdrops
-      # puts result
-    end
-
-    def test_cliam_airdrop
-      # TODO: have airdrops to claim
     end
 
     def test_get_amount_locks

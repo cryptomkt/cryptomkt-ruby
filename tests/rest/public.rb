@@ -1,6 +1,6 @@
 require 'test/unit'
 require_relative '../../lib/cryptomarket/client'
-require_relative 'checks'
+require_relative '../checks'
 
 class TestRestPublicMethods < Test::Unit::TestCase
     def setup
@@ -103,19 +103,19 @@ class TestRestPublicMethods < Test::Unit::TestCase
     def test_get_orderbooks
         result = @client.get_orderbooks(symbols: ['EOSETH', 'XLMETH'])
         result.each do |key, val|
-            assert(goodOrderbook(val))
+            assert(good_orderbook(val))
         end
     end
 
     def test_get_orderbook_of_symbol
         result = @client.get_orderbook_of_symbol(symbol:'EOSETH')
-        assert(goodOrderbook(result))
+        assert(good_orderbook(result))
     end
 
 
     def test_get_orderbook_volume_of_symbol
       result = @client.get_orderbook_volume_of_symbol(symbol:'EOSETH', volume:"100")
-      assert(goodOrderbook(result))
+      assert(good_orderbook(result))
   end
 
     def test_get_candles

@@ -17,88 +17,87 @@ module Cryptomarket
                 @orderbooks_states = Hash.new
             end
 
-            def update(method, key, updateData) 
+            def update(method, key, update_data) 
                 case method
                 when 'snapshotOrderbook'
                     @orderbooks_states[key] = @@UPDATING
-                    @orderbooks[key] = updateData
+                    @orderbooks[key] = update_data
                     return @orderbooks[key]
                 when 'updateOrderbook'
                     if @orderbooks_states[key] != @@UPDATING
                         return
                     end
-                    oldOrderbook = @orderbooks[key]
-                    if updateData['sequence'] - oldOrderbook['sequence'] != 1
+                    old_orderbook = @orderbooks[key]
+                    if update_data['sequence'] - old_orderbook['sequence'] != 1
                         @orderbooks_states[key] = @@BROKEN
                         return
                     end
-                    oldOrderbook['sequence'] = updateData['sequence']
-                    oldOrderbook['timestamp'] = updateData['timestamp']
-                    if updateData.has_key? 'ask'
-                        oldOrderbook['ask'] = updateBookSide(oldOrderbook['ask'], updateData['ask'], @@ASCENDING)
+                    old_orderbook['sequence'] = update_data['sequence']
+                    old_orderbook['timestamp'] = update_data['timestamp']
+                    if update_data.has_key? 'ask'
+                        old_orderbook['ask'] = update_book_side(old_orderbook['ask'], update_data['ask'], @@ASCENDING)
                     end
-                    if updateData.has_key? 'bid'
-                        oldOrderbook['bid'] = updateBookSide(oldOrderbook['bid'], updateData['bid'], @@DESCENDING)
+                    if update_data.has_key? 'bid'
+                        old_orderbook['bid'] = update_book_side(old_orderbook['bid'], update_data['bid'], @@DESCENDING)
                     end
                 end
             end
 
-            def updateBookSide(oldList, updateList, sortDirection) 
-                newList = Array.new
-                oldIdx = 0
-                updateIdx = 0
-                while (oldIdx < oldList.length && updateIdx < updateList.length) 
-                    updateEntry = updateList[updateIdx]
-                    oldEntry = oldList[oldIdx]
-                    order = priceOrder(oldEntry, updateEntry, sortDirection)
+            def update_book_side(old_list, update_list, sort_direction) 
+                new_list = Array.new
+                old_idx = 0
+                update_idx = 0
+                while (old_idx < old_list.length && update_idx < update_list.length) 
+                    update_entry = update_list[update_idx]
+                    old_entry = old_list[old_idx]
+                    order = price_ordering(old_entry, update_entry, sort_direction)
                     if (order == 0) 
-                        if not zeroSize(updateEntry)
-                            newList.push(updateEntry)
+                        if not is_zero_size(update_entry)
+                            new_list.push(update_entry)
                         end
-                        updateIdx+= 1
-                        oldIdx+= 1
+                        update_idx+= 1
+                        old_idx+= 1
                     elsif (order == 1)
-                        newList.push(oldEntry)
-                        oldIdx+= 1
+                        new_list.push(old_entry)
+                        old_idx+= 1
                     else 
-                        newList.push(updateEntry)
-                        updateIdx+= 1
+                        new_list.push(update_entry)
+                        update_idx+= 1
                     end
                 end
-                if updateIdx == updateList.length
-                    for idx in oldIdx..oldList.length-1
-                        oldEntry = oldList[idx]
-                        newList.push(oldEntry)
+                if update_idx == update_list.length
+                    for idx in old_idx..old_list.length-1
+                        old_entry = old_list[idx]
+                        new_list.push(old_entry)
                     end
                 end
-                if (oldIdx == oldList.length)
-                    for idx in updateIdx..updateList.length-1
-                        updateEntry = updateList[idx]
-                        if not zeroSize(updateEntry)
-                            newList.push(updateEntry)
+                if (old_idx == old_list.length)
+                    for idx in update_idx..update_list.length-1
+                        update_entry = update_list[idx]
+                        if not is_zero_size(update_entry)
+                            new_list.push(update_entry)
                         end
                     end
                 end 
-                return newList
+                return new_list
             end
 
-            def zeroSize(entry) 
+            def is_zero_size(entry) 
                 size = BigDecimal(entry['size'])
                 return size == BigDecimal("0.00")
             end
             
-            def priceOrder(oldEntry, updateEntry, sortDirection) 
-                oldPrice = BigDecimal(oldEntry['price'])
-                updatePrice = BigDecimal(updateEntry['price'])
-                # puts oldEntry.to_s() +"\t" + updateEntry.to_s()
+            def price_ordering(old_entry, update_entry, sort_direction) 
+                old_price = BigDecimal(old_entry['price'])
+                update_price = BigDecimal(update_entry['price'])
                 direction = 1
-                if oldPrice > updatePrice
+                if old_price > update_price
                     direction = -1
                 end
-                if oldPrice == updatePrice
+                if old_price == update_price
                     direction = 0
                 end
-                if sortDirection == @@ASCENDING
+                if sort_direction == @@ASCENDING
                     return direction
                 end
                 return -direction

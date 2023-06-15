@@ -123,5 +123,10 @@ module Cryptomarket
       DATA = 'data'
       COMMAND = 'command'
     end
+
+    module SubscriptionMode
+      UPDATES = 'updates'
+      BATCHES = 'batches'
+    end
   end
 end

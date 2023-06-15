@@ -1,41 +1,41 @@
-require_relative "http_manager"
+require_relative "httpManager"
 
 module Cryptomarket
   # Creates a new rest client
   #
   # ==== Params
-  # +String+ +apiKey+:: the user api key
-  # +String+ +apiSecret+:: the user api secret
+  # +String+ +api_key+:: the user api key
+  # +String+ +api_secret+:: the user api secret
   # +Integer+ +window+:: Maximum difference between the creation of the request and the moment of request processing in milliseconds. Max is 60_000. Defaul is 10_000
 
   class Client
 
-    def initialize(apiKey:nil, apiSecret:nil, window:nil)
-      @httpManager = HttpManager.new apiKey:apiKey, apiSecret:apiSecret, window:window
+    def initialize(api_key:nil, api_secret:nil, window:nil)
+      @httpManager = HttpManager.new api_key:api_key, api_secret:api_secret, window:window
     end
 
     def public_get(endpoint, params=nil)
-      return @httpManager.makeRequest(method:'get', endpoint:endpoint, params:params, public: true)
+      return @httpManager.make_request(method:'get', endpoint:endpoint, params:params, public: true)
     end
 
     def get(endpoint, params=nil)
-      return @httpManager.makeRequest(method:'get', endpoint:endpoint, params:params)
+      return @httpManager.make_request(method:'get', endpoint:endpoint, params:params)
     end
 
     def post(endpoint, params=nil)
-      return @httpManager.makeRequest(method:'post', endpoint:endpoint, params:params)
+      return @httpManager.make_request(method:'post', endpoint:endpoint, params:params)
     end
 
     def put(endpoint, params=nil)
-      return @httpManager.makeRequest(method:'put', endpoint:endpoint, params:params)
+      return @httpManager.make_request(method:'put', endpoint:endpoint, params:params)
     end
 
     def patch(endpoint, params=nil)
-      return @httpManager.makeRequest(method:'patch', endpoint:endpoint, params:params)
+      return @httpManager.make_request(method:'patch', endpoint:endpoint, params:params)
     end
 
     def delete(endpoint, params=nil)
-        return @httpManager.makeRequest(method:'delete', endpoint:endpoint, params:params)
+        return @httpManager.make_request(method:'delete', endpoint:endpoint, params:params)
     end
 
 
@@ -523,15 +523,15 @@ module Cryptomarket
 
     def create_spot_order_list(
       contingency_type:,
-      order_list_id:nil,
       orders:,
+      order_list_id:nil
     )
       return post(
         "spot/order/list",
         {
           order_list_id: order_list_id,
           contingency_type: contingency_type,
-          orders: orders,
+          orders: orders
         }
       )
     end
@@ -821,7 +821,7 @@ module Cryptomarket
     # +String+ +payment id+:: Optional.
     # +bool+ +include fee+:: Optional. If true then the amount includes fees. Default is false
     # +bool+ +auto commit+:: Optional. If false then you should commit or rollback the transaction in an hour. Used in two phase commit schema. Default is true
-    # +String+ +use offchain+:: Optional. Whether the withdrawal may be comitted offchain. Accepted values are 'never', 'optionaly' and 'required'. Default is TODO
+    # +String+ +use offchain+:: Optional. Whether the withdrawal may be comitted offchain. Accepted values are 'never', 'optionaly' and 'required'.
     # +String+ +public comment+:: Optional. Maximum lenght is 255
 
     def withdraw_crypto(

@@ -10,18 +10,18 @@ module Cryptomarket
         class WalletClient < AuthClient
             # Creates a new client and authenticates it to the server
             # ==== Params
-            # +String+ +apiKey+:: the user api key
-            # +String+ +apiSecret+:: the user api secret
+            # +String+ +api_key+:: the user api key
+            # +String+ +api_secret+:: the user api secret
             # +Integer+ +window+:: Maximum difference between the creation of the request and the moment of request processing in milliseconds. Max is 60_000. Defaul is 10_000
-            def initialize(apiKey:, apiSecret:, window:nil)
+            def initialize(api_key:, api_secret:, window:nil)
                 transaction = "transaction"
                 balance = "balance"
                 super(
                     url:"wss://api.exchange.cryptomkt.com/api/3/ws/wallet",
-                    apiKey:apiKey,
-                    apiSecret:apiSecret,
+                    api_key:api_key,
+                    api_secret:api_secret,
                     window:window,
-                    subscriptionKeys:{
+                    subscription_keys:{
                         "subscribe_transactions" => [transaction, Args::NotificationType::COMMAND],
                         "unsubscribe_transactions" => [transaction, Args::NotificationType::COMMAND],
                         "transaction_update" => [transaction, Args::NotificationType::UPDATE],
@@ -39,10 +39,10 @@ module Cryptomarket
             #
             # ==== Params
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a list of reports, and the type of notification (only 'update')
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a boolean value, indicating the success of the subscription
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a boolean value, indicating the success of the subscription
 
             def subscribe_to_transactions(callback:, result_callback:nil)
-              sendSubscription('subscribe_transactions', callback, nil, result_callback)
+              send_subscription('subscribe_transactions', callback, nil, result_callback)
             end
 
             # stop recieving the feed of transactions changes
@@ -50,10 +50,10 @@ module Cryptomarket
             # https://api.exchange.cryptomkt.com/#subscribe-to-transactions
             #
             # ==== Params
-            # +Proc+ +callback+:: Optional. A +Proc+ called with a boolean value, indicating the success of the unsubscription
+            # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a boolean value, indicating the success of the unsubscription
 
             def unsubscribe_to_transactions(result_callback:nil)
-              sendUnsubscription('unsubscribe_transactions', result_callback, nil)
+              send_unsubscription('unsubscribe_transactions', result_callback, nil)
             end
 
             # subscribe to a feed of the user's wallet balances
@@ -64,7 +64,7 @@ module Cryptomarket
             #
             # ==== Params
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a list of balances, and the type of notification (either 'snapshot' or 'update')
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a boolean value, indicating the success of the subscription
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a boolean value, indicating the success of the subscription
 
             def subscribe_to_wallet_balance(callback:, result_callback:nil)
               interceptor = Proc.new {|notification, type|
@@ -74,7 +74,7 @@ module Cryptomarket
                   callback.call([notification], type)
                 end
               }
-              sendSubscription('subscribe_wallet_balances', interceptor, nil, result_callback)
+              send_subscription('subscribe_wallet_balances', interceptor, nil, result_callback)
             end
 
             # stop recieving the feed of balances changes
@@ -82,10 +82,10 @@ module Cryptomarket
             # https://api.exchange.cryptomkt.com/#subscribe-to-wallet-balance
             #
             # ==== Params
-            # +Proc+ +callback+:: Optional. A +Proc+ called with a boolean value, indicating the success of the unsubscription
+            # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a boolean value, indicating the success of the unsubscription
 
             def unsubscribe_to_wallet_balance(result_callback:nil)
-              sendUnsubscription('unsubscribe_wallet_balances', result_callback, nil)
+              send_unsubscription('unsubscribe_wallet_balances', result_callback, nil)
             end
 
             # Get the user's wallet balance for all currencies with balance
@@ -96,7 +96,7 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ called with a list of the user balances
 
             def get_wallet_balances(callback:)
-              sendById('wallet_balances', callback)
+              sned_by_id('wallet_balances', callback)
             end
 
             # Get the user's wallet balance of a currency
@@ -110,7 +110,7 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ called with an user balance
 
             def get_wallet_balance_of_currency(currency:, callback:)
-              sendById('wallet_balance', callback, {currency:currency})
+              sned_by_id('wallet_balance', callback, {currency:currency})
             end
 
 
@@ -156,7 +156,7 @@ module Cryptomarket
               limit:nil,
               offset:nil
             )
-              sendById('get_transactions', callback, {
+              sned_by_id('get_transactions', callback, {
                 tx_ids:tx_ids,
                 types:types,
                 subtypes:subtypes,

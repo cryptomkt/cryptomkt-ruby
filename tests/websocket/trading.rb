@@ -1,11 +1,11 @@
 require 'test/unit'
 require_relative '../../lib/cryptomarket/websocket/tradingClient'
-require_relative '../rest/key_loader'
-require_relative '../rest/checks'
+require_relative '../keyLoader'
+require_relative '../checks'
 
 class TestWStrading < Test::Unit::TestCase
   def setup
-    @wsclient = Cryptomarket::Websocket::TradingClient.new apiKey:Keyloader.apiKey, apiSecret:Keyloader.apiSecret
+    @wsclient = Cryptomarket::Websocket::TradingClient.new api_key:Keyloader.api_key, api_secret:Keyloader.api_secret
     @wsclient.connect
   end
 

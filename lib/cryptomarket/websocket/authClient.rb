@@ -5,11 +5,11 @@ module Cryptomarket
     module Websocket
         class AuthClient < ClientBase
             # Creates a new client
-            def initialize(url:, apiKey:, apiSecret:, subscriptionKeys:, window:nil)
-                @apiKey = apiKey
-                @apiSecret = apiSecret
+            def initialize(url:, api_key:, api_secret:, subscription_keys:, window:nil)
+                @api_key = api_key
+                @api_secret = api_secret
                 @window = window
-                super url:url, subscriptionKeys:subscriptionKeys
+                super url:url, subscription_keys:subscription_keys
                 @authed = false
             end
 
@@ -48,17 +48,17 @@ module Cryptomarket
                 if not @window.nil?
                   message += @window.to_s
                 end
-                signature = OpenSSL::HMAC.hexdigest digest, @apiSecret, timestamp.to_s
+                signature = OpenSSL::HMAC.hexdigest digest, @api_secret, timestamp.to_s
                 params = {
                     'type'=> 'HS256',
-                    'api_key'=> @apiKey,
+                    'api_key'=> @api_key,
                     'timestamp'=> timestamp,
                     'signature'=> signature
                 }
                 if not @window.nil?
                   params['window'] = @window
                 end
-                return sendById('login', callback, params)
+                return sned_by_id('login', callback, params)
             end
         end
     end

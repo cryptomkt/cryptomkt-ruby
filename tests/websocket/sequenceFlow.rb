@@ -1,15 +1,15 @@
 class SequenceFlow
 
     def initialize()
-        @lastSequence = nil
+        @last_sequence = nil
     end
 
-    def checkNextSequence(currentSequence)
-        goodFlow = true
-        if not @lastSequence.nil? and currentSequence - @lastSequence != 1
-            goodFlow = false
+    def checkNextSequence(current_sequence)
+        good_flow = true
+        if not @last_sequence.nil? and current_sequence - @last_sequence != 1
+            good_flow = false
         end
-        @lastSequence = currentSequence
-        return goodFlow
+        @last_sequence = current_sequence
+        return good_flow
     end
 end

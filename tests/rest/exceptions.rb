@@ -1,17 +1,17 @@
 require 'test/unit'
-require 'lib/cryptomarket/client'
-require 'lib/cryptomarket/exceptions'
-require_relative 'keyloader'
+require_relative '../../lib/cryptomarket/client'
+require_relative '../../lib/cryptomarket/exceptions'
+require_relative '../keyLoader'
 
 class TestRestTradingMethods < Test::Unit::TestCase
     def setup
-        @client = Cryptomarket::Client.new apiKey:Keyloader.apiKey, apiSecret:Keyloader.apiSecret
+        @client = Cryptomarket::Client.new api_key:Keyloader.api_key, api_secret:Keyloader.api_secret
     end
 
     def test_not_authorized_exception
-        client = Cryptomarket::Client.new apiKey:'not a key', apiSecret:'not a key'
+        client = Cryptomarket::Client.new api_key:'not a key', api_secret:'not a key'
         begin
-            result = @client.getTradingBalance
+            result = @client.get_spot_trading_balance
         rescue Cryptomarket::APIException => exception
             puts exception
             puts exception.code
@@ -22,7 +22,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
 
     def test_not_funds
         begin
-            result = @client.createOrder symbol: "EOSETH",  quantity:"100000", side:"sell", price:"0.01"
+            result = @client.create_spot_order symbol: "EOSETH",  quantity:"100000", side:"sell", price:"0.01"
         rescue Cryptomarket::APIException => exception
             puts exception
             puts exception.code

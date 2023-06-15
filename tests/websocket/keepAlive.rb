@@ -1,28 +1,27 @@
 require 'test/unit'
-require 'lib/websocket/wsClient'
-require_relative '../rest/keyloader'
+require_relative '../../lib/cryptomarket/websocket/marketDataClient'
+require_relative '../keyLoader'
 
 class TestWStrading < Test::Unit::TestCase
     def setup
-        @wsclient = WSClient.new apiKey:Keyloader.apiKey, apiSecret:Keyloader.apiSecret
+        @wsclient = Cryptomarket::Websocket::MarketDataClient.new
+        @wsclient.connect
         sleep(3)
-        @wsclient.authenticate
     end
 
-    @@resultCallback = Proc.new {|error, result| 
+    @@result_callback = Proc.new {|error, result| 
         if not error.nil?
-            puts 'an error arrived'
             puts error
         else
             puts result
         end
     }
-    @@feedCallback = Proc.new {|feed| 
+    @@feed_callback = Proc.new {|feed| 
         puts "feed: " + Time.now.to_s
     }
 
     def test_keep_socket_alive
-        @wsclient.subscribeTicker @@feedCallback, @@resultCallback
+        @wsclient.subscribe_to_ticker callback:@@feed_callback, result_callback:@@result_callback, speed:'1s'
         sleep(3*60*60)
     end
 end

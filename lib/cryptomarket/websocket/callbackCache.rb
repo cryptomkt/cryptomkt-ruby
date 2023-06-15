@@ -3,25 +3,25 @@ module Cryptomarket
         class CallbackCache 
             def initialize() 
                 @callbacks = Hash.new
-                @nextId = 1
+                @next_id = 1
             end
 
-            def getNextId
-                _nextId = @nextId
-                @nextId+= 1
-                if @nextId < 0
-                    @nextId = 1
+            def get_next_id
+                _next_id = @next_id
+                @next_id+= 1
+                if @next_id < 0
+                    @next_id = 1
                 end
-                return _nextId
+                return _next_id
             end
 
-            def storeCallback(callback)
-                id = getNextId()
+            def store_callback(callback)
+                id = get_next_id()
                 @callbacks[id] = callback
                 return id
             end
 
-            def popCallback(id)
+            def pop_callback(id)
                 if not @callbacks.has_key? id
                     return nil
                 end
@@ -30,18 +30,18 @@ module Cryptomarket
                 return callback
             end
 
-            def storeSubscriptionCallback(key, callback) 
+            def store_subscription_callback(key, callback) 
                 @callbacks[key] = callback
             end
 
-            def getSubscriptionCallback(key)
+            def get_subscription_callback(key)
                 if not @callbacks.has_key? key
                     return nil
                 end
                 return @callbacks[key]
             end
 
-            def deleteSubscriptionCallback(key) 
+            def delete_subscription_callback(key) 
                 if @callbacks.has_key? key
                     @callbacks.delete(key)
                 end

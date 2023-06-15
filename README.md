@@ -26,7 +26,7 @@ require "cryptomarket"
 # instance a client
 api_key='AB32B3201'
 api_secret='21b12401'
-client = Cryptomarket::Client.new apiKey:apiKey, apiSecret:apiSecret
+client = Cryptomarket::Client.new api_key:api_key, api_secret:api_secret
 
 # get currencies
 currencies = client.get_currencies
@@ -93,7 +93,7 @@ client.subscribe_to_trades(
   },
   symbols:['eoseth', 'ethbtc'],
   limit:2,
-  resultCallback:Proc.new {|err, result|
+  result_callback:Proc.new {|err, result|
     if not err.nil?
       puts err
     else
@@ -112,7 +112,7 @@ client.subscribe_to_ticker(
     puts notification
   },
   symbols:['eoseth', 'ethbtc'],
-  resultCallback:Proc.new {|err, result|
+  result_callback:Proc.new {|err, result|
     if not err.nil?
       puts err
     else
@@ -127,8 +127,8 @@ client.subscribe_to_ticker(
 ```ruby
 # instance a client with a 15 seconds window
 client = Cryptomarket::Websocket::TradingClient.new(
-  apiKey:Keyloader.apiKey,
-  apiSecret:Keyloader.apiSecret,
+  api_key:Keyloader.api_key,
+  api_secret:Keyloader.api_secret,
   window:15_000
 )
 client.connect
@@ -170,7 +170,7 @@ client.cancel_spot_order(client_order_id)
 
 ```ruby
 # instance a client with a default window of 10 seconds
-client = Cryptomarket::Websocket::WalletClient.new apiKey:Keyloader.apiKey, apiSecret:Keyloader.apiSecret
+client = Cryptomarket::Websocket::WalletClient.new api_key:Keyloader.api_key, api_secret:Keyloader.api_secret
 client.connect
 # close the client
 defer client.close
@@ -192,7 +192,7 @@ client.get_wallet_balances(->(balances){ puts balances})
 ```ruby
 require "cryptomarket-sdk"
 
-client = Cryptomarket::Client.new apiKey:apiKey, apiSecret:apiSecret
+client = Cryptomarket::Client.new api_key:api_key, api_secret:api_secret
 
 # catch a wrong argument
 begin
@@ -216,7 +216,7 @@ rescue Cryptomarket::SDKException => e:
     puts e
 end
 
-wsclient = Cryptomarket::Websocket::TradingClient.new apiKey:apiKey, apiSecret:apiSecret
+wsclient = Cryptomarket::Websocket::TradingClient.new api_key:api_key, api_secret:api_secret
 
 # websocket errors are passed as the first argument to the callback
 my_callback = Proc.new {|err, data|
@@ -231,7 +231,7 @@ wsclient.get_spot_trading_balances(my_callback)
 
 # catch authorization error
 # to catch an authorization error on client connection, a on_error function must be defined on the client
-wsclient = TradingClient(apiKey, apiSecret)
+wsclient = TradingClient(api_key, api_secret)
 wsclient.onerror = Proc.new {|error| puts "error", error}
 wsclient.connect
 ```

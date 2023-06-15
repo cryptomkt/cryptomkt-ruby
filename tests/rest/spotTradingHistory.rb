@@ -1,11 +1,11 @@
 require 'test/unit'
 require_relative '../../lib/cryptomarket/client'
-require_relative 'key_loader'
-require_relative 'checks'
+require_relative '../keyLoader'
+require_relative '../checks'
 
 class TestRestTradingMethods < Test::Unit::TestCase
     def setup
-        @client = Cryptomarket::Client.new apiKey:Keyloader.apiKey, apiSecret:Keyloader.apiSecret
+        @client = Cryptomarket::Client.new api_key:Keyloader.api_key, api_secret:Keyloader.api_secret
     end
 
     def test_get_spot_orders_history

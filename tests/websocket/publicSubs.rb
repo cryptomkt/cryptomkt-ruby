@@ -1,9 +1,9 @@
 require 'test/unit'
 require_relative '../../lib/cryptomarket/websocket/marketDataClient'
-require_relative '../rest/key_loader'
+require_relative '../keyLoader'
+require_relative '../checks'
 require_relative 'sequenceFlow'
 require_relative 'timeFlow'
-require_relative '../rest/checks'
 
 class TestWSPublicSubs < Test::Unit::TestCase
     @@SECOND = 1
@@ -44,7 +44,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
         limit:2,
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -56,7 +56,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
         limit:2,
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -67,7 +67,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         speed:"1s",
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -78,7 +78,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         speed:"1s",
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -89,7 +89,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         speed:"1s",
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -99,7 +99,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
       @wsclient.subscribe_to_ticker_in_batches(
         speed:"1s",
         callback:gen_print_callback(),
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -109,7 +109,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
       @wsclient.subscribe_to_full_order_book(
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -120,7 +120,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         speed:"100ms",
         depth:"D5",
         callback:gen_print_callback(),
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -132,7 +132,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         depth:"D5",
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -143,7 +143,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         speed:"100ms",
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end
@@ -154,7 +154,7 @@ class TestWSPublicSubs < Test::Unit::TestCase
         speed:"100ms",
         callback:gen_print_callback(),
         symbols:['eoseth', 'ethbtc'],
-        resultCallback:gen_result_callback()
+        result_callback:gen_result_callback()
       )
       sleep(20 * @@SECOND)
     end

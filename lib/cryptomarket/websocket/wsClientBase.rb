@@ -6,122 +6,122 @@ require_relative '../exceptions'
 module Cryptomarket
     module Websocket
         class ClientBase
-            def initialize(url:, subscriptionKeys:)
-                @subscriptionKeys = subscriptionKeys
-                @callbackCache = CallbackCache.new
-                @wsmanager = WSManager.new self, url:url
-                @onconnect = ->{}
-                @onerror = ->(error){}
-                @onclose = ->{}
+            def initialize(url:, subscription_keys:)
+                @subscription_keys = subscription_keys
+                @callback_cache = CallbackCache.new
+                @ws_manager = WSManager.new self, url:url
+                @on_connect = ->{}
+                @on_error = ->(error){}
+                @on_close = ->{}
             end
 
             def connected?
-                return @wsmanager.connected?
+                return @ws_manager.connected?
             end
 
             def close()
-                @wsmanager.close()
+                @ws_manager.close()
             end
 
             # connects via websocket to the exchange, it blocks until the connection is stablished
             def connect()
-                @wsmanager.connect()
-                while (not @wsmanager.connected?)
+                @ws_manager.connect()
+                while (not @ws_manager.connected?)
                     sleep(1)
                 end
             end
 
             def on_open()
-                @onconnect.call()
+                @on_connect.call()
             end
 
-            def onconnect=(callback=nil, &block)
+            def on_connect=(callback=nil, &block)
                 callback = callback || block
-                @onconnect = callback
+                @on_connect = callback
             end
 
-            def onconnect()
-                @onconnect.call()
+            def on_connect()
+                @on_connect.call()
             end
 
-            def onerror=(callback=nil, &block)
+            def on_error=(callback=nil, &block)
                 callback = callback || block
-                @onerror = callback
+                @on_error = callback
             end
 
-            def onerror(error)
-                @onerror.call(error)
+            def on_error(error)
+                @on_error.call(error)
             end
 
-            def onclose=(callback=nil, &block)
+            def on_close=(callback=nil, &block)
                 callback = callback || block
-                @onclose = callback
+                @on_close = callback
             end
 
-            def onclose()
-                @onclose.call()
+            def on_close()
+                @on_close.call()
             end
 
             def close()
-              @wsmanager.close()
+              @ws_manager.close()
             end
 
-            def sendSubscription(method, callback, params, resultCallback)
-                methodData = @subscriptionKeys[method]
-                key = methodData[0]
-                @callbackCache.storeSubscriptionCallback(key, callback)
-                storeAndSend(method, params, resultCallback)
+            def send_subscription(method, callback, params, result_callback)
+                method_data = @subscription_keys[method]
+                key = method_data[0]
+                @callback_cache.store_subscription_callback(key, callback)
+                store_and_send(method, params, result_callback)
             end
 
-            def sendUnsubscription(method, callback, params)
-                methodData = @subscriptionKeys[method]
-                key = methodData[0]
-                @callbackCache.deleteSubscriptionCallback(key)
-                storeAndSend(method, params, callback)
+            def send_unsubscription(method, callback, params)
+                method_data = @subscription_keys[method]
+                key = method_data[0]
+                @callback_cache.delete_subscription_callback(key)
+                store_and_send(method, params, callback)
             end
 
-            def sendById(method, callback, params={})
-                storeAndSend(method, params, callback)
+            def sned_by_id(method, callback, params={})
+                store_and_send(method, params, callback)
             end
 
-            def storeAndSend(method, params, callbackToStore=nil)
+            def store_and_send(method, params, callback_to_store=nil)
                 if !params.nil?
                   params = params.compact
                 end
                 payload = {'method' => method, 'params' => params}
-                if not callbackToStore.nil?
-                  id = @callbackCache.storeCallback(callbackToStore)
+                if not callback_to_store.nil?
+                  id = @callback_cache.store_callback(callback_to_store)
                   payload['id'] = id
                 end
-                @wsmanager.send(payload)
+                @ws_manager.send(payload)
             end
 
             def handle(message)
-                if message.has_key? 'method'
-                    handleNotification(message)
-                elsif message.has_key? 'id'
-                    handleResponse(message)
+                if message.has_key? 'id'
+                    handle_response(message)
+                elsif message.has_key? 'method'
+                        handle_notification(message)
                 end
             end
 
-            def handleNotification(notification)
+            def handle_notification(notification)
                 method = notification['method']
-                methodData = @subscriptionKeys[method]
-                key = methodData[0]
-                notificationType = methodData[1]
-                callback = @callbackCache.getSubscriptionCallback(key)
+                method_data = @subscription_keys[method]
+                key = method_data[0]
+                notification_type = method_data[1]
+                callback = @callback_cache.get_subscription_callback(key)
                 if callback.nil?
                     return
                 end
-                callback.call(notification["params"], notificationType)
+                callback.call(notification["params"], notification_type)
             end
 
-            def handleResponse(response)
+            def handle_response(response)
                 id = response['id']
                 if id.nil?
                     return
                 end
-                callback = @callbackCache.popCallback(id)
+                callback = @callback_cache.pop_callback(id)
                 if callback.nil?
                     return
                 end

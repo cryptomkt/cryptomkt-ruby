@@ -1,11 +1,13 @@
 require 'test/unit'
 require_relative '../../lib/cryptomarket/client'
-require_relative 'key_loader'
-require_relative 'checks'
+require_relative '../../lib/cryptomarket/constants'
+require_relative '../keyLoader'
+require_relative '../checks'
+
 
 class TestRestTradingMethods < Test::Unit::TestCase
     def setup
-      @client = Cryptomarket::Client.new apiKey:Keyloader.apiKey, apiSecret:Keyloader.apiSecret
+      @client = Cryptomarket::Client.new api_key:Keyloader.api_key, api_secret:Keyloader.api_secret
     end
 
     def test_get_spot_trading_balance
@@ -62,5 +64,27 @@ class TestRestTradingMethods < Test::Unit::TestCase
     def test_get_trading_commission
         result = @client.get_trading_commission symbol:'EOSETH'
         assert(goodTradingCommission(result))
+    end
+
+    def test_create_order_list 
+      result = @client.create_spot_order_list(
+        contingency_type: Cryptomarket::Args::Contingency::ALL_OR_NONE,
+        orders: [
+        {
+          'symbol'=>'EOSETH',
+          'side'=>Cryptomarket::Args::Side::SELL,
+          'quantity'=>'0.1',
+          'time_in_force'=> Cryptomarket::Args::TimeInForce::FOK,
+          'price'=> '1000'
+        },
+        {
+          'symbol'=>'EOSUSDT',
+          'side'=>Cryptomarket::Args::Side::SELL,
+          'quantity'=>'0.1',
+          'time_in_force'=> Cryptomarket::Args::TimeInForce::FOK,  
+          'price'=> '1000'
+        }
+        ]
+      )
     end
 end

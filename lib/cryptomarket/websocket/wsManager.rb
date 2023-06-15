@@ -28,12 +28,12 @@ module Cryptomarket
                         end
                     
                         @ws.onclose = lambda do |close|
-                            @handler.onclose()
+                            @handler.on_close()
                             EM.stop
                         end
                         
                         @ws.onerror = lambda do |error|
-                            @handler.onerror(error)
+                            @handler.on_error(error)
                         end
                         
                         @ws.onmessage = lambda do |message|

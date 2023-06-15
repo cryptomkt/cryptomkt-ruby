@@ -19,35 +19,35 @@ module Cryptomarket
                 candles = "candles"
                 super(
                     url:"wss://api.exchange.cryptomkt.com/api/3/ws/public",
-                    subscriptionKeys:{})
+                    subscription_keys:{})
             end
 
-            def sendChannelSubscription(channel, params={}, callback, resultCallback)
+            def send_channel_subscription(channel, params={}, callback, result_callback)
               if !params.nil?
                 params = params.compact
               end
               payload = {'method'=>'subscribe', 'ch'=>channel, 'params'=>params}
 
               key = channel
-              @callbackCache.storeSubscriptionCallback(key, callback)
-              if not resultCallback.nil?
-                id = @callbackCache.storeCallback(resultCallback)
+              @callback_cache.store_subscription_callback(key, callback)
+              if not result_callback.nil?
+                id = @callback_cache.store_callback(result_callback)
                 payload['id'] = id
               end
-              @wsmanager.send(payload)
+              @ws_manager.send(payload)
             end
 
             def handle(message)
               if message.has_key? 'ch'
-                  handleChNotification(message)
+                  handle_ch_notification(message)
               elsif message.has_key? 'id'
-                  handleResponse(message)
+                  handle_response(message)
               end
           end
 
-            def handleChNotification(notification)
+            def handle_ch_notification(notification)
                 key = notification['ch']
-                callback = @callbackCache.getSubscriptionCallback(key)
+                callback = @callback_cache.get_subscription_callback(key)
                 if callback.nil?
                   return
                 end
@@ -63,15 +63,15 @@ module Cryptomarket
             end
 
 
-            def intercept_result_callback(resultCallback)
-              if resultCallback.nil?
-                return resultCallback
+            def intercept_result_callback(result_callback)
+              if result_callback.nil?
+                return result_callback
               end
               return Proc.new {|err, result|
                 if result.nil?
-                  resultCallback.call(err, result)
+                  result_callback.call(err, result)
                 else
-                  resultCallback.call(err, result['subscriptions'])
+                  result_callback.call(err, result['subscriptions'])
                 end
               }
             end
@@ -95,11 +95,11 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of trades indexed by symbol, and the type of notification (either 'snapshot' or 'update')
             # +Array[String]+ +symbols+:: A list of symbol ids
             # +Integer+ +limit+:: Number of historical entries returned in the first feed. Min is 0. Max is 1000. Default is 0
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_trades(callback:, symbols:, limit:nil, resultCallback:nil)
+            def subscribe_to_trades(callback:, symbols:, limit:nil, result_callback:nil)
               params = {'symbols'=>symbols, 'limit'=>limit}
-              sendChannelSubscription('trades', params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription('trades', params, callback, intercept_result_callback(result_callback))
             end
 
             # subscribe to a feed of candles
@@ -120,11 +120,11 @@ module Cryptomarket
             # +String+ +period+:: Optional. A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month). Default is 'M30'
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
             # +Integer+ +limit+:: Number of historical entries returned in the first feed. Min is 0. Max is 1000. Default is 0
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ called with a list of subscribed symbols
 
-            def subscribe_to_candles(callback:, period:, symbols:, limit:nil, resultCallback:nil)
+            def subscribe_to_candles(callback:, period:, symbols:, limit:nil, result_callback:nil)
               params = {'symbols'=>symbols, 'limit'=>limit}
-              sendChannelSubscription("candles/#{period}", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("candles/#{period}", params, callback, intercept_result_callback(result_callback))
             end
 
             # subscribe to a feed of mini tickers
@@ -141,11 +141,11 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of minitickers indexed by symbol, and the type of notification (only 'data')
             # +String+ +speed+:: The speed of the feed. '1s' or '3s'
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_mini_ticker(callback:, speed:, symbols:["*"], resultCallback:nil)
+            def subscribe_to_mini_ticker(callback:, speed:, symbols:["*"], result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("ticker/price/#{speed}", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("ticker/price/#{speed}", params, callback, intercept_result_callback(result_callback))
             end
 
             # subscribe to a feed of mini tickers
@@ -162,11 +162,11 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of minitickers indexed by symbol, and the type of notification (only 'data')
             # +String+ +speed+:: The speed of the feed. '1s' or '3s'
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_mini_ticker_in_batches(callback:, speed:, symbols:["*"], resultCallback:nil)
+            def subscribe_to_mini_ticker_in_batches(callback:, speed:, symbols:["*"], result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("ticker/price/#{speed}/batch", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("ticker/price/#{speed}/batch", params, callback, intercept_result_callback(result_callback))
             end
 
             # subscribe to a feed of tickers
@@ -183,11 +183,11 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of tickers indexed by symbol, and the type of notification (only 'data')
             # +String+ +speed+:: The speed of the feed. '1s' or '3s'
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_ticker(callback:, speed:, symbols:["*"], resultCallback:nil)
+            def subscribe_to_ticker(callback:, speed:, symbols:["*"], result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("ticker/#{speed}", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("ticker/#{speed}", params, callback, intercept_result_callback(result_callback))
             end
 
             # subscribe to a feed of tickers
@@ -204,11 +204,11 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of tickers indexed by symbol, and the type of notification (only 'data')
             # +String+ +speed+:: The speed of the feed. '1s' or '3s'
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_ticker_in_batches(callback:, speed:, symbols:["*"], resultCallback:nil)
+            def subscribe_to_ticker_in_batches(callback:, speed:, symbols:["*"], result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("ticker/#{speed}/batch", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("ticker/#{speed}/batch", params, callback, intercept_result_callback(result_callback))
             end
 
             # subscribe to a feed of a full orderbook
@@ -227,11 +227,11 @@ module Cryptomarket
             # ==== Params
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of full orderbooks indexed by symbol, and the type of notification (either 'snapshot' or 'update')
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_full_order_book(callback:, symbols:, resultCallback:nil)
+            def subscribe_to_full_order_book(callback:, symbols:, result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("orderbook/full", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("orderbook/full", params, callback, intercept_result_callback(result_callback))
             end
 
             # subscribe to a feed of a partial orderbook
@@ -249,11 +249,11 @@ module Cryptomarket
             # +String+ +speed+:: The speed of the feed. '100ms', '500ms' or '1000ms'
             # +String+ +depth+:: The depth of the partial orderbook
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_partial_order_book(callback:, depth:, speed:, symbols:["*"], resultCallback:nil)
+            def subscribe_to_partial_order_book(callback:, depth:, speed:, symbols:["*"], result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("orderbook/#{depth}/#{speed}", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("orderbook/#{depth}/#{speed}", params, callback, intercept_result_callback(result_callback))
             end
 
             # subscribe to a feed of a partial orderbook in batches
@@ -269,11 +269,11 @@ module Cryptomarket
             # +String+ +speed+:: The speed of the feed. '100ms', '500ms' or '1000ms'
             # +String+ +depth+:: The depth of the partial orderbook
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_partial_order_book_in_batches(callback:, depth:, speed:, symbols:["*"], resultCallback:nil)
+            def subscribe_to_partial_order_book_in_batches(callback:, depth:, speed:, symbols:["*"], result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("orderbook/#{depth}/#{speed}/batch", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("orderbook/#{depth}/#{speed}/batch", params, callback, intercept_result_callback(result_callback))
             end
 
 
@@ -289,11 +289,11 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of top of orderbooks indexed by symbol, and the type of notification (only 'data')
             # +String+ +speed+:: The speed of the feed. '100ms', '500ms' or '1000ms'
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_top_of_book(callback:, speed:, symbols:["*"], resultCallback:nil)
+            def subscribe_to_top_of_book(callback:, speed:, symbols:["*"], result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("orderbook/top/#{speed}", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("orderbook/top/#{speed}", params, callback, intercept_result_callback(result_callback))
             end
 
 
@@ -309,11 +309,11 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of top of orderbooks indexed by symbol, and the type of notification (only 'data')
             # +String+ +speed+:: The speed of the feed. '100ms', '500ms' or '1000ms'
             # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-            # +Proc+ +resultCallback+:: Optional. A +Proc+ called with a list of subscribed symbols
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
-            def subscribe_to_top_of_book_in_batches(callback:, speed:, symbols:["*"], resultCallback:nil)
+            def subscribe_to_top_of_book_in_batches(callback:, speed:, symbols:["*"], result_callback:nil)
               params = {'symbols'=>symbols}
-              sendChannelSubscription("orderbook/top/#{speed}/batch", params, callback, intercept_result_callback(resultCallback))
+              send_channel_subscription("orderbook/top/#{speed}/batch", params, callback, intercept_result_callback(result_callback))
             end
         end
     end
