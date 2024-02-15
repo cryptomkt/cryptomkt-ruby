@@ -60,7 +60,7 @@ module Cryptomarket
             #
             # only non-zero values are present
             #
-            # https://api.exchange.cryptomkt.com/#subscribe-to-wallet-balance
+            # https://api.exchange.cryptomkt.com/#subscribe-to-wallet-balances
             #
             # ==== Params
             # +Proc+ +callback+:: A +Proc+ that recieves notifications as a list of balances, and the type of notification (either 'snapshot' or 'update')
@@ -79,7 +79,7 @@ module Cryptomarket
 
             # stop recieving the feed of balances changes
             #
-            # https://api.exchange.cryptomkt.com/#subscribe-to-wallet-balance
+            # https://api.exchange.cryptomkt.com/#subscribe-to-wallet-balances
             #
             # ==== Params
             # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a boolean value, indicating the success of the unsubscription
@@ -109,7 +109,7 @@ module Cryptomarket
             # +String+ +currency+:: The currency code to query the balance
             # +Proc+ +callback+:: A +Proc+ called with an user balance
 
-            def get_wallet_balance_of_currency(currency:, callback:)
+            def get_wallet_balance(currency:, callback:)
               send_by_id('wallet_balance', callback, {currency:currency})
             end
 
