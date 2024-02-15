@@ -139,6 +139,7 @@ module Cryptomarket
             # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
             # +Integer+ +limit+:: Optional. Transactions per query. Defaul is 100. Max is 1000
             # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
+            # +bool+ +group_transactions+:: Optional. Flag indicating whether the returned transactions will be parts of a single operation. Default is false
 
             def get_transactions(
               callback:,
@@ -154,7 +155,8 @@ module Cryptomarket
               order_by:nil,
               sort:nil,
               limit:nil,
-              offset:nil
+              offset:nil,
+              group_transactions:nil
             )
               send_by_id('get_transactions', callback, {
                 tx_ids:tx_ids,
@@ -169,7 +171,8 @@ module Cryptomarket
                 order_by:order_by,
                 sort:sort,
                 limit:limit,
-                offset:offset
+                offset:offset,
+                group_transactions:group_transactions
               })
             end
         end

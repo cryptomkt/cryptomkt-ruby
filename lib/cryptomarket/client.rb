@@ -718,7 +718,7 @@ module Cryptomarket
     #
     # https://api.exchange.cryptomkt.com/#wallet-balance
 
-    def get_wallet_balance
+    def get_wallet_balances
       return get("wallet/balance")
     end
 
@@ -731,7 +731,7 @@ module Cryptomarket
     # ==== Params
     # +String+ +currency+:: The currency code to query the balance
 
-    def get_wallet_balance_of_currency(currency:)
+    def get_wallet_balance(currency:)
       return get("wallet/balance/#{currency}")
     end
 
@@ -756,9 +756,10 @@ module Cryptomarket
     #
     # ==== Params
     # +String+ +currency+:: Currency to get the address
+    # +String+ +network_code+:: Optional. network code
 
-    def get_deposit_crypto_address_of_currency(currency:nil)
-      result = get("wallet/crypto/address", {currency:currency})
+    def get_deposit_crypto_address(currency:nil, network_code:nil)
+      result = get("wallet/crypto/address", {currency:currency, network_code:network_code})
       if result.length != 1
         raise CryptomarketSDKException "Too many currencies recieved, expected 1 currency"
       end
@@ -774,9 +775,10 @@ module Cryptomarket
     #
     # ==== Params
     # +String+ +currency+:: currency to create a new address
+    # +String+ +network_code+:: Optional. network code
 
-    def create_deposit_crypto_address(currency:)
-      return post("wallet/crypto/address", {currency:currency})
+    def create_deposit_crypto_address(currency:, network_code:nil)
+      return post("wallet/crypto/address", {currency:currency, network_code:network_code})
     end
 
     # Get the last 10 unique addresses used for deposit, by currency
@@ -788,9 +790,10 @@ module Cryptomarket
     #
     # ==== Params
     # +String+ +currency+:: currency to get the list of addresses
+    # +String+ +network_code+:: Optional. network code
 
-    def get_last_10_deposit_crypto_addresses(currency:)
-      return get("wallet/crypto/address/recent-deposit", {currency:currency})
+    def get_last_10_deposit_crypto_addresses(currency:, network_code:nil)
+      return get("wallet/crypto/address/recent-deposit", {currency:currency, network_code:network_code})
     end
 
     # Get the last 10 unique addresses used for withdrawals, by currency
@@ -802,9 +805,10 @@ module Cryptomarket
     #
     # ==== Params
     # +String+ +currency+:: currency to get the list of addresses
+    # +String+ +network_code+:: Optional. network code
 
-    def get_last_10_withdrawal_crypto_addresses(currency:)
-      return get("wallet/crypto/address/recent-withdraw", {currency:currency})
+    def get_last_10_withdrawal_crypto_addresses(currency:, network_code:nil)
+      return get("wallet/crypto/address/recent-withdraw", {currency:currency, network_code:network_code})
     end
 
     # Please take note that changing security settings affects withdrawals:
@@ -822,6 +826,7 @@ module Cryptomarket
     # +String+ +currency+:: currency code of the crypto to withdraw
     # +float+ +amount+:: amount to be sent to the specified address
     # +String+ +address+:: address identifier
+    # +String+ +network_code+:: Optional. network code
     # +String+ +payment id+:: Optional.
     # +bool+ +include fee+:: Optional. If true then the amount includes fees. Default is false
     # +bool+ +auto commit+:: Optional. If false then you should commit or rollback the transaction in an hour. Used in two phase commit schema. Default is true
@@ -832,6 +837,7 @@ module Cryptomarket
       currency:,
       amount:,
       address:,
+      network_code:nil,
       payment_id:nil,
       include_fee:nil,
       auto_commit:nil,
@@ -844,6 +850,7 @@ module Cryptomarket
           currency:currency,
           amount:amount,
           address:address,
+          network_code:network_code,
           payment_id:payment_id,
           include_fee:include_fee,
           auto_commit:auto_commit,
@@ -1008,38 +1015,45 @@ module Cryptomarket
     # https://api.exchange.cryptomkt.com/#get-transactions-history
     #
     # ==== Params
-    # +Array[String]+ +transaction ids+:: Optional. List of transaction identifiers to query
-    # +Array[String]+ +transaction types+:: Optional. List of types to query. valid types are: 'DEPOSIT', 'WITHDRAW', 'TRANSFER' and 'SWAP'
-    # +Array[String]+ +transaction subtyes+:: Optional. List of subtypes to query. valid subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN', 'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO', 'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT', 'WALLET_TO_SPOT', 'SPOT_TO_WALLET', 'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET', 'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and 'INSTANT_EXCHANGE'
-    # +Array[String]+ +transaction statuses+:: Optional. List of statuses to query. valid subtypes are: 'CREATED', 'PENDING', 'FAILED', 'SUCCESS' and 'ROLLED_BACK'
-    # +String+ +order by+:: Optional. sorting parameter.'created_at' or 'id'. Default is 'created_at'
+    # +Array[String]+ +tx_ids+:: Optional. List of transaction identifiers to query
+    # +Array[String]+ +types+:: Optional. List of transaction types to query. valid types are: 'DEPOSIT', 'WITHDRAW', 'TRANSFER' and 'SWAP'
+    # +Array[String]+ +subtyes+:: Optional. List of transaction subtypes to query. valid subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN', 'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO', 'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT', 'WALLET_TO_SPOT', 'SPOT_TO_WALLET', 'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET', 'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and 'INSTANT_EXCHANGE'
+    # +Array[String]+ +statuses+:: Optional. List of statuses to query. valid subtypes are: 'CREATED', 'PENDING', 'FAILED', 'SUCCESS' and 'ROLLED_BACK'
+    # +Array[String]+ +currencies+:: Optional. Currency codes of the transactions to fetch
+    # +Array[String]+ +networks+:: Optional. Network codes of the transactions to fetch
+    # +String+ +order_by+:: Optional. sorting parameter.'created_at' or 'id'. Default is 'created_at'
     # +String+ +from+:: Optional. Interval initial value when ordering by 'created_at'. As Datetime
     # +String+ +till+:: Optional. Interval end value when ordering by 'created_at'. As Datetime
-    # +String+ +id from+:: Optional. Interval initial value when ordering by id. Min is 0
-    # +String+ +id till+:: Optional. Interval end value when ordering by id. Min is 0
+    # +String+ +id_from+:: Optional. Interval initial value when ordering by id. Min is 0
+    # +String+ +id_till+:: Optional. Interval end value when ordering by id. Min is 0
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +Integer+ +limit+:: Optional. Transactions per query. Defaul is 100. Max is 1000
     # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
+    # +bool+ +group_transactions+:: Optional. Flag indicating whether the returned transactions will be parts of a single operation. Default is false
 
     def get_transaction_history(
       currency:nil,
+      from:nil,
       till:nil,
       types:nil,
       subtypes:nil,
       statuses:nil,
       currencies:nil,
+      networks:nil,
       id_from:nil,
       id_till:nil,
       tx_ids:nil,
       order_by:nil,
       sort:nil,
       limit:nil,
-      offset:nil
+      offset:nil,
+      group_transactions:nil
     )
       return get(
         "wallet/transactions",
         {
           currency:currency,
+          from:from,
           till:till,
           types:types,
           subtypes:subtypes,
@@ -1051,7 +1065,8 @@ module Cryptomarket
           order_by:order_by,
           sort:sort,
           limit:limit,
-          offset:offset
+          offset:offset,
+          group_transactions:group_transactions
         }
       )
     end
