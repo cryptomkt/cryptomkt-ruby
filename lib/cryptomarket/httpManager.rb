@@ -59,7 +59,7 @@ module Cryptomarket
           params = params.compact
         end
         uri = URI(@@api_url + version_as_str + endpoint)
-        if not params.nil?
+        if not params.nil? and params.is_a? Hash
           params = Hash[params.sort_by {|key, val| key.to_s }]
         end
         if (method.upcase == 'POST')

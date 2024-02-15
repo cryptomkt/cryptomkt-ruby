@@ -61,7 +61,16 @@ module Cryptomarket
               send_unsubscription('spot_unsubscribe', callback, nil)
             end
 
-            def subscribe_to_spot_balance(callback:, result_callback:nil, mode:nil)
+            # subscribe to a feed of the user's spot balances
+            # 
+            # only non-zero values are present
+            # 
+            # https://api.exchange.cryptomkt.com/#subscribe-to-spot-balances
+            # 
+            # +Proc+ +callback+:: A +Proc+ that recieves notifications as a list of balances, the notification type is always data
+            # +Proc+ +result_callback+:: Optional. A +Proc+ called with a boolean value, indicating the success of the subscription
+            # +Proc+ +String+ +mode+:: Optional. The type of subscription, Either 'updates' or 'batches'. Update messages arrive after an update. Batch messages arrive at equal intervals after a first update
+            def subscribe_to_spot_balance(callback:, mode:nil, result_callback:nil)
               interceptor = Proc.new {|notification, type|
                 callback.call(notification)
               }
@@ -92,7 +101,7 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of reports for all active spot orders
 
             def get_active_spot_orders(callback:)
-              sned_by_id('spot_get_orders', callback)
+              send_by_id('spot_get_orders', callback)
             end
 
             # Creates a new spot order
@@ -133,7 +142,7 @@ module Cryptomarket
               make_rate:nil,
               callback:nil
             )
-              sned_by_id('spot_new_order', callback, {
+              send_by_id('spot_new_order', callback, {
                 client_order_id:client_order_id,
                 symbol:symbol,
                 side:side,
@@ -194,7 +203,7 @@ module Cryptomarket
               order_list_id:nil,
               callback:nil
             )
-              sned_by_id('spot_new_order_list', callback, {
+              send_by_id('spot_new_order_list', callback, {
                 orders:orders,
                 contingency_type:contingency_type,
                 order_list_id:order_list_id})
@@ -208,7 +217,7 @@ module Cryptomarket
             # +String+ +client_order_id+:: the client order id of the order to cancel
             # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of reports of the canceled orders
             def cancel_spot_order(client_order_id:, callback:nil)
-                sned_by_id('spot_cancel_order', callback, {client_order_id:client_order_id})
+                send_by_id('spot_cancel_order', callback, {client_order_id:client_order_id})
             end
 
             # cancel all active spot orders and returns the ones that could not be canceled
@@ -219,7 +228,7 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a report of the canceled order
 
             def cancel_spot_orders(callback:nil)
-              sned_by_id('spot_cancel_orders', callback)
+              send_by_id('spot_cancel_orders', callback)
             end
 
             # Get the user's spot trading balance for all currencies with balance
@@ -231,7 +240,7 @@ module Cryptomarket
             # ==== Params
             # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of the trading balances
             def get_spot_trading_balances(callback:)
-              sned_by_id('spot_balances', callback)
+              send_by_id('spot_balances', callback)
             end
 
             # Get the user spot trading balance of a currency
@@ -244,7 +253,7 @@ module Cryptomarket
             # +String+ +currency+:: The currency code to query the balance
             # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a trading balance
             def get_spot_trading_balance(currency:, callback:)
-              sned_by_id('spot_balance', callback, {currency:currency})
+              send_by_id('spot_balance', callback, {currency:currency})
             end
 
             # changes the parameters of an existing order, quantity or price
@@ -266,7 +275,7 @@ module Cryptomarket
               strict_validate:nil,
               callback:nil
             )
-              sned_by_id('spot_replace_order', nil, {
+              send_by_id('spot_replace_order', nil, {
                 client_order_id:client_order_id,
                 new_client_order_id:new_client_order_id,
                 quantity:quantity,
@@ -283,7 +292,7 @@ module Cryptomarket
             # ==== Params
             # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of commissions for the user
             def get_spot_commissions(callback:)
-              sned_by_id('spot_fees', callback)
+              send_by_id('spot_fees', callback)
             end
 
             # Get the personal trading commission rate of a symbol
@@ -297,7 +306,7 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a commission for a symbol for the user
 
             def get_spot_commission_of_symbol(symbol:, callback:)
-              sned_by_id('spot_fee', callback, {symbol:symbol})
+              send_by_id('spot_fee', callback, {symbol:symbol})
             end
         end
     end

@@ -58,7 +58,7 @@ module Cryptomarket
                 if not @window.nil?
                   params['window'] = @window
                 end
-                return sned_by_id('login', callback, params)
+                return send_by_id('login', callback, params)
             end
         end
     end

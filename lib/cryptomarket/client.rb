@@ -51,9 +51,13 @@ module Cryptomarket
     #
     # ==== Params
     # +Array[String]+ +currencies+:: Optional. A list of currencies ids
+    # +String+ +preferred_network+:: Optional. Code of de default network code of currencies
 
-    def get_currencies(currencies:nil)
-      return public_get('public/currency/', {currencies:currencies})
+    def get_currencies(currencies:nil, preferred_network:nil)
+      return public_get('public/currency/', {
+        currencies:currencies, 
+        preferred_network:preferred_network
+      })
     end
 
     # Get the data of a currency
@@ -79,7 +83,7 @@ module Cryptomarket
     # ==== Params
     # +Array[String]+ +symbols+:: Optional. A list of symbol ids
 
-    def get_symbols (symbols:nil)
+    def get_symbols(symbols:nil)
       return public_get("public/symbol", {symbols:symbols})
     end
 
@@ -876,6 +880,21 @@ module Cryptomarket
       return delete("wallet/crypto/withdraw/#{id}")["result"]
     end
 
+
+    # Get an estimates for withdrawal fees of currencies
+    #
+    # Requires the "Payment information" API key Access Right
+    #
+    # https://api.exchange.cryptomkt.com/#estimate-withdrawal-fees
+    #
+    # ==== Params
+    # +Array[]+ +fee_requests+:: the list of fee requests, each request is a Hash in the form {currency:"string", amount:"string", network_code:"optional string"}
+    
+    def get_estimate_withdrawal_fees(fee_requests)
+      params = fee_requests
+      return post('wallet/crypto/fees/estimate', params)
+    end
+
     # Get an estimate of the withdrawal fee
     #
     # Requires the "Payment information" API key Access Right
@@ -886,8 +905,8 @@ module Cryptomarket
     # +String+ +currency+:: the currency code for withdrawal
     # +float+ +amount+:: the expected withdraw amount
 
-    def get_estimate_withdrawal_fee(currency:, amount:)
-      params = {amount:amount, currency:currency}
+    def get_estimate_withdrawal_fee(currency:, amount:, network_code:nil)
+      params = {amount:amount, currency:currency, network_code:network_code}
       return get('wallet/crypto/fee/estimate', params)["fee"]
     end
 

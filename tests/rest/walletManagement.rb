@@ -89,6 +89,12 @@ class TestRestTradingMethods < Test::Unit::TestCase
       assert(success)
     end
 
+
+    def test_get_estimate_withdrawal_fees
+      result = @client.get_estimate_withdrawal_fees [{currency:"ETH", amount:"12"}, {currency:"BTC", amount:"1"}]
+      assert(result.count==2)
+    end
+
     def test_get_estimate_withdrawal_fee
       result = @client.get_estimate_withdrawal_fee currency:"XLM", amount:"3"
       assert(!result.empty?)
@@ -139,11 +145,5 @@ class TestRestTradingMethods < Test::Unit::TestCase
         address:eos_address
       )
       assert(!result.nil?)
-    end
-
-    def test_get_amount_locks
-      # TODO: have amount locks to get
-      result = @client.get_amount_locks
-      # puts result
     end
 end

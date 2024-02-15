@@ -96,7 +96,7 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ called with a list of the user balances
 
             def get_wallet_balances(callback:)
-              sned_by_id('wallet_balances', callback)
+              send_by_id('wallet_balances', callback)
             end
 
             # Get the user's wallet balance of a currency
@@ -110,7 +110,7 @@ module Cryptomarket
             # +Proc+ +callback+:: A +Proc+ called with an user balance
 
             def get_wallet_balance_of_currency(currency:, callback:)
-              sned_by_id('wallet_balance', callback, {currency:currency})
+              send_by_id('wallet_balance', callback, {currency:currency})
             end
 
 
@@ -156,7 +156,7 @@ module Cryptomarket
               limit:nil,
               offset:nil
             )
-              sned_by_id('get_transactions', callback, {
+              send_by_id('get_transactions', callback, {
                 tx_ids:tx_ids,
                 types:types,
                 subtypes:subtypes,

@@ -80,7 +80,7 @@ module Cryptomarket
                 store_and_send(method, params, callback)
             end
 
-            def sned_by_id(method, callback, params={})
+            def send_by_id(method, callback, params={})
                 store_and_send(method, params, callback)
             end
 
