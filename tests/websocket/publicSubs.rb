@@ -158,4 +158,30 @@ class TestWSPublicSubs < Test::Unit::TestCase
       )
       sleep(20 * @@SECOND)
     end
+
+
+    def test_subscribe_to_price_rates
+      puts "***PRICE RATES TEST***"
+      @wsclient.subscribe_to_price_rates(
+        speed:"1s",
+        callback:gen_print_callback(),
+        target_currency:"ETH",
+        currencies:['eos', 'btc'],
+        result_callback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
+
+
+    def test_subscribe_to_price_rates_in_batches
+      puts "***PRICE RATES TEST***"
+      @wsclient.subscribe_to_price_rates_in_batches(
+        speed:"1s",
+        callback:gen_print_callback(),
+        target_currency:"ETH",
+        currencies:['eos', 'btc'],
+        result_callback:gen_result_callback()
+      )
+      sleep(20 * @@SECOND)
+    end
 end

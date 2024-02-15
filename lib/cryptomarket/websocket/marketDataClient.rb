@@ -315,6 +315,55 @@ module Cryptomarket
               params = {'symbols'=>symbols}
               send_channel_subscription("orderbook/top/#{speed}/batch", params, callback, intercept_result_callback(result_callback))
             end
+
+
+            # subscribe to a feed of the top of the orderbook
+            #
+            # subscription is for all currencies or for the specified currencies
+            #
+            # https://api.exchange.cryptomkt.com/#subscribe-to-top-of-book-in-batches
+            #
+            # ==== Params
+            # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of top of orderbooks indexed by symbol, and the type of notification (only 'data')
+            # +String+ +speed+:: The speed of the feed. '1s' or '3s'
+            # +String+ +target_currency+:: Quote currency of the rate
+            # +Array[String]+ +currencies+:: Optional. A list of currencies ids
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
+
+            def subscribe_to_price_rates(callback:, speed:, target_currency: ,currencies:["*"], result_callback:nil)
+              params = { 
+                speed:speed, 
+                target_currency:target_currency, 
+                currencies:currencies
+              }
+              send_channel_subscription("price/rate/#{speed}", params, callback, intercept_result_callback(result_callback))
+            end
+
+
+
+            # subscribe to a feed of the top of the orderbook
+            #
+            # subscription is for all currencies or for the specified currencies
+            #
+            # batch subscriptions have a joined update for all currencies
+            #
+            # https://api.exchange.cryptomkt.com/#subscribe-to-price-rates-in-batches
+            #
+            # ==== Params
+            # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of top of orderbooks indexed by symbol, and the type of notification (only 'data')
+            # +String+ +speed+:: The speed of the feed. '1s' or '3s'
+            # +String+ +target_currency+:: Quote currency of the rate
+            # +Array[String]+ +currencies+:: Optional. A list of currencies ids
+            # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
+
+            def subscribe_to_price_rates_in_batches(callback:, speed:, target_currency: ,currencies:["*"], result_callback:nil)
+              params = { 
+                speed:speed, 
+                target_currency:target_currency, 
+                currencies:currencies
+              }
+              send_channel_subscription("price/rate/#{speed}/batch", params, callback, intercept_result_callback(result_callback))
+            end
         end
     end
 end
