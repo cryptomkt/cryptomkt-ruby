@@ -80,17 +80,17 @@ module Cryptomarket
                 store_and_send(method, params, callback)
             end
 
-            def send_by_id(method, callback, params={})
-                store_and_send(method, params, callback)
+            def send_by_id(method, callback, params={}, call_count=1)
+                store_and_send(method, params, callback, call_count)
             end
 
-            def store_and_send(method, params, callback_to_store=nil)
+            def store_and_send(method, params, callback_to_store=nil, call_count=1)
                 if !params.nil?
                   params = params.compact
                 end
                 payload = {'method' => method, 'params' => params}
                 if not callback_to_store.nil?
-                  id = @callback_cache.store_callback(callback_to_store)
+                  id = @callback_cache.store_callback(callback_to_store, call_count)
                   payload['id'] = id
                 end
                 @ws_manager.send(payload)
@@ -121,7 +121,7 @@ module Cryptomarket
                 if id.nil?
                     return
                 end
-                callback = @callback_cache.pop_callback(id)
+                callback = @callback_cache.get_callback(id)
                 if callback.nil?
                     return
                 end

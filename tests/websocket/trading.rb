@@ -14,7 +14,7 @@ class TestWStrading < Test::Unit::TestCase
     sleep(2)
   end
 
-  def gen_checker_callback(checker)
+  def gen_list_checker_callback(checker)
     msg = ""
     callback = Proc.new {|error, result|
       if not error.nil?
@@ -29,7 +29,7 @@ class TestWStrading < Test::Unit::TestCase
     return {msg:msg, callback:callback}
   end
 
-  def gen_not_list_checker_callback(checker)
+  def gen_checker_callback(checker)
     msg = ""
     callback = Proc.new {|error, result|
       if not error.nil?
@@ -43,7 +43,7 @@ class TestWStrading < Test::Unit::TestCase
   end
 
   def test_get_spot_trading_balance
-    hash = gen_not_list_checker_callback(->(balance) {goodBalance(balance)})
+    hash = gen_checker_callback(->(balance) {goodBalance(balance)})
     @wsclient.get_spot_trading_balance(callback:hash[:callback], currency:"EOS")
     sleep(3)
     assert(hash[:msg] == "", hash[:msg])
@@ -51,7 +51,7 @@ class TestWStrading < Test::Unit::TestCase
 
 
   def test_get_spot_trading_balances
-    hash = gen_checker_callback(->(balance) {
+    hash = gen_list_checker_callback(->(balance) {
       puts balance
       return goodBalance(balance)
     })
@@ -63,7 +63,7 @@ class TestWStrading < Test::Unit::TestCase
   def test_order_work_flow
     timestamp = Time.now.to_i.to_s
     symbol = 'EOSETH'
-    hash = gen_not_list_checker_callback(->(order) {goodOrder(order)})
+    hash = gen_checker_callback(->(order) {goodOrder(order)})
     @wsclient.create_spot_order(
       client_order_id:timestamp,
       symbol: symbol,
@@ -74,7 +74,7 @@ class TestWStrading < Test::Unit::TestCase
     )
     sleep(3)
     assert(hash[:msg] == "", hash[:msg])
-    hash2 = gen_not_list_checker_callback(->(result) {
+    hash2 = gen_checker_callback(->(result) {
       for order in result
         if order['client_order_id'] == timestamp
           return true
@@ -96,7 +96,7 @@ class TestWStrading < Test::Unit::TestCase
     )
     sleep(3)
     assert(hash[:msg] == "", hash[:msg])
-    hash3 = gen_not_list_checker_callback(->(result) {
+    hash3 = gen_checker_callback(->(result) {
       for order in result
         if order['client_order_id'] == new_timestamp
           return true
@@ -172,16 +172,47 @@ class TestWStrading < Test::Unit::TestCase
   end
 
   def test_get_spot_commissions
-    hash = gen_checker_callback(->(commission) {goodTradingCommission(commission)})
+    hash = gen_list_checker_callback(->(commission) {goodTradingCommission(commission)})
     @wsclient.get_spot_commissions(callback:hash[:callback])
     sleep(3)
     assert(hash[:msg] == "", hash[:msg])
   end
 
   def test_get_spot_commission_of_symbol
-    hash = gen_not_list_checker_callback(->(commission) {goodTradingCommission(commission)})
+    hash = gen_checker_callback(->(commission) {goodTradingCommission(commission)})
     @wsclient.get_spot_commission_of_symbol(symbol:'EOS', callback:hash[:callback])
     sleep(3)
     assert(hash[:msg] == "", hash[:msg])
   end
+
+  def test_create_spot_order_list
+    firstOrderID = Time.now.to_s
+    @wsclient.create_spot_order_list(
+      order_list_id: firstOrderID,
+      contingency_type: Cryptomarket::Args::Contingency::AON,
+      orders: [
+        {
+          'symbol'=>'EOSETH',
+          'side'=>Cryptomarket::Args::Side::SELL,
+          'quantity'=>'0.1',
+          'time_in_force'=> Cryptomarket::Args::TimeInForce::FOK,
+          'price'=> '1000'
+        },
+        {
+          'symbol'=>'EOSUSDT',
+          'side'=>Cryptomarket::Args::Side::SELL,
+          'quantity'=>'0.1',
+          'time_in_force'=> Cryptomarket::Args::TimeInForce::FOK,  
+          'price'=> '1000'
+        }
+      ],
+      callback: Proc.new {|error, result|
+        if not error.nil?
+          puts error
+          return
+        end
+        puts result
+      })
+    sleep(5)
+  end 
 end

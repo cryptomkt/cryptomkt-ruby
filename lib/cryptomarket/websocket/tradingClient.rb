@@ -204,9 +204,11 @@ module Cryptomarket
               callback:nil
             )
               send_by_id('spot_new_order_list', callback, {
-                orders:orders,
-                contingency_type:contingency_type,
-                order_list_id:order_list_id})
+                  orders:orders,
+                  contingency_type:contingency_type,
+                  order_list_id:order_list_id
+                },
+                call_count=orders.count)
             end
 
             # cancels a spot order
