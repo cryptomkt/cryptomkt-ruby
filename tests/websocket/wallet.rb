@@ -4,57 +4,53 @@ require_relative '../keyLoader'
 require_relative '../checks'
 
 class TestWSWalletClient < Test::Unit::TestCase
-    def setup
-        @wsclient = Cryptomarket::Websocket::WalletClient.new api_key:Keyloader.api_key, api_secret:Keyloader.api_secret
-        @wsclient.connect
-        sleep(3)
-    end
+  def setup
+    @wsclient = Cryptomarket::Websocket::WalletClient.new api_key: Keyloader.api_key, api_secret: Keyloader.api_secret
+    @wsclient.connect
+    sleep(3)
+  end
 
-    def teardown
-        @wsclient.close
-        sleep(2)
-    end
+  def teardown
+    @wsclient.close
+    sleep(2)
+  end
 
-    def gen_checker_callback(checker)
-      msg = ""
-      callback = Proc.new {|error, result|
-        if not error.nil?
-          msg = error.to_s
-          return
+  def gen_checker_callback(checker)
+    msg = ''
+    callback = proc { |error, result|
+      unless error.nil?
+        msg = error.to_s
+        return
+      end
+      if result.is_a?(Array)
+        result.each do |val|
+          msg = "bad val: #{val}" unless checker.call(val)
         end
-        if result.kind_of?(Array)
-          result.each {|val|
-            if not checker.call(val)
-              msg = "bad val: #{val}"
-            end
-          }
-        else
-          if not checker.call(result)
-            msg = "bad val: #{result}"
-          end
-        end
-      }
-      return {msg:msg, callback:callback}
-    end
+      elsif !checker.call(result)
+        msg = "bad val: #{result}"
+      end
+    }
+    { msg: msg, callback: callback }
+  end
 
-    def test_get_wallet_balances
-      hash = gen_checker_callback(->(balance){ return goodBalance(balance)})
-      @wsclient.get_wallet_balances(callback:hash[:callback])
-      sleep(2)
-      assert(hash[:msg]=="", hash[:msg])
-    end
+  def test_get_wallet_balances
+    hash = gen_checker_callback(->(balance) { goodBalance(balance) })
+    @wsclient.get_wallet_balances(callback: hash[:callback])
+    sleep(2)
+    assert(hash[:msg] == '', hash[:msg])
+  end
 
-    def test_get_wallet_balance
-      hash = gen_checker_callback(->(balance){ return goodBalance(balance)})
-      @wsclient.get_wallet_balance_of_currency(callback:hash[:callback], currency:"EOS")
-      sleep(2)
-      assert(hash[:msg]=="", hash[:msg])
-    end
+  def test_get_wallet_balance
+    hash = gen_checker_callback(->(balance) { goodBalance(balance) })
+    @wsclient.get_wallet_balance_of_currency(callback: hash[:callback], currency: 'EOS')
+    sleep(2)
+    assert(hash[:msg] == '', hash[:msg])
+  end
 
-    def test_get_transactions
-      hash = gen_checker_callback(->(transaction) {return goodTransaction(transaction)})
-      @wsclient.get_transactions(callback:hash[:callback])
-      sleep(2)
-      assert(hash[:msg]=="", hash[:msg])
-    end
+  def test_get_transactions
+    hash = gen_checker_callback(->(transaction) { goodTransaction(transaction) })
+    @wsclient.get_transactions(callback: hash[:callback])
+    sleep(2)
+    assert(hash[:msg] == '', hash[:msg])
+  end
 end

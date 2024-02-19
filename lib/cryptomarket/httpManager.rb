@@ -5,119 +5,77 @@ require 'base64'
 require 'rest-client'
 require 'date'
 require_relative 'exceptions'
+require_relative 'CredentialFactory'
 
 module Cryptomarket
+  # Manager of http requests to the cryptomarket server
   class HttpManager
+    Request = Data.define(:uri, :endpoint, :payload, :headers, :is_json)
     @@api_url = 'https://api.exchange.cryptomkt.com'
-    @@api_version = '3'
-    
-    def initialize(api_key:, api_secret:, window:nil)
-      @api_key = api_key
-      @api_secret = api_secret
-      @window = window
+    @@api_version = '/api/3/'
+
+    def initialize(api_key:, api_secret:, window: nil)
+      @credential_factory = CredentialFactory(api_key, api_secret, window)
     end
 
-    def version_as_str
-      return '/api/' + @@api_version + '/'
-    end
-
-    def not_post_params(http_method, params)
-      msg = ''
-      if not params.nil? and params.keys.any?
-        if http_method.upcase == 'GET'
-          msg += '?'
-        end
-        msg += URI.encode_www_form(params)
+    def make_request(method:, endpoint:, params: nil, public: false)
+      uri = URI(@@api_url + version_as_str + endpoint)
+      payload = build_payload(params)
+      headers = build_headers(method, endpoint, params, public)
+      if ((method.upcase == 'GET') || (method.upcase == 'PUT')) && !payload.nil?
+        payload = nil
+        uri.query = URI.encode_www_form payload
       end
-      return msg
+      do_request(Request[method, uri, payload, headers, false])
     end
 
-    def get_credential(http_method, method, params)
-        timestamp = DateTime.now.strftime('%Q')
-        msg = http_method + version_as_str + method
-        if http_method.upcase == 'POST'
-          msg += params
-        else 
-          msg += not_post_params(http_method, params)
-        end
-        msg += timestamp
-        if not @window.nil?
-          msg += @window
-        end
-        digest = OpenSSL::Digest.new 'sha256'
-        signature = OpenSSL::HMAC.hexdigest digest, @api_secret, msg
-        signed = @api_key  + ':' + signature + ':' + timestamp
-        if not @window.nil?
-          signed += (':' + @window)
-        end
-        encoded = Base64.encode64(signed).delete "\n"
-        return 'HS256 ' + encoded
+    def make_post_request(method:, endpoint:, params: nil)
+      uri = URI(@@api_url + version_as_str + endpoint)
+      payload = build_payload(params)
+      do_request(Request[method, uri, payload, build_post_headers(endpoint, payload), true])
     end
 
-    def make_request(method:, endpoint:, params:nil, public:false)
-        if !params.nil?
-          params = params.compact
-        end
-        uri = URI(@@api_url + version_as_str + endpoint)
-        if not params.nil? and params.is_a? Hash
-          params = Hash[params.sort_by {|key, val| key.to_s }]
-        end
-        if (method.upcase == 'POST')
-          return post(uri:uri, endpoint:endpoint, params:params)
-        end
-        headers = Hash.new
-        if not public
-          headers['Authorization'] = get_credential(method.upcase, endpoint, params)
-        end
-        if (method.upcase == 'GET' or method.upcase =='PUT') and not params.nil?
-          uri.query = URI.encode_www_form params
-          params = nil
-        end
-        
-        begin
-          response = RestClient::Request.execute(
-            method: method.downcase.to_sym,
-            url: uri.to_s,
-            payload: params,
-            headers: headers)
-          return handle_response(response)
-        rescue RestClient::ExceptionWithResponse => e
-          response = e.response
-          return handle_response(response)
-        end
+    def build_headers(method, endpoint, params, public)
+      return {} if public
+
+      { 'Authorization' => @credential_factory.get_credential(method.upcase, endpoint, params) }
     end
 
-    def post(uri:, endpoint:, params:)
-        headers = Hash.new
-        headers['Content-Type'] = 'application/json'
-        headers['Authorization'] = get_credential("POST".upcase, endpoint, params.to_json)
-        begin
-          response = RestClient::Request.execute(
-            method: "POST".downcase.to_sym,
-            url: uri.to_s,
-            payload: params.to_json,
-            headers: headers,
-            content_type: :json)
-          return handle_response(response)
-        rescue RestClient::ExceptionWithResponse => e
-          response = e.response
-          return handle_response(response)
-        end
+    def build_payload(params)
+      return nil if params.nil?
+
+      payload = params.compact
+      payload = Hash[params.sort_by { |key, _val| key.to_s }] if params.is_a?(Hash)
+      payload
+    end
+
+    def do_request(request:)
+      response = RestClient::Request.execute(
+        method: request.method.downcase.to_sym, url: request.uri.to_s,
+        payload: request.payload.to_json, headers: request.headers
+      )
+      response[:content_type] = :json if request.is_json
+      handle_response(response)
+    rescue RestClient::ExceptionWithResponse => e
+      handle_response(e.response)
+    end
+
+    def build_post_headers(endpoint, params)
+      { 'Content-Type' => 'application/json',
+        'Authorization' => @credential_factory.get_credential('POST'.upcase, endpoint, params.to_json) }
     end
 
     def handle_response(response)
       result = response.body
       parsed_result = JSON.parse result
-      if response.code != 200 and not parsed_result['error'].nil?
+      if (response.code != 200) && !parsed_result['error'].nil?
         error = parsed_result['error']
         msg = "(code=#{error['code']}): #{error['message']}"
-        if not error['description'].nil?
-          msg += ": #{error['description']}"
-        end
+        msg += ": #{error['description']}" unless error['description'].nil?
         exception = Cryptomarket::APIException.new error
         raise exception, msg
       end
-      return parsed_result
+      parsed_result
     end
   end
 end

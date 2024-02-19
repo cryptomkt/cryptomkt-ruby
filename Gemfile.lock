@@ -1,29 +1,40 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    domain_name (0.5.20190701)
-      unf (>= 0.0.5, < 1.0.0)
+    domain_name (0.6.20240107)
+    eventmachine (1.2.7)
+    faye-websocket (0.11.3)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.5.1)
     http-accept (1.7.0)
-    http-cookie (1.0.4)
+    http-cookie (1.0.5)
       domain_name (~> 0.5)
-    mime-types (3.4.1)
+    mime-types (3.5.2)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2022.0105)
+    mime-types-data (3.2024.0206)
     netrc (0.11.0)
+    openssl (3.2.0)
+    power_assert (2.0.3)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.8)
+    test-unit (3.6.2)
+      power_assert
+    websocket-driver (0.7.6)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.5)
 
 PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  eventmachine
+  faye-websocket
+  openssl
   rest-client
+  test-unit
 
 BUNDLED WITH
-   2.3.8
+   2.3.5

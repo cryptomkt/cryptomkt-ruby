@@ -1,132 +1,121 @@
 module Cryptomarket
   module Args
     module Sort
-      ASC = 'ASC'
-      DESC = 'DESC'
+      ASC = 'ASC'.freeze
+      DESC = 'DESC'.freeze
     end
-
 
     module Period
-      _1_MINS = 'M1'
-      _3_MINS = 'M3'
-      _5_MINS = 'M5'
-      _15_MINS = 'M15'
-      _30_MINS = 'M30'
-      _1_HOURS = 'H1'
-      _4_HOURS = 'H4'
-      _1_DAYS = 'D1'
-      _7_DAYS = 'D7'
-      _1_MONTHS = '1M'
+      _1_MINS = 'M1'.freeze
+      _3_MINS = 'M3'.freeze
+      _5_MINS = 'M5'.freeze
+      _15_MINS = 'M15'.freeze
+      _30_MINS = 'M30'.freeze
+      _1_HOURS = 'H1'.freeze
+      _4_HOURS = 'H4'.freeze
+      _1_DAYS = 'D1'.freeze
+      _7_DAYS = 'D7'.freeze
+      _1_MONTHS = '1M'.freeze
     end
-
 
     module Side
-      BUY = 'buy'
-      SELL = 'sell'
+      BUY = 'buy'.freeze
+      SELL = 'sell'.freeze
     end
-
 
     module OrderType
-      LIMIT = 'limit'
-      MARKET = 'market'
-      STOP_LIMIT = 'stopLimit'
-      STOP_MARKET = 'stopMarket'
-      TAKE_PROFIT_LIMIT = 'takeProfitLimit'
-      TAKE_PROFIT_MARKET = 'takeProfitMarket'
+      LIMIT = 'limit'.freeze
+      MARKET = 'market'.freeze
+      STOP_LIMIT = 'stopLimit'.freeze
+      STOP_MARKET = 'stopMarket'.freeze
+      TAKE_PROFIT_LIMIT = 'takeProfitLimit'.freeze
+      TAKE_PROFIT_MARKET = 'takeProfitMarket'.freeze
     end
-
 
     module TimeInForce
-      GTC = 'GTC'  # Good till canceled
-      IOC = 'IOC'  # Immediate or cancell
-      FOK = 'FOK'  # Fill or kill
-      DAY = 'Day'  # Good for the day
-      GTD = 'GDT'  # Good till date
+      GTC = 'GTC'.freeze  # Good till canceled
+      IOC = 'IOC'.freeze  # Immediate or cancell
+      FOK = 'FOK'.freeze  # Fill or kill
+      DAY = 'Day'.freeze  # Good for the day
+      GTD = 'GDT'.freeze  # Good till date
     end
-
 
     module IdentifyBy
-      USERNAME = 'username',
-      EMAIL = 'email'
+      USERNAME = 'username'.freeze
+      EMAIL = 'email'.freeze
     end
-
 
     module Offchain
-      NEVER = 'never'
-      OPTIONALLY = 'optionally'
-      REQUIRED = 'required'
+      NEVER = 'never'.freeze
+      OPTIONALLY = 'optionally'.freeze
+      REQUIRED = 'required'.freeze
     end
-
 
     module Account
-      SPOT = 'spot',
-      WALLET = 'wallet'
+      SPOT = 'spot'.freeze
+      WALLET = 'wallet'.freeze
     end
-
 
     module TransactionType
-      DEPOSIT = 'DEPOSIT'
-      WITHDRAW = 'WITHDRAW'
-      TRANSFER = 'TRANSFER'
-      SAWAP = 'SAWAP'
+      DEPOSIT = 'DEPOSIT'.freeze
+      WITHDRAW = 'WITHDRAW'.freeze
+      TRANSFER = 'TRANSFER'.freeze
+      SAWAP = 'SAWAP'.freeze
     end
-
 
     module TransactionSubtype
-      UNCLASSIFIED = 'UNCLASSIFIED'
-      BLOCKCHAIN = 'BLOCKCHAIN'
-      AIRDROP = 'AIRDROP'
-      AFFILIATE = 'AFFILIATE'
-      STAKING = 'STAKING'
-      BUY_CRYPTO = 'BUY_CRYPTO'
-      OFFCHAIN = 'OFFCHAIN'
-      FIAT = 'FIAT'
-      SUB_ACCOUNT = 'SUB_ACCOUNT'
-      WALLET_TO_SPOT = 'WALLET_TO_SPOT'
-      SPOT_TO_WALLET = 'SPOT_TO_WALLET'
-      WALLET_TO_DERIVATIVES = 'WALLET_TO_DERIVATIVES'
-      DERIVATIVES_TO_WALLET = 'DERIVATIVES_TO_WALLET'
-      CHAIN_SWITCH_FROM = 'CHAIN_SWITCH_FROM'
-      CHAIN_SWITCH_TO = 'CHAIN_SWITCH_TO'
-      INSTANT_EXCHANGE = 'INSTANT_EXCHANGE'
+      UNCLASSIFIED = 'UNCLASSIFIED'.freeze
+      BLOCKCHAIN = 'BLOCKCHAIN'.freeze
+      AIRDROP = 'AIRDROP'.freeze
+      AFFILIATE = 'AFFILIATE'.freeze
+      STAKING = 'STAKING'.freeze
+      BUY_CRYPTO = 'BUY_CRYPTO'.freeze
+      OFFCHAIN = 'OFFCHAIN'.freeze
+      FIAT = 'FIAT'.freeze
+      SUB_ACCOUNT = 'SUB_ACCOUNT'.freeze
+      WALLET_TO_SPOT = 'WALLET_TO_SPOT'.freeze
+      SPOT_TO_WALLET = 'SPOT_TO_WALLET'.freeze
+      WALLET_TO_DERIVATIVES = 'WALLET_TO_DERIVATIVES'.freeze
+      DERIVATIVES_TO_WALLET = 'DERIVATIVES_TO_WALLET'.freeze
+      CHAIN_SWITCH_FROM = 'CHAIN_SWITCH_FROM'.freeze
+      CHAIN_SWITCH_TO = 'CHAIN_SWITCH_TO'.freeze
+      INSTANT_EXCHANGE = 'INSTANT_EXCHANGE'.freeze
     end
-
 
     module TransactionStatus
-      CREATED = 'CREATED'
-      PENDING = 'PENDING'
-      FAILED = 'FAILED'
-      SUCCESS = 'SUCCESS'
-      ROLLED_BACK = 'ROLLED_BACK'
+      CREATED = 'CREATED'.freeze
+      PENDING = 'PENDING'.freeze
+      FAILED = 'FAILED'.freeze
+      SUCCESS = 'SUCCESS'.freeze
+      ROLLED_BACK = 'ROLLED_BACK'.freeze
     end
 
-
     module SortBy
-      CREATED_AT = 'created_at'
-      ID = 'id'
+      CREATED_AT = 'created_at'.freeze
+      ID = 'id'.freeze
     end
 
     module Contingency
-      ALL_OR_NONE = 'allOrNone'
-      AON = 'allOrNone'
-      ONE_CANCEL_OTHER = 'oneCancelOther'
-      OCO = 'oneCancelOther'
-      ONE_TRIGGER_OTHER = 'oneTriggerOther'
-      OTO = 'oneTriggerOther'
-      ONE_TRIGGER_ONE_CANCEL_OTHER = 'oneTriggerOneCancelOther'
-      OTOCO = 'oneTriggerOneCancelOther'
+      ALL_OR_NONE = 'allOrNone'.freeze
+      AON = 'allOrNone'.freeze
+      ONE_CANCEL_OTHER = 'oneCancelOther'.freeze
+      OCO = 'oneCancelOther'.freeze
+      ONE_TRIGGER_OTHER = 'oneTriggerOther'.freeze
+      OTO = 'oneTriggerOther'.freeze
+      ONE_TRIGGER_ONE_CANCEL_OTHER = 'oneTriggerOneCancelOther'.freeze
+      OTOCO = 'oneTriggerOneCancelOther'.freeze
     end
 
     module NotificationType
-      SNAPSHOT = 'snapshot'
-      UPDATE = 'update'
-      DATA = 'data'
-      COMMAND = 'command'
+      SNAPSHOT = 'snapshot'.freeze
+      UPDATE = 'update'.freeze
+      DATA = 'data'.freeze
+      COMMAND = 'command'.freeze
     end
 
     module SubscriptionMode
-      UPDATES = 'updates'
-      BATCHES = 'batches'
+      UPDATES = 'updates'.freeze
+      BATCHES = 'batches'.freeze
     end
   end
 end

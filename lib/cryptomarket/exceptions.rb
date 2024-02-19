@@ -1,28 +1,20 @@
 module Cryptomarket
-    class SDKException < ::StandardError
+  class SDKException < ::StandardError
+  end
+
+  # Exception representing an error from the server
+  class APIException < SDKException
+    def initialize(hash)
+      @code = hash['code']
+      @message = hash['message']
+      @description = hash['description']
+      super
     end
 
-    class APIException < SDKException
-        def initialize(hash)
-            @code = hash['code']
-            @message = hash['message']
-            @description = hash['description']
-        end
+    attr_reader :code, :message, :description
 
-        def code
-            return @code
-        end
-
-        def message
-            return @message
-        end
-
-        def description
-            return @description
-        end
-
-        def to_s
-            return "#{self.class().name} (code=#{@code}): #{@message}: #{@description}"
-        end
+    def to_s
+      "#{self.class.name} (code=#{@code}): #{@message}: #{@description}"
     end
+  end
 end

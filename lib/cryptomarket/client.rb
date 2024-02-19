@@ -1,4 +1,4 @@
-require_relative "httpManager"
+require_relative 'httpManager'
 
 module Cryptomarket
   # Creates a new rest client
@@ -7,37 +7,34 @@ module Cryptomarket
   # +String+ +api_key+:: the user api key
   # +String+ +api_secret+:: the user api secret
   # +Integer+ +window+:: Maximum difference between the creation of the request and the moment of request processing in milliseconds. Max is 60_000. Defaul is 10_000
-
-  class Client
-
-    def initialize(api_key:nil, api_secret:nil, window:nil)
-      @httpManager = HttpManager.new api_key:api_key, api_secret:api_secret, window:window
+  class Client # rubocop:disable Metrics/ClassLength
+    def initialize(api_key: nil, api_secret: nil, window: nil)
+      @http_manager = HttpManager.new api_key: api_key, api_secret: api_secret, window: window
     end
 
-    def public_get(endpoint, params=nil)
-      return @httpManager.make_request(method:'get', endpoint:endpoint, params:params, public: true)
+    def public_get(endpoint, params = nil)
+      @http_manager.make_request(method: 'get', endpoint: endpoint, params: params, public: true)
     end
 
-    def get(endpoint, params=nil)
-      return @httpManager.make_request(method:'get', endpoint:endpoint, params:params)
+    def get(endpoint, params = nil)
+      @http_manager.make_request(method: 'get', endpoint: endpoint, params: params)
     end
 
-    def post(endpoint, params=nil)
-      return @httpManager.make_request(method:'post', endpoint:endpoint, params:params)
+    def post(endpoint, params = nil)
+      @http_manager.make_post_request(method: 'post', endpoint: endpoint, params: params)
     end
 
-    def put(endpoint, params=nil)
-      return @httpManager.make_request(method:'put', endpoint:endpoint, params:params)
+    def put(endpoint, params = nil)
+      @http_manager.make_request(method: 'put', endpoint: endpoint, params: params)
     end
 
-    def patch(endpoint, params=nil)
-      return @httpManager.make_request(method:'patch', endpoint:endpoint, params:params)
+    def patch(endpoint, params = nil)
+      @http_manager.make_request(method: 'patch', endpoint: endpoint, params: params)
     end
 
-    def delete(endpoint, params=nil)
-        return @httpManager.make_request(method:'delete', endpoint:endpoint, params:params)
+    def delete(endpoint, params = nil)
+      @http_manager.make_request(method: 'delete', endpoint: endpoint, params: params)
     end
-
 
     ################
     # public calls #
@@ -53,11 +50,11 @@ module Cryptomarket
     # +Array[String]+ +currencies+:: Optional. A list of currencies ids
     # +String+ +preferred_network+:: Optional. Code of de default network code of currencies
 
-    def get_currencies(currencies:nil, preferred_network:nil)
-      return public_get('public/currency/', {
-        currencies:currencies, 
-        preferred_network:preferred_network
-      })
+    def get_currencies(currencies: nil, preferred_network: nil)
+      public_get('public/currency/', {
+                   currencies: currencies,
+                   preferred_network: preferred_network
+                 })
     end
 
     # Get the data of a currency
@@ -70,7 +67,7 @@ module Cryptomarket
     # +String+ +currency+:: A currency id
 
     def get_currency(currency:)
-      return public_get("public/currency/#{currency}")
+      public_get("public/currency/#{currency}")
     end
 
     # Get a Hash of all symbols or for specified symbols. indexed by id
@@ -83,8 +80,8 @@ module Cryptomarket
     # ==== Params
     # +Array[String]+ +symbols+:: Optional. A list of symbol ids
 
-    def get_symbols(symbols:nil)
-      return public_get("public/symbol", {symbols:symbols})
+    def get_symbols(symbols: nil)
+      public_get('public/symbol', { symbols: symbols })
     end
 
     # Get a symbol by its id
@@ -98,7 +95,7 @@ module Cryptomarket
     # +String+ +symbol+:: A symbol id
 
     def get_symbol(symbol:)
-      return public_get("public/symbol/#{symbol}")
+      public_get("public/symbol/#{symbol}")
     end
 
     # Get a Hash of tickers for all symbols or for specified symbols. indexed by symbol
@@ -110,8 +107,8 @@ module Cryptomarket
     # ==== Params
     # +Array[String]+ +symbols+:: Optional. A list of symbol ids
 
-    def get_tickers(symbols:nil)
-      return public_get("public/ticker", {symbols:symbols})
+    def get_tickers(symbols: nil)
+      public_get('public/ticker', { symbols: symbols })
     end
 
     # Get the ticker of a symbol
@@ -124,9 +121,8 @@ module Cryptomarket
     # +String+ +symbol+:: A symbol id
 
     def get_ticker(symbol:)
-      return public_get("public/ticker/#{symbol}")
+      public_get("public/ticker/#{symbol}")
     end
-
 
     # Get a Hash of quotation prices of currencies
     #
@@ -138,10 +134,9 @@ module Cryptomarket
     # +String+ +to+:: Target currency code
     # +String+ +from+:: Optional. Source currency rate
 
-    def get_prices(to:, from:nil)
-      return public_get("public/price/rate", {to:to, from:from})
+    def get_prices(to:, from: nil)
+      public_get('public/price/rate', { to: to, from: from })
     end
-
 
     # Get quotation prices history
     #
@@ -158,21 +153,12 @@ module Cryptomarket
     # +String+ +until+:: Optional. Last value of the queried interval
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 1. Min is 1. Max is 1000
 
-    def get_price_history(to:, from:nil, till:nil, since:nil, limit:nil, period:nil, sort:nil)
-      return public_get(
-        "public/price/history",
-        {
-          to:to,
-          from:from,
-          till:till,
-          since:since,
-          limit:limit,
-          period:period,
-          sort:sort
-        }
+    def get_price_history(to:, from: nil, till: nil, since: nil, limit: nil, period: nil, sort: nil) # rubocop:disable Metrics/ParameterLists
+      public_get(
+        'public/price/history',
+        { to: to, from: from, till: till, since: since, limit: limit, period: period, sort: sort }
       )
     end
-
 
     # Get a Hash of the ticker's last prices for all symbols or for the specified symbols
     #
@@ -183,10 +169,9 @@ module Cryptomarket
     # ==== Params
     # +Array[String]+ +symbols+:: Optional. A list of symbol ids
 
-    def get_ticker_prices(symbols:nil)
-      return public_get("public/price/ticker", {symbols:symbols})
+    def get_ticker_prices(symbols: nil)
+      public_get('public/price/ticker', { symbols: symbols })
     end
-
 
     # Get ticker's last prices of a symbol
     #
@@ -198,7 +183,7 @@ module Cryptomarket
     # +String+ +symbol+:: A symbol id
 
     def get_ticker_price_of_symbol(symbol:)
-      return public_get("public/price/ticker/#{symbol}")
+      public_get("public/price/ticker/#{symbol}")
     end
 
     # Get a Hash of trades for all symbols or for specified symbols
@@ -216,21 +201,12 @@ module Cryptomarket
     # +String+ +until+:: Optional. Last value of the queried interval
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1000
 
-    def get_trades(symbols:nil, by:nil, sort:nil, from:nil, till:nil, limit:nil, offset:nil)
-      return public_get(
-        "public/trades/",
-        {
-          symbols:symbols,
-          by:by,
-          sort:sort,
-          from:from,
-          till:till,
-          limit:limit,
-          offset:offset
-        }
+    def get_trades(symbols: nil, by: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
+      public_get(
+        'public/trades/',
+        { symbols: symbols, by: by, sort: sort, from: from, till: till, limit: limit, offset: offset }
       )
     end
-
 
     # Get trades of a symbol
     # 'from' param and 'till' param must have the same format, both id or both timestamp
@@ -248,20 +224,12 @@ module Cryptomarket
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1000
     # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100000
 
-    def get_trades_of_symbol(symbol:nil, by:nil, sort:nil, from:nil, till:nil, limit:nil, offset:nil)
-      return public_get(
+    def get_trades_of_symbol(symbol: nil, by: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
+      public_get(
         "public/trades/#{symbol}",
-        {
-          by:by,
-          sort:sort,
-          from:from,
-          till:till,
-          limit:limit,
-          offset:offset
-        }
+        { by: by, sort: sort, from: from, till: till, limit: limit, offset: offset }
       )
     end
-
 
     # Get a Hash of orderbooks for all symbols or for the specified symbols
     # An Order Book is an electronic list of buy and sell orders for a specific symbol, structured by price level
@@ -274,11 +242,9 @@ module Cryptomarket
     # +Array[String]+ +symbols+:: Optional. A list of symbol ids
     # +Integer+ +depth+:: Optional. Order Book depth. Default value is 100. Set to 0 to view the full Order Book
 
-    def get_orderbooks(symbols:nil, depth:nil)
-      return public_get("public/orderbook", {symbols:symbols, depth:depth})
+    def get_orderbooks(symbols: nil, depth: nil)
+      public_get('public/orderbook', { symbols: symbols, depth: depth })
     end
-
-
 
     # Get order book of a symbol
     # An Order Book is an electronic list of buy and sell orders for a specific symbol, structured by price level
@@ -291,11 +257,9 @@ module Cryptomarket
     # +String+ +symbol+:: A symbol id
     # +Integer+ +depth+:: Optional. Order Book depth. Default value is 100. Set to 0 to view the full Order Book
 
-    def get_orderbook_of_symbol(symbol:, depth:nil)
-      return public_get("public/orderbook/#{symbol}", {depth:depth})
+    def get_orderbook_of_symbol(symbol:, depth: nil)
+      public_get("public/orderbook/#{symbol}", { depth: depth })
     end
-
-
 
     # Get order book of a symbol with the desired volume for market depth search
     # An Order Book is an electronic list of buy and sell orders for a specific symbol, structured by price level
@@ -308,8 +272,8 @@ module Cryptomarket
     # +String+ +symbol+:: A symbol id
     # +float+ +volume+:: Optional. Desired volume for market depth search
 
-    def get_orderbook_volume_of_symbol(symbol:, volume:nil)
-      return public_get("public/orderbook/#{symbol}", {volume:volume})
+    def get_orderbook_volume_of_symbol(symbol:, volume: nil)
+      public_get("public/orderbook/#{symbol}", { volume: volume })
     end
 
     # Get a Hash of candles for all symbols or for specified symbols
@@ -328,18 +292,10 @@ module Cryptomarket
     # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1000
 
-    def get_candles(symbols:nil, period:nil, sort:nil, from:nil, till:nil, limit:nil, offset:nil)
-      return public_get(
-        "public/candles/",
-        {
-          symbols:symbols,
-          period:period,
-          sort:sort,
-          from:from,
-          till:till,
-          limit:limit,
-          offset:offset
-        }
+    def get_candles(symbols: nil, period: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
+      public_get(
+        'public/candles/',
+        { symbols: symbols, period: period, sort: sort, from: from, till: till, limit: limit, offset: offset }
       )
     end
 
@@ -360,17 +316,10 @@ module Cryptomarket
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1000
     # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100000
 
-    def get_candles_of_symbol(symbol:, period:nil, sort:nil, from:nil, till:nil, limit:nil, offset:nil)
-      return public_get(
+    def get_candles_of_symbol(symbol:, period: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
+      public_get(
         "public/candles/#{symbol}",
-        {
-          period:period,
-          sort:sort,
-          from:from,
-          till:till,
-          limit:limit,
-          offset:offset
-        }
+        { period: period, sort: sort, from: from, till: till, limit: limit, offset: offset }
       )
     end
 
@@ -384,8 +333,8 @@ module Cryptomarket
     #
     # https://api.exchange.cryptomkt.com/#get-spot-trading-balance
 
-    def get_spot_trading_balance
-      return get("spot/balance")
+    def get_spot_trading_balance # rubocop:disable Naming/AccessorMethodName
+      get('spot/balance')
     end
 
     # Get the user spot trading balance of a currency
@@ -399,11 +348,9 @@ module Cryptomarket
 
     def get_spot_trading_balance_of_currency(currency:)
       balance = get("spot/balance/#{currency}")
-      balance["currency"] = currency
-      return balance
+      balance['currency'] = currency
+      balance
     end
-
-
 
     # Get the user's active spot orders
     #
@@ -414,8 +361,8 @@ module Cryptomarket
     # ==== Params
     # +String+ +symbol+:: Optional. A symbol for filtering the active spot orders
 
-    def get_all_active_spot_orders(symbol:nil)
-      return get("spot/order", {symbol:symbol})
+    def get_all_active_spot_orders(symbol: nil)
+      get('spot/order', { symbol: symbol })
     end
 
     # Get an active spot order by its client order id
@@ -428,7 +375,7 @@ module Cryptomarket
     # +String+ +client_order_id+:: The client order id of the order
 
     def get_active_spot_order(client_order_id:)
-      return get("spot/order/#{client_order_id}")
+      get("spot/order/#{client_order_id}")
     end
 
     # Creates a new spot order
@@ -453,48 +400,26 @@ module Cryptomarket
     # +String+ +take_rate+:: Optional. Liquidity taker fee, a fraction of order volume, such as 0.001 (for 0.1% fee). Can only increase the fee. Used for fee markup.
     # +String+ +make_rate+:: Optional. Liquidity provider fee, a fraction of order volume, such as 0.001 (for 0.1% fee). Can only increase the fee. Used for fee markup.
 
-    def create_spot_order(
-      symbol:,
-      side:,
-      quantity:,
-      client_order_id:nil,
-      type:nil,
-      time_in_force:nil,
-      price:nil,
-      stop_price:nil,
-      expire_time:nil,
-      strict_validate:nil,
-      post_only:nil,
-      take_rate:nil,
-      make_rate:nil
+    def create_spot_order( # rubocop:disable Metrics/ParameterLists
+      symbol:, side:, quantity:, client_order_id: nil, type: nil, time_in_force: nil, price: nil,
+      stop_price: nil, expire_time: nil, strict_validate: nil, post_only: nil, take_rate: nil,
+      make_rate: nil
     )
-      return post(
-        "spot/order",
-        {
-          client_order_id:client_order_id,
-          symbol:symbol,
-          side:side,
-          quantity:quantity,
-          type:type,
-          time_in_force:time_in_force,
-          price:price,
-          stop_price:stop_price,
-          expire_time:expire_time,
-          strict_validate:strict_validate,
-          post_only:post_only,
-          take_rate:take_rate,
-          make_rate:make_rate
-        }
+      post(
+        'spot/order',
+        { client_order_id: client_order_id, symbol: symbol, side: side, quantity: quantity, type: type,
+          time_in_force: time_in_force, price: price, stop_price: stop_price, expire_time: expire_time,
+          strict_validate: strict_validate, post_only: post_only, take_rate: take_rate, make_rate: make_rate }
       )
     end
 
     # creates a list of spot orders
     #
     # = Types or contingency
-    # - Contingency.ALL_OR_NONE (Contingency.AON)
-    # - Contingency.ONE_CANCEL_OTHER (Contingency.OCO)
-    # - Contingency.ONE_TRIGGER_OTHER (Contingency.OTO)
-    # - Contingency.ONE_TRIGGER_ONE_CANCEL_OTHER (Contingency.OTOCO)
+    # - Args::Contingency::ALL_OR_NONE (Args::Contingency::AON)
+    # - Args::Contingency::ONE_CANCEL_OTHER (Args::Contingency::OCO)
+    # - Args::Contingency::ONE_TRIGGER_OTHER (Args::Contingency::OTO)
+    # - Args::Contingency::ONE_TRIGGER_ONE_CANCEL_OTHER (Args::Contingency::OTOCO)
     #
     # = Restriction in the number of orders:
     # - An AON list must have 2 or 3 orders
@@ -509,14 +434,14 @@ module Cryptomarket
     # - For an OTOCO order list, the symbol code of orders must be the same for all orders in the list (placing orders in different order books is not supported).
     #
     # = OrderType restrictions
-    # - For an AON order list, orders must be OrderType.LIMIT or OrderType.Market
-    # - For an OCO order list, orders must be OrderType.LIMIT, OrderType.STOP_LIMIT, OrderType.STOP_MARKET, OrderType.TAKE_PROFIT_LIMIT or OrderType.TAKE_PROFIT_MARKET.
+    # - For an AON order list, orders must be Args::OrderType::LIMIT or Args::OrderType::Market
+    # - For an OCO order list, orders must be Args::OrderType::LIMIT, Args::OrderType::STOP_LIMIT, Args::OrderType::STOP_MARKET, Args::OrderType::TAKE_PROFIT_LIMIT or Args::OrderType::TAKE_PROFIT_MARKET.
     # - An OCO order list cannot include more than one limit order (the same
     # applies to secondary orders in an OTOCO order list).
     # - For OTO order list, there are no order type restrictions.
-    # - For an OTOCO order list, the first order must be OrderType.LIMIT, OrderType.MARKET, OrderType.STOP_LIMIT, OrderType.STOP_MARKET, OrderType.TAKE_PROFIT_LIMIT or OrderType.TAKE_PROFIT_MARKET.
+    # - For an OTOCO order list, the first order must be Args::OrderType::LIMIT, Args::OrderType::MARKET, Args::OrderType::STOP_LIMIT, Args::OrderType::STOP_MARKET, Args::OrderType::TAKE_PROFIT_LIMIT or Args::OrderType::TAKE_PROFIT_MARKET.
     # - For an OTOCO order list, the secondary orders have the same restrictions as an OCO order
-    # - Default is OrderType.Limit
+    # - Default is Args::OrderType::Limit
     #
     # https://api.exchange.cryptomkt.com/#create-new-spot-order-list
     #
@@ -528,10 +453,10 @@ module Cryptomarket
     def create_spot_order_list(
       contingency_type:,
       orders:,
-      order_list_id:nil
+      order_list_id: nil
     )
-      return post(
-        "spot/order/list",
+      post(
+        'spot/order/list',
         {
           order_list_id: order_list_id,
           contingency_type: contingency_type,
@@ -558,16 +483,16 @@ module Cryptomarket
       client_order_id:,
       new_client_order_id:,
       quantity:,
-      price:nil,
-      strict_validate:nil
+      price: nil,
+      strict_validate: nil
     )
-      return patch(
+      patch(
         "spot/order/#{client_order_id}",
         {
-          new_client_order_id:new_client_order_id,
-          price:price,
-          quantity:quantity,
-          strict_validate:strict_validate
+          new_client_order_id: new_client_order_id,
+          price: price,
+          quantity: quantity,
+          strict_validate: strict_validate
         }
       )
     end
@@ -580,7 +505,7 @@ module Cryptomarket
     #
 
     def cancel_all_spot_orders
-      return delete("spot/order")
+      delete('spot/order')
     end
 
     # Cancel the order with the client order id
@@ -602,8 +527,8 @@ module Cryptomarket
     #
     # https://api.exchange.cryptomkt.com/#get-all-trading-commissions
 
-    def get_all_trading_commission
-      get("spot/fee")
+    def get_all_trading_commission # rubocop:disable Naming/AccessorMethodName
+      get('spot/fee')
     end
 
     # Get the personal trading commission rate of a symbol
@@ -617,8 +542,8 @@ module Cryptomarket
 
     def get_trading_commission(symbol:)
       commission = get("spot/fee/#{symbol}")
-      commission["symbol"] = symbol
-      return commission
+      commission['symbol'] = symbol
+      commission
     end
 
     ########################
@@ -642,28 +567,14 @@ module Cryptomarket
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Max is 1000
     # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
 
-    def get_spot_orders_history(
-      client_order_id:nil,
-      symbol:nil,
-      sort:nil,
-      by:nil,
-      from:nil,
-      till:nil,
-      limit:nil,
-      offset:nil
+    def get_spot_orders_history( # rubocop:disable Metrics/ParameterLists
+      client_order_id: nil, symbol: nil, sort: nil, by: nil, from: nil,
+      till: nil, limit: nil, offset: nil
     )
-      return get(
-        "spot/history/order",
-        {
-          client_order_id:client_order_id,
-          symbol:symbol,
-          sort:sort,
-          by:by,
-          from:from,
-          till:till,
-          limit:limit,
-          offset:offset
-        }
+      get(
+        'spot/history/order',
+        { client_order_id: client_order_id, symbol: symbol, sort: sort,
+          by: by, from: from, till: till, limit: limit, offset: offset }
       )
     end
 
@@ -683,28 +594,14 @@ module Cryptomarket
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Max is 1000
     # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
 
-    def get_spot_trades_history(
-      order_id:nil,
-      symbol:nil,
-      sort:nil,
-      by:nil,
-      from:nil,
-      till:nil,
-      limit:nil,
-      offset:nil
+    def get_spot_trades_history( # rubocop:disable Metrics/ParameterLists
+      order_id: nil, symbol: nil, sort: nil, by: nil, from: nil,
+      till: nil, limit: nil, offset: nil
     )
-      return get(
-        "spot/history/trade",
-        {
-          order_id:order_id,
-          symbol:symbol,
-          sort:sort,
-          by:by,
-          from:from,
-          till:till,
-          limit:limit,
-          offset:offset
-        }
+      get(
+        'spot/history/trade',
+        { order_id: order_id, symbol: symbol, sort: sort,
+          by: by, from: from, till: till, limit: limit, offset: offset }
       )
     end
 
@@ -718,8 +615,8 @@ module Cryptomarket
     #
     # https://api.exchange.cryptomkt.com/#wallet-balance
 
-    def get_wallet_balances
-      return get("wallet/balance")
+    def get_wallet_balances # rubocop:disable Naming/AccessorMethodName
+      get('wallet/balance')
     end
 
     # Get the user's wallet balance of a currency
@@ -732,7 +629,7 @@ module Cryptomarket
     # +String+ +currency+:: The currency code to query the balance
 
     def get_wallet_balance(currency:)
-      return get("wallet/balance/#{currency}")
+      get("wallet/balance/#{currency}")
     end
 
     # Get a list with the current addresses of the user
@@ -741,10 +638,9 @@ module Cryptomarket
     #
     # https://api.exchange.cryptomkt.com/#get-deposit-crypto-address
 
-    def get_deposit_crypto_addresses()
-      return get("wallet/crypto/address")
+    def get_deposit_crypto_addresses # rubocop:disable Naming/AccessorMethodName
+      get('wallet/crypto/address')
     end
-
 
     # Get the current addresses of a currency of the user
     #
@@ -758,14 +654,12 @@ module Cryptomarket
     # +String+ +currency+:: Currency to get the address
     # +String+ +network_code+:: Optional. network code
 
-    def get_deposit_crypto_address(currency:nil, network_code:nil)
-      result = get("wallet/crypto/address", {currency:currency, network_code:network_code})
-      if result.length != 1
-        raise CryptomarketSDKException "Too many currencies recieved, expected 1 currency"
-      end
-      return result[0]
-    end
+    def get_deposit_crypto_address(currency: nil, network_code: nil)
+      result = get('wallet/crypto/address', { currency: currency, network_code: network_code })
+      raise CryptomarketSDKException 'Too many currencies recieved, expected 1 currency' if result.length != 1
 
+      result[0]
+    end
 
     # Creates a new address for a currency
     #
@@ -777,8 +671,8 @@ module Cryptomarket
     # +String+ +currency+:: currency to create a new address
     # +String+ +network_code+:: Optional. network code
 
-    def create_deposit_crypto_address(currency:, network_code:nil)
-      return post("wallet/crypto/address", {currency:currency, network_code:network_code})
+    def create_deposit_crypto_address(currency:, network_code: nil)
+      post('wallet/crypto/address', { currency: currency, network_code: network_code })
     end
 
     # Get the last 10 unique addresses used for deposit, by currency
@@ -792,8 +686,8 @@ module Cryptomarket
     # +String+ +currency+:: currency to get the list of addresses
     # +String+ +network_code+:: Optional. network code
 
-    def get_last_10_deposit_crypto_addresses(currency:, network_code:nil)
-      return get("wallet/crypto/address/recent-deposit", {currency:currency, network_code:network_code})
+    def get_last_10_deposit_crypto_addresses(currency:, network_code: nil)
+      get('wallet/crypto/address/recent-deposit', { currency: currency, network_code: network_code })
     end
 
     # Get the last 10 unique addresses used for withdrawals, by currency
@@ -807,8 +701,8 @@ module Cryptomarket
     # +String+ +currency+:: currency to get the list of addresses
     # +String+ +network_code+:: Optional. network code
 
-    def get_last_10_withdrawal_crypto_addresses(currency:, network_code:nil)
-      return get("wallet/crypto/address/recent-withdraw", {currency:currency, network_code:network_code})
+    def get_last_10_withdrawal_crypto_addresses(currency:, network_code: nil)
+      get('wallet/crypto/address/recent-withdraw', { currency: currency, network_code: network_code })
     end
 
     # Please take note that changing security settings affects withdrawals:
@@ -833,33 +727,17 @@ module Cryptomarket
     # +String+ +use offchain+:: Optional. Whether the withdrawal may be comitted offchain. Accepted values are 'never', 'optionaly' and 'required'.
     # +String+ +public comment+:: Optional. Maximum lenght is 255
 
-    def withdraw_crypto(
-      currency:,
-      amount:,
-      address:,
-      network_code:nil,
-      payment_id:nil,
-      include_fee:nil,
-      auto_commit:nil,
-      use_offchain:nil,
-      public_comment:nil
+    def withdraw_crypto( # rubocop:disable Metrics/ParameterLists
+      currency:, amount:, address:, network_code: nil, payment_id: nil,
+      include_fee: nil, auto_commit: nil, use_offchain: nil, public_comment: nil
     )
-      return post(
-        "wallet/crypto/withdraw",
-        {
-          currency:currency,
-          amount:amount,
-          address:address,
-          network_code:network_code,
-          payment_id:payment_id,
-          include_fee:include_fee,
-          auto_commit:auto_commit,
-          use_offchain:use_offchain,
-          public_comment:public_comment
-        }
-      )["id"]
+      post(
+        'wallet/crypto/withdraw',
+        { currency: currency, amount: amount, address: address, network_code: network_code,
+          payment_id: payment_id, include_fee: include_fee, auto_commit: auto_commit,
+          use_offchain: use_offchain, public_comment: public_comment }
+      )['id']
     end
-
 
     # Commit a withdrawal
     #
@@ -871,7 +749,7 @@ module Cryptomarket
     # +String+ +id+:: the withdrawal transaction identifier
 
     def withdraw_crypto_commit(id:)
-      return put("wallet/crypto/withdraw/#{id}")["result"]
+      put("wallet/crypto/withdraw/#{id}")['result']
     end
 
     # Rollback a withdrawal
@@ -884,9 +762,8 @@ module Cryptomarket
     # +String+ +id+:: the withdrawal transaction identifier
 
     def withdraw_crypto_rollback(id:)
-      return delete("wallet/crypto/withdraw/#{id}")["result"]
+      delete("wallet/crypto/withdraw/#{id}")['result']
     end
-
 
     # Get an estimates for withdrawal fees of currencies
     #
@@ -896,10 +773,10 @@ module Cryptomarket
     #
     # ==== Params
     # +Array[]+ +fee_requests+:: the list of fee requests, each request is a Hash in the form {currency:"string", amount:"string", network_code:"optional string"}
-    
+
     def get_estimate_withdrawal_fees(fee_requests)
       params = fee_requests
-      return post('wallet/crypto/fees/estimate', params)
+      post('wallet/crypto/fees/estimate', params)
     end
 
     # Get an estimate of the withdrawal fee
@@ -912,11 +789,10 @@ module Cryptomarket
     # +String+ +currency+:: the currency code for withdrawal
     # +float+ +amount+:: the expected withdraw amount
 
-    def get_estimate_withdrawal_fee(currency:, amount:, network_code:nil)
-      params = {amount:amount, currency:currency, network_code:network_code}
-      return get('wallet/crypto/fee/estimate', params)["fee"]
+    def get_estimate_withdrawal_fee(currency:, amount:, network_code: nil)
+      params = { amount: amount, currency: currency, network_code: network_code }
+      get('wallet/crypto/fee/estimate', params)['fee']
     end
-
 
     # Converts between currencies
     # Successful response to the request does not necessarily mean the resulting transaction got executed immediately. It has to be processed first and may eventually be rolled back
@@ -932,14 +808,14 @@ module Cryptomarket
     # +float+ +amount+:: the amount to be converted
 
     def convert_between_currencies(from_currency:, to_currency:, amount:)
-      return post(
-        "wallet/convert",
+      post(
+        'wallet/convert',
         {
-          from_currency:from_currency,
-          to_currency:to_currency,
-          amount:amount
+          from_currency: from_currency,
+          to_currency: to_currency,
+          amount: amount
         }
-      )["result"]
+      )['result']
     end
 
     # Check if an address is from this account
@@ -952,7 +828,7 @@ module Cryptomarket
     # +String+ +address+:: address to check
 
     def crypto_address_belongs_to_current_account?(address:)
-      return get("wallet/crypto/address/check-mine", {address:address})["result"]
+      get('wallet/crypto/address/check-mine', { address: address })['result']
     end
 
     # Transfer funds between account types
@@ -969,13 +845,13 @@ module Cryptomarket
     # +String+ +destination+:: transfer source account type. Either 'wallet' or 'spot'
 
     def transfer_between_wallet_and_exchange(currency:, amount:, source:, destination:)
-      return post(
+      post(
         'wallet/transfer',
         {
-          currency:currency,
-          amount:amount,
-          source:source,
-          destination:destination
+          currency: currency,
+          amount: amount,
+          source: source,
+          destination: destination
         }
       )
     end
@@ -993,13 +869,13 @@ module Cryptomarket
     # +String+ +identifier+:: the email or username of the recieving user
 
     def transfer_money_to_another_user(currency:, amount:, by:, identifier:)
-      return post(
+      post(
         'wallet/internal/withdraw',
         {
-          currency:currency,
-          amount:amount,
-          by:by,
-          identifier:identifier
+          currency: currency,
+          amount: amount,
+          by: by,
+          identifier: identifier
         }
       )
     end
@@ -1031,43 +907,16 @@ module Cryptomarket
     # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
     # +bool+ +group_transactions+:: Optional. Flag indicating whether the returned transactions will be parts of a single operation. Default is false
 
-    def get_transaction_history(
-      currency:nil,
-      from:nil,
-      till:nil,
-      types:nil,
-      subtypes:nil,
-      statuses:nil,
-      currencies:nil,
-      networks:nil,
-      id_from:nil,
-      id_till:nil,
-      tx_ids:nil,
-      order_by:nil,
-      sort:nil,
-      limit:nil,
-      offset:nil,
-      group_transactions:nil
+    def get_transaction_history( # rubocop:disable Metrics/ParameterLists
+      currency: nil, from: nil, till: nil, types: nil, subtypes: nil, statuses: nil,
+      currencies: nil, networks: nil, id_from: nil, id_till: nil, tx_ids: nil, order_by: nil,
+      sort: nil, limit: nil, offset: nil, group_transactions: nil
     )
-      return get(
-        "wallet/transactions",
-        {
-          currency:currency,
-          from:from,
-          till:till,
-          types:types,
-          subtypes:subtypes,
-          statuses:statuses,
-          currencies:currencies,
-          id_from:id_from,
-          id_till:id_till,
-          tx_ids:tx_ids,
-          order_by:order_by,
-          sort:sort,
-          limit:limit,
-          offset:offset,
-          group_transactions:group_transactions
-        }
+      get(
+        'wallet/transactions',
+        { currency: currency, from: from, till: till, types: types, subtypes: subtypes, statuses: statuses,
+          currencies: currencies, networks: networks, id_from: id_from, id_till: id_till, tx_ids: tx_ids,
+          order_by: order_by, sort: sort, limit: limit, offset: offset, group_transactions: group_transactions }
       )
     end
 
@@ -1081,7 +930,7 @@ module Cryptomarket
     # +String+ +id+:: The identifier of the transaction
 
     def get_transaction(id:)
-      return get("wallet/transactions/#{id}")
+      get("wallet/transactions/#{id}")
     end
 
     # get the status of the offchain
@@ -1098,16 +947,16 @@ module Cryptomarket
     def offchain_available?(
       currency:,
       address:,
-      payment_id:nil
+      payment_id: nil
     )
-      return post(
-        "wallet/crypto/check-offchain-available",
+      post(
+        'wallet/crypto/check-offchain-available',
         {
-          currency:currency,
-          address:address,
-          payment_id:payment_id
+          currency: currency,
+          address: address,
+          payment_id: payment_id
         }
-      )["result"]
+      )['result']
     end
 
     # Get the list of amount locks
@@ -1124,24 +973,12 @@ module Cryptomarket
     # +String+ +from+:: Optional. Interval initial value. As Datetime
     # +String+ +till+:: Optional. Interval end value. As Datetime
 
-    def get_amount_locks(
-      currency:nil,
-      active:nil,
-      limit:nil,
-      offset:nil,
-      from:nil,
-      till:nil
+    def get_amount_locks( # rubocop:disable Metrics/ParameterLists
+      currency: nil, active: nil, limit: nil, offset: nil, from: nil, till: nil
     )
-      return get(
-        "wallet/amount-locks",
-        {
-          currency:currency,
-          active:active,
-          limit:limit,
-          offset:offset,
-          from:from,
-          till:till
-        }
+      get(
+        'wallet/amount-locks',
+        { currency: currency, active: active, limit: limit, offset: offset, from: from, till: till }
       )
     end
 
@@ -1151,10 +988,10 @@ module Cryptomarket
     #
     # https://api.exchange.cryptomkt.com/#sub-accounts
 
-    def get_sub_account_list()
-      return get(
-        "sub-account",
-      )["result"]
+    def get_sub_account_list # rubocop:disable Naming/AccessorMethodName
+      get(
+        'sub-account'
+      )['result']
     end
 
     # Freezes sub-accounts listed
@@ -1176,12 +1013,12 @@ module Cryptomarket
     def freeze_sub_accounts(
       sub_account_ids:
     )
-      return post(
-        "sub-account/freeze",
+      post(
+        'sub-account/freeze',
         {
-          sub_account_ids:sub_account_ids
+          sub_account_ids: sub_account_ids
         }
-      )["result"]
+      )['result']
     end
 
     # Activates sub-accounts listed. It would make sub-accounts active after being frozen
@@ -1195,12 +1032,12 @@ module Cryptomarket
     def activate_sub_accounts(
       sub_account_ids:
     )
-      return post(
-        "sub-account/activate",
+      post(
+        'sub-account/activate',
         {
-          sub_account_ids:sub_account_ids
+          sub_account_ids: sub_account_ids
         }
-      )["result"]
+      )['result']
     end
 
     # Transfers funds from the super-account to a sub-account or from a sub-account to the super-account
@@ -1221,17 +1058,16 @@ module Cryptomarket
       currency:,
       type:
     )
-      return post(
-        "sub-account/transfer",
+      post(
+        'sub-account/transfer',
         {
-          sub_account_id:sub_account_id,
-          amount:amount,
-          currency:currency,
-          type:type
+          sub_account_id: sub_account_id,
+          amount: amount,
+          currency: currency,
+          type: type
         }
-      )["result"]
+      )['result']
     end
-
 
     # Returns a list of withdrawal settings for sub-accounts listed
     #
@@ -1245,14 +1081,13 @@ module Cryptomarket
     def get_acl_settings(
       sub_account_ids:
     )
-      return get(
-        "sub-account/acl",
+      get(
+        'sub-account/acl',
         {
-          sub_account_ids:sub_account_ids,
+          sub_account_ids: sub_account_ids
         }
-      )["result"]
+      )['result']
     end
-
 
     # Returns a list of withdrawal settings for sub-accounts listed
     #
@@ -1268,27 +1103,16 @@ module Cryptomarket
     # +String+ +created_at+:: Optional. ACL creation time
     # +String+ +updated_at+:: Optional. ACL update time
 
-    def change_acl_settings(
-      sub_account_ids:,
-      deposit_address_generation_enabled:nil,
-      withdraw_enabled:nil,
-      description:nil,
-      created_at:nil,
-      updated_at:nil
+    def change_acl_settings( # rubocop:disable Metrics/ParameterLists
+      sub_account_ids:, deposit_address_generation_enabled: nil, withdraw_enabled: nil,
+      description: nil, created_at: nil, updated_at: nil
     )
-      return post(
-        "sub-account/acl",
-        {
-          sub_account_ids:sub_account_ids,
-          deposit_address_generation_enabled:deposit_address_generation_enabled,
-          withdraw_enabled:withdraw_enabled,
-          description:description,
-          created_at:created_at,
-          updated_at:updated_at
-        }
-      )["result"]
+      post(
+        'sub-account/acl',
+        { sub_account_ids: sub_account_ids, deposit_address_generation_enabled: deposit_address_generation_enabled,
+          withdraw_enabled: withdraw_enabled, description: description, created_at: created_at, updated_at: updated_at }
+      )['result']
     end
-
 
     # Returns non-zero balance values by sub-account
     # Report will include the wallet and Trading balances for each currency
@@ -1303,9 +1127,9 @@ module Cryptomarket
     def get_sub_account_balance(
       sub_account_id:
     )
-      return get(
-          "sub-account/balance/#{sub_account_id}"
-      )["result"]
+      get(
+        "sub-account/balance/#{sub_account_id}"
+      )['result']
     end
 
     # Returns sub-account crypto address for currency
@@ -1321,10 +1145,9 @@ module Cryptomarket
       sub_account_id:,
       currency:
     )
-      return get(
-          "sub-account/crypto/address/#{sub_account_id}/#{currency}"
-      )["result"]["address"]
+      get(
+        "sub-account/crypto/address/#{sub_account_id}/#{currency}"
+      )['result']['address']
     end
-
   end
 end
