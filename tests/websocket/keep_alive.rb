@@ -1,6 +1,6 @@
 require 'test/unit'
-require_relative '../../lib/cryptomarket/websocket/marketDataClient'
-require_relative '../keyLoader'
+require_relative '../../lib/cryptomarket/websocket/market_data_client'
+require_relative '../key_loader'
 
 class TestWStrading < Test::Unit::TestCase
   def setup

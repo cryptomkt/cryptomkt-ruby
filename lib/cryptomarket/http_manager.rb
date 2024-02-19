@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'uri'
 require 'json'
@@ -5,21 +7,21 @@ require 'base64'
 require 'rest-client'
 require 'date'
 require_relative 'exceptions'
-require_relative 'CredentialFactory'
+require_relative 'credential_factory'
 
 module Cryptomarket
   # Manager of http requests to the cryptomarket server
   class HttpManager
     Request = Data.define(:uri, :endpoint, :payload, :headers, :is_json)
-    @@api_url = 'https://api.exchange.cryptomkt.com'
-    @@api_version = '/api/3/'
+    @@API_URL = 'https://api.exchange.cryptomkt.com' # rubocop:disable Naming/VariableName,Style/ClassVars
+    @@API_VERSION = '/api/3/' # rubocop:disable Naming/VariableName,Style/ClassVars
 
     def initialize(api_key:, api_secret:, window: nil)
       @credential_factory = CredentialFactory(api_key, api_secret, window)
     end
 
     def make_request(method:, endpoint:, params: nil, public: false)
-      uri = URI(@@api_url + version_as_str + endpoint)
+      uri = URI(@@API_URL + version_as_str + endpoint)
       payload = build_payload(params)
       headers = build_headers(method, endpoint, params, public)
       if ((method.upcase == 'GET') || (method.upcase == 'PUT')) && !payload.nil?
@@ -30,7 +32,7 @@ module Cryptomarket
     end
 
     def make_post_request(method:, endpoint:, params: nil)
-      uri = URI(@@api_url + version_as_str + endpoint)
+      uri = URI(@@API_URL + version_as_str + endpoint)
       payload = build_payload(params)
       do_request(Request[method, uri, payload, build_post_headers(endpoint, payload), true])
     end

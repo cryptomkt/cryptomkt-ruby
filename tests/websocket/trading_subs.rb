@@ -1,9 +1,9 @@
 require 'test/unit'
-require_relative '../../lib/cryptomarket/websocket/tradingClient'
-require_relative '../keyLoader'
+require_relative '../../lib/cryptomarket/websocket/trading_client'
+require_relative '../key_loader'
 require_relative '../checks'
-require_relative 'sequenceFlow'
-require_relative 'timeFlow'
+require_relative 'sequence_flow'
+require_relative 'time_flow'
 
 class TestWSTradingSubs < Test::Unit::TestCase
   @@SECOND = 1

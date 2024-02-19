@@ -1,4 +1,6 @@
-require_relative 'reusableCallback'
+# frozen_string_literal: true
+
+require_relative 'reusable_callback'
 
 module Cryptomarket
   module Websocket
@@ -9,7 +11,7 @@ module Cryptomarket
         @reusable_callbacks = {}
         @next_id = 1
       end
- 
+
       def _get_next_id
         next_id = @next_id
         @next_id += 1

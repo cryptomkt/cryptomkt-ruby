@@ -1,7 +1,7 @@
 require 'test/unit'
-require_relative '../../lib/cryptomarket/websocket/walletClient'
+require_relative '../../lib/cryptomarket/websocket/wallet_client'
 require_relative '../../lib/cryptomarket/client'
-require_relative '../keyLoader'
+require_relative '../key_loader'
 require_relative '../checks'
 
 class TestWSaccount < Test::Unit::TestCase

@@ -1,4 +1,6 @@
-require_relative 'authClient'
+# frozen_string_literal: true
+
+require_relative 'auth_client'
 require_relative '../constants'
 
 module Cryptomarket
@@ -95,7 +97,7 @@ module Cryptomarket
       # +Proc+ +callback+:: A +Proc+ called with a list of the user balances
 
       def get_wallet_balances(callback:)
-        send_by_id('wallet_balances', callback)
+        request('wallet_balances', callback)
       end
 
       # Get the user's wallet balance of a currency
@@ -109,7 +111,7 @@ module Cryptomarket
       # +Proc+ +callback+:: A +Proc+ called with an user balance
 
       def get_wallet_balance(currency:, callback:)
-        send_by_id('wallet_balance', callback, { currency: currency })
+        request('wallet_balance', callback, { currency: currency })
       end
 
       # Get the transaction history of the account
@@ -143,11 +145,11 @@ module Cryptomarket
         callback:, tx_ids: nil, types: nil, subtypes: nil, statuses: nil, currencies: nil, from: nil, till: nil,
         id_from: nil, id_till: nil, order_by: nil, sort: nil, limit: nil, offset: nil, group_transactions: nil
       )
-        send_by_id('get_transactions', callback, {
-                     tx_ids: tx_ids, types: types, subtypes: subtypes, statuses: statuses, currencies: currencies,
-                     from: from, till: till, id_from: id_from, id_till: id_till, order_by: order_by, sort: sort,
-                     limit: limit, offset: offset, group_transactions: group_transactions
-                   })
+        request('get_transactions', callback, {
+                  tx_ids: tx_ids, types: types, subtypes: subtypes, statuses: statuses, currencies: currencies,
+                  from: from, till: till, id_from: id_from, id_till: id_till, order_by: order_by, sort: sort,
+                  limit: limit, offset: offset, group_transactions: group_transactions
+                })
       end
     end
   end

@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module Cryptomarket
   module Websocket
     module Methods
-      ORDERBOOK = 'orderbook'.freeze
-      REPORTS = 'reports'.freeze
-      TICKERS = 'tickers'.freeze
-      TRADES = 'trades'.freeze
-      CANDLES = 'candles'.freeze
+      ORDERBOOK = 'orderbook'
+      REPORTS = 'reports'
+      TICKERS = 'tickers'
+      TRADES = 'trades'
+      CANDLES = 'candles'
       MAP = {
         'subscribeReports' => REPORTS,
         'unsubscribeReports' => REPORTS,

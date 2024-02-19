@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 require_relative 'client_base'
 
@@ -42,7 +44,8 @@ module Cryptomarket
       #
       # https://api.exchange.cryptomkt.com/#socket-session-authentication
       #
-      # +Proc+ +callback+:: Optional. A +Proc+ to call with the result data. It takes two arguments, err and result. err is None for successful calls, result is None for calls with error: Proc.new {|err, result| ...}
+      # +Proc+ +callback+:: Optional. A +Proc+ to call with the result data. It takes two arguments, err and result.
+      # err is None for successful calls, result is None for calls with error: Proc.new {|err, result| ...}
 
       def authenticate(callback = nil)
         timestamp = Time.now.to_i * 1000
@@ -51,7 +54,7 @@ module Cryptomarket
         message += @window.to_s unless @window.nil?
         signature = OpenSSL::HMAC.hexdigest digest, @api_secret, message.to_s
         params = build_auth_payload timestamp, signature
-        send_by_id('login', callback, params)
+        request('login', callback, params)
       end
 
       def build_auth_payload(timestamp, signature)

@@ -1,4 +1,6 @@
-require_relative 'httpManager'
+# frozen_string_literal: true
+
+require_relative 'http_manager'
 
 module Cryptomarket
   # Creates a new rest client

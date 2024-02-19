@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
-require_relative 'marketDataClientCore'
+require_relative 'market_data_client_core'
 require_relative '../constants'
 
 module Cryptomarket

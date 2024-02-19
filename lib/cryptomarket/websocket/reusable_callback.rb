@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cryptomarket
   module Websocket
     # A wrapper for a callback, enable reuse of a callback up to an n number of times, and signals when is done reusing.
