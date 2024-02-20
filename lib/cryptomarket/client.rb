@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength
 require_relative 'http_manager'
 
 module Cryptomarket

@@ -35,7 +35,7 @@ class TestWStrading < Test::Unit::TestCase
   end
 
   def test_get_spot_trading_balance
-    hash = gen_checker_callback(->(balance) { goodBalance(balance) })
+    hash = gen_checker_callback(->(balance) { good_balance(balance) })
     @wsclient.get_spot_trading_balance(callback: hash[:callback], currency: 'EOS')
     sleep(3)
     assert(hash[:msg] == '', hash[:msg])
@@ -44,7 +44,7 @@ class TestWStrading < Test::Unit::TestCase
   def test_get_spot_trading_balances
     hash = gen_list_checker_callback(lambda { |balance|
       puts balance
-      goodBalance(balance)
+      good_balance(balance)
     })
     @wsclient.get_spot_trading_balances(callback: hash[:callback])
     sleep(3)
@@ -54,7 +54,7 @@ class TestWStrading < Test::Unit::TestCase
   def test_order_work_flow
     timestamp = Time.now.to_i.to_s
     symbol = 'EOSETH'
-    hash = gen_checker_callback(->(order) { goodOrder(order) })
+    hash = gen_checker_callback(->(order) { good_order(order) })
     @wsclient.create_spot_order(
       client_order_id: timestamp,
       symbol: symbol,
@@ -155,14 +155,14 @@ class TestWStrading < Test::Unit::TestCase
   end
 
   def test_get_spot_commissions
-    hash = gen_list_checker_callback(->(commission) { goodTradingCommission(commission) })
+    hash = gen_list_checker_callback(->(commission) { good_trading_commission(commission) })
     @wsclient.get_spot_commissions(callback: hash[:callback])
     sleep(3)
     assert(hash[:msg] == '', hash[:msg])
   end
 
   def test_get_spot_commission_of_symbol
-    hash = gen_checker_callback(->(commission) { goodTradingCommission(commission) })
+    hash = gen_checker_callback(->(commission) { good_trading_commission(commission) })
     @wsclient.get_spot_commission_of_symbol(symbol: 'EOS', callback: hash[:callback])
     sleep(3)
     assert(hash[:msg] == '', hash[:msg])

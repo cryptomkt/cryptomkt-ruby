@@ -10,8 +10,8 @@ class TestRestTradingMethods < Test::Unit::TestCase
 
   def test_get_wallet_balance
     result = @client.get_wallet_balance
-    assert(goodList(
-             ->(balance) do goodBalance(balance) end,
+    assert(good_list(
+             ->(balance) do good_balance(balance) end,
              result
            ))
   end
@@ -23,34 +23,34 @@ class TestRestTradingMethods < Test::Unit::TestCase
 
   def test_get_deposit_crypto_addresses
     result = @client.get_deposit_crypto_addresses
-    assert(goodList(
-             ->(address) do goodAddress(address) end,
+    assert(good_list(
+             ->(address) do good_address(address) end,
              result
            ))
   end
 
   def test_get_deposit_crypto_address_of_currency
     result = @client.get_deposit_crypto_address_of_currency currency: 'ADA'
-    assert(goodAddress(result))
+    assert(good_address(result))
   end
 
   def test_create_deposit_crypto_address
     result = @client.create_deposit_crypto_address currency: 'ADA'
-    assert(goodAddress(result))
+    assert(good_address(result))
   end
 
   def test_get_last_10_deposit_crypto_addresses
     result = @client.get_last_10_deposit_crypto_addresses currency: 'ADA'
-    assert(goodList(
-             ->(address) do goodAddress(address) end,
+    assert(good_list(
+             ->(address) do good_address(address) end,
              result
            ))
   end
 
   def test_get_last_10_withdrawal_crypto_addresses
     result = @client.get_last_10_withdrawal_crypto_addresses currency: 'CLP'
-    assert(goodList(
-             ->(address) do goodAddress(address) end,
+    assert(good_list(
+             ->(address) do good_address(address) end,
              result
            ))
   end
@@ -124,8 +124,8 @@ class TestRestTradingMethods < Test::Unit::TestCase
 
   def test_get_transaction_history
     result = @client.get_transaction_history
-    assert(goodList(
-             ->(transaction) do goodTransaction(transaction) end,
+    assert(good_list(
+             ->(transaction) do good_transaction(transaction) end,
              result
            ))
   end
@@ -134,7 +134,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
     transaction_list = @client.get_transaction_history
     first_transaction_id = transaction_list[0]['native']['tx_id']
     result = @client.get_transaction id: first_transaction_id
-    assert(goodTransaction(result))
+    assert(good_transaction(result))
   end
 
   def test_offchain_available

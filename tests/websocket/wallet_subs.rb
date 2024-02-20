@@ -20,7 +20,7 @@ class TestWSaccount < Test::Unit::TestCase
     msg = ''
     callback = proc { |notification, _type|
       print notification
-      unless goodTransaction(notification)
+      unless good_transaction(notification)
         msg = 'bad transaction'
         return
       end
@@ -54,7 +54,7 @@ class TestWSaccount < Test::Unit::TestCase
     msg = ''
     callback = proc { |notification, _type|
       print notification
-      # if not goodBalances(notification)
+      # if not good_balances(notification)
       #     msg = "bad balances"
       #     return
       # end

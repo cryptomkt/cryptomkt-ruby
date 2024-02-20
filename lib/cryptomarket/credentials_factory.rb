@@ -10,8 +10,9 @@ require_relative 'exceptions'
 
 module Cryptomarket
   # Builds a credential used by the cryptomarket server
-  class CredentialFactory
-    def initialize(api_key:, api_secret:, window: nil)
+  class CredentialsFactory
+    def initialize(api_version:, api_key:, api_secret:, window: nil)
+      @api_version = api_version
       @api_key = api_key
       @api_secret = api_secret
       @window = window
@@ -29,7 +30,7 @@ module Cryptomarket
     end
 
     def build_credential_message(http_method, method, timestamp, params)
-      msg = http_method + @@api_version + method
+      msg = http_method + @api_version + method
       msg += if http_method.upcase == 'POST'
                params
              else

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength
 require 'securerandom'
 
 require_relative 'market_data_client_core'
@@ -269,9 +270,7 @@ module Cryptomarket
 
       def subscribe_to_price_rates(callback:, speed:, target_currency:, currencies: ['*'], result_callback: nil)
         params = {
-          speed: speed,
-          target_currency: target_currency,
-          currencies: currencies
+          speed: speed, target_currency: target_currency, currencies: currencies
         }
         send_channel_subscription("price/rate/#{speed}", params, callback,
                                   intercept_result_callback(result_callback))
@@ -295,9 +294,7 @@ module Cryptomarket
       def subscribe_to_price_rates_in_batches(callback:, speed:, target_currency:, currencies: ['*'],
                                               result_callback: nil)
         params = {
-          speed: speed,
-          target_currency: target_currency,
-          currencies: currencies
+          speed: speed, target_currency: target_currency, currencies: currencies
         }
         send_channel_subscription("price/rate/#{speed}/batch", params, callback,
                                   intercept_result_callback(result_callback))

@@ -10,11 +10,11 @@ class TestRestTradingMethods < Test::Unit::TestCase
 
   def test_get_spot_orders_history
     result = @client.get_spot_orders_history limit: 12
-    result.each { |val| assert(goodOrder(val)) }
+    result.each { |val| assert(good_order(val)) }
   end
 
   def test_get_spot_trades_history
     result = @client.get_spot_trades_history symbol: 'EOSETH'
-    result.each { |val| assert(goodTrade(val)) }
+    result.each { |val| assert(good_trade(val)) }
   end
 end

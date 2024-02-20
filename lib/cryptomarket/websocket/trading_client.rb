@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength
 require_relative 'auth_client'
 require_relative '../constants'
 
@@ -177,10 +178,7 @@ module Cryptomarket
       # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of reports of the created orders
 
       def create_spot_order_list(
-        orders:,
-        contingency_type:,
-        order_list_id: nil,
-        callback: nil
+        orders:, contingency_type:, order_list_id: nil, callback: nil
       )
         request('spot_new_order_list', callback, {
                   orders: orders, contingency_type: contingency_type, order_list_id: order_list_id

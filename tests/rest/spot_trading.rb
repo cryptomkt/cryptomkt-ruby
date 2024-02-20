@@ -11,17 +11,17 @@ class TestRestTradingMethods < Test::Unit::TestCase
 
   def test_get_spot_trading_balance
     result = @client.get_spot_trading_balance
-    assert(goodList(->(val) do goodBalance(val) end, result))
+    assert(good_list(->(val) do good_balance(val) end, result))
   end
 
   def test_get_spot_trading_balance_of_currency
     result = @client.get_spot_trading_balance_of_currency currency: 'USDT'
-    assert(goodBalance(result))
+    assert(good_balance(result))
   end
 
   def get_all_active_spot_orders
     result = @client.getActiveOrders
-    result.each { |val| assert(goodOrder(val)) }
+    result.each { |val| assert(good_order(val)) }
   end
 
   def test_spot_order_lifecycle
@@ -33,9 +33,9 @@ class TestRestTradingMethods < Test::Unit::TestCase
       side: 'sell',
       client_order_id: timestamp
     )
-    assert(goodOrder(order))
+    assert(good_order(order))
     order = @client.get_active_spot_order client_order_id: timestamp
-    assert(goodOrder(order))
+    assert(good_order(order))
 
     new_client_order_id = Time.now.to_i.to_s + '1'
     order = @client.replace_spot_order(
@@ -44,25 +44,25 @@ class TestRestTradingMethods < Test::Unit::TestCase
       quantity: '0.02',
       price: '999'
     )
-    assert(goodOrder(order))
+    assert(good_order(order))
     order = @client.cancel_spot_order client_order_id: new_client_order_id
-    assert(goodOrder(order))
+    assert(good_order(order))
     assert(order['status'] == 'canceled')
   end
 
   def test_cancel_all_spot_orders
     result = @client.cancel_all_spot_orders
-    assert(goodList(->(val) do goodOrder(val) end, result))
+    assert(good_list(->(val) do good_order(val) end, result))
   end
 
   def test_get_all_trading_commission
     result = @client.get_all_trading_commission
-    assert(goodList(->(val) do goodTradingCommission(val) end, result))
+    assert(good_list(->(val) do good_trading_commission(val) end, result))
   end
 
   def test_get_trading_commission
     result = @client.get_trading_commission symbol: 'EOSETH'
-    assert(goodTradingCommission(result))
+    assert(good_trading_commission(result))
   end
 
   def test_create_order_list
