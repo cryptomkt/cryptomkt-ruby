@@ -24,7 +24,7 @@ class TestWSTradingSubs < Test::Unit::TestCase
 
   def test_reports # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @wsclient.subscribe_to_reports(
-      callback: gen_check_notification_list_w_n_type_callback(WSChecks.good_report, @veredict_checker),
+      callback: gen_check_notification_list_w_n_type_callback(WSCheck.good_report, @veredict_checker),
       result_callback: gen_result_callback(@veredict_checker)
     )
     sleep(10 * @@SECOND)
@@ -32,11 +32,11 @@ class TestWSTradingSubs < Test::Unit::TestCase
     symbol = 'EOSETH'
     @wsclient.create_spot_order(
       symbol: symbol, price: '10000', quantity: '0.01', side: 'sell', client_order_id: timestamp,
-      callback: gen_check_result_callback(WSChecks.good_report, @veredict_checker)
+      callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(10 * @@SECOND)
     @wsclient.cancel_spot_order(
-      client_order_id: timestamp, callback: gen_check_result_callback(WSChecks.good_report, @veredict_checker)
+      client_order_id: timestamp, callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(5 * @@SECOND)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
@@ -44,7 +44,7 @@ class TestWSTradingSubs < Test::Unit::TestCase
 
   def test_spot_balance # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @wsclient.subscribe_to_spot_balance(
-      callback: gen_check_notification_list_callback(WSChecks.good_balance, @veredict_checker),
+      callback: gen_check_notification_list_callback(WSCheck.good_balance, @veredict_checker),
       result_callback: gen_result_callback(@veredict_checker),
       mode: 'updates'
     )

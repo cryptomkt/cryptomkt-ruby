@@ -21,7 +21,7 @@ class TestWSWalletClient < Test::Unit::TestCase
 
   def test_get_wallet_balances
     @wsclient.get_wallet_balances(
-      callback: gen_check_result_list_callback(WSChecks.good_balance, @veredict_checker)
+      callback: gen_check_result_list_callback(WSCheck.good_balance, @veredict_checker)
     )
     sleep(2)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
@@ -30,7 +30,7 @@ class TestWSWalletClient < Test::Unit::TestCase
   def test_get_wallet_balance
     @wsclient.get_wallet_balance(
       currency: 'EOS',
-      callback: gen_check_result_callback(WSChecks.good_balance, @veredict_checker)
+      callback: gen_check_result_callback(WSCheck.good_balance, @veredict_checker)
     )
     sleep(2)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
@@ -38,7 +38,7 @@ class TestWSWalletClient < Test::Unit::TestCase
 
   def test_get_transactions
     @wsclient.get_transactions(
-      callback: gen_check_result_list_callback(WSChecks.good_transaction, @veredict_checker)
+      callback: gen_check_result_list_callback(WSCheck.good_transaction, @veredict_checker)
     )
     sleep(2)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)

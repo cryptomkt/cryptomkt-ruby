@@ -21,7 +21,7 @@ class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
 
   def test_get_spot_trading_balance
     @wsclient.get_spot_trading_balance(
-      callback: gen_check_result_callback(WSChecks.good_balance, @veredict_checker), currency: 'EOS'
+      callback: gen_check_result_callback(WSCheck.good_balance, @veredict_checker), currency: 'EOS'
     )
     sleep(3)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
@@ -29,7 +29,7 @@ class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
 
   def test_get_spot_trading_balances
     @wsclient.get_spot_trading_balances(
-      callback: gen_check_result_list_callback(WSChecks.good_balance, @veredict_checker)
+      callback: gen_check_result_list_callback(WSCheck.good_balance, @veredict_checker)
     )
     sleep(3)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
@@ -40,25 +40,25 @@ class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
     symbol = 'EOSETH'
     @wsclient.create_spot_order(
       client_order_id: timestamp, symbol: symbol, side: 'sell', price: '10000', quantity: '0.01',
-      callback: gen_check_result_callback(WSChecks.good_report, @veredict_checker)
+      callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(3)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
-    @wsclient.get_active_spot_orders(callback: gen_check_result_list_callback(WSChecks.good_report, @veredict_checker))
+    @wsclient.get_active_spot_orders(callback: gen_check_result_list_callback(WSCheck.good_report, @veredict_checker))
     sleep(3)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
 
     new_timestamp = Time.now.to_i.to_s
     @wsclient.replace_spot_order(
       client_order_id: timestamp, new_client_order_id: new_timestamp, price: '20000', quantity: '0.02',
-      callback: gen_check_result_callback(WSChecks.good_report, @veredict_checker)
+      callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(3)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
-    @wsclient.get_active_spot_orders(callback: gen_check_result_list_callback(WSChecks.good_report, @veredict_checker))
+    @wsclient.get_active_spot_orders(callback: gen_check_result_list_callback(WSCheck.good_report, @veredict_checker))
     sleep(3)
     @wsclient.cancel_spot_order(
-      client_order_id: new_timestamp, callback: gen_check_result_callback(WSChecks.good_report, @veredict_checker)
+      client_order_id: new_timestamp, callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(3)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
@@ -69,25 +69,25 @@ class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
     symbol = 'EOSETH'
     @wsclient.create_spot_order(
       client_order_id: Time.now.to_i.to_s, symbol: symbol, side: 'sell', price: '10000', quantity: '0.01',
-      callback: gen_check_result_callback(WSChecks.good_report, @veredict_checker)
+      callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(3)
     @wsclient.create_spot_order(
       client_order_id: Time.now.to_i.to_s, symbol: symbol, side: 'sell', price: '10000', quantity: '0.01',
-      callback: gen_check_result_callback(WSChecks.good_report, @veredict_checker)
+      callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(3)
-    @wsclient.get_active_spot_orders(callback: gen_check_result_list_callback(WSChecks.good_report, @veredict_checker))
+    @wsclient.get_active_spot_orders(callback: gen_check_result_list_callback(WSCheck.good_report, @veredict_checker))
     sleep(3)
-    @wsclient.cancel_spot_orders(callback: gen_check_result_list_callback(WSChecks.good_report, @veredict_checker))
+    @wsclient.cancel_spot_orders(callback: gen_check_result_list_callback(WSCheck.good_report, @veredict_checker))
     sleep(3)
-    @wsclient.get_active_spot_orders(callback: gen_check_result_list_callback(WSChecks.good_report, @veredict_checker))
+    @wsclient.get_active_spot_orders(callback: gen_check_result_list_callback(WSCheck.good_report, @veredict_checker))
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
   end
 
   def test_get_spot_commissions
     @wsclient.get_spot_commissions(
-      callback: gen_check_result_list_callback(WSChecks.good_commission, @veredict_checker)
+      callback: gen_check_result_list_callback(WSCheck.good_commission, @veredict_checker)
     )
     sleep(3)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
@@ -95,7 +95,7 @@ class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
 
   def test_get_spot_commission
     @wsclient.get_spot_commission(
-      symbol: 'EOSETH', callback: gen_check_result_callback(WSChecks.good_commission, @veredict_checker)
+      symbol: 'EOSETH', callback: gen_check_result_callback(WSCheck.good_commission, @veredict_checker)
     )
     sleep(3)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
@@ -122,7 +122,7 @@ class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
           'price' => '1000'
         }
       ],
-      callback: gen_check_result_callback(WSChecks.good_report, @veredict_checker)
+      callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(5)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)

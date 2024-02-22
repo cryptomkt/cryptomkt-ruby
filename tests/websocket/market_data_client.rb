@@ -23,7 +23,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
   def test_trades_subscription
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_trades(
-      callback: gen_check_notification_hash_list_callback(WSChecks.good_ws_public_trade, veredict_checker),
+      callback: gen_check_notification_hash_list_callback(WSCheck.good_ws_public_trade, veredict_checker),
       symbols: %w[eoseth ethbtc],
       limit: 2,
       result_callback: gen_result_callback(veredict_checker)
@@ -36,7 +36,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_candles(
       period: 'M1',
-      callback: gen_check_notification_hash_list_callback(WSChecks.good_ws_public_candle, veredict_checker),
+      callback: gen_check_notification_hash_list_callback(WSCheck.good_ws_public_candle, veredict_checker),
       symbols: %w[eoseth ethbtc],
       limit: 2,
       result_callback: gen_result_callback(veredict_checker)
@@ -49,7 +49,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_mini_ticker(
       speed: '1s',
-      callback: gen_check_notification_hash_callback(WSChecks.good_ws_mini_ticker, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_ws_mini_ticker, veredict_checker),
       symbols: %w[eoseth ethbtc],
       result_callback: gen_result_callback(veredict_checker)
     )
@@ -61,7 +61,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_mini_ticker_in_batches(
       speed: '1s',
-      callback: gen_check_notification_hash_callback(WSChecks.good_ws_mini_ticker, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_ws_mini_ticker, veredict_checker),
       symbols: %w[eoseth ethbtc],
       result_callback: gen_result_callback(veredict_checker)
     )
@@ -73,7 +73,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_ticker(
       speed: '1s',
-      callback: gen_check_notification_hash_callback(WSChecks.good_ticker, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_ticker, veredict_checker),
       symbols: %w[eoseth ethbtc],
       result_callback: gen_result_callback(veredict_checker)
     )
@@ -85,7 +85,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_ticker_in_batches(
       speed: '1s',
-      callback: gen_check_notification_hash_callback(WSChecks.good_ticker, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_ticker, veredict_checker),
       result_callback: gen_result_callback(veredict_checker)
     )
     sleep(10 * @@SECOND)
@@ -95,7 +95,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
   def test_subscribe_to_full_order_book
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_full_order_book(
-      callback: gen_check_notification_hash_callback(WSChecks.good_orderbook, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_orderbook, veredict_checker),
       symbols: %w[eoseth ethbtc],
       result_callback: gen_result_callback(veredict_checker)
     )
@@ -108,7 +108,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     @wsclient.subscribe_to_partial_order_book(
       speed: '100ms',
       depth: 'D5',
-      callback: gen_check_notification_hash_callback(WSChecks.good_orderbook, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_orderbook, veredict_checker),
       result_callback: gen_result_callback(veredict_checker)
     )
     sleep(10 * @@SECOND)
@@ -120,7 +120,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     @wsclient.subscribe_to_partial_order_book_in_batches(
       speed: '100ms',
       depth: 'D5',
-      callback: gen_check_notification_hash_callback(WSChecks.good_orderbook, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_orderbook, veredict_checker),
       symbols: %w[eoseth ethbtc],
       result_callback: gen_result_callback(veredict_checker)
     )
@@ -132,7 +132,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_top_of_book(
       speed: '100ms',
-      callback: gen_check_notification_hash_callback(WSChecks.good_orderbook_top, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_orderbook_top, veredict_checker),
       symbols: %w[eoseth ethbtc],
       result_callback: gen_result_callback(veredict_checker)
     )
@@ -144,7 +144,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_top_of_book_in_batches(
       speed: '100ms',
-      callback: gen_check_notification_hash_callback(WSChecks.good_orderbook_top, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_orderbook_top, veredict_checker),
       symbols: %w[eoseth ethbtc],
       result_callback: gen_result_callback(veredict_checker)
     )
@@ -156,7 +156,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_price_rates(
       speed: '1s',
-      callback: gen_check_notification_hash_callback(WSChecks.good_price_rate, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_price_rate, veredict_checker),
       target_currency: 'ETH',
       currencies: %w[eos btc],
       result_callback: gen_result_callback(veredict_checker)
@@ -169,7 +169,7 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_price_rates_in_batches(
       speed: '1s',
-      callback: gen_check_notification_hash_callback(WSChecks.good_price_rate, veredict_checker),
+      callback: gen_check_notification_hash_callback(WSCheck.good_price_rate, veredict_checker),
       target_currency: 'ETH',
       currencies: %w[eos btc],
       result_callback: gen_result_callback(veredict_checker)

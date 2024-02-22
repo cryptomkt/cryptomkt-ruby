@@ -22,7 +22,7 @@ class TestWSaccount < Test::Unit::TestCase
 
   def test_transaction_and_balance_subscription # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     @wsclient.subscribe_to_transactions(
-      callback: gen_check_notification_w_n_type_callback(WSChecks.good_transaction, @veredict_checker),
+      callback: gen_check_notification_w_n_type_callback(WSCheck.good_transaction, @veredict_checker),
       result_callback: gen_result_callback(@veredict_checker)
     )
     sleep(3)
@@ -34,7 +34,7 @@ class TestWSaccount < Test::Unit::TestCase
     )
     sleep(3)
     @wsclient.subscribe_to_wallet_balance(
-      callback: gen_check_notification_list_w_n_type_callback(WSChecks.good_balance, @veredict_checker),
+      callback: gen_check_notification_list_w_n_type_callback(WSCheck.good_balance, @veredict_checker),
       result_callback: gen_result_callback(@veredict_checker)
     )
     sleep(3)
