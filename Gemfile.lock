@@ -56,12 +56,12 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  eventmachine
-  faye-websocket
-  openssl
-  rest-client
-  rubocop
-  test-unit
+  eventmachine (= 1.2.7)
+  faye-websocket (= 0.11.3)
+  openssl (= 3.2.0)
+  rest-client (= 2.1.0)
+  rubocop (= 1.60.2)
+  test-unit (= 3.6.2)
 
 BUNDLED WITH
    2.3.5

@@ -109,10 +109,18 @@ module Cryptomarket
       #
       # ==== Params
       # +String+ +currency+:: The currency code to query the balance
-      # +Proc+ +callback+:: A +Proc+ called with an user balance
+      # +Proc+ +callback+:: A +Proc+ called with a user balance
 
       def get_wallet_balance(currency:, callback:)
-        request('wallet_balance', callback, { currency: currency })
+        interceptor = lambda { |err, balance|
+          unless err.nil?
+            callback.call(err, nil)
+            return
+          end
+          balance['currency'] = currency
+          callback.call(err, balance)
+        }
+        request('wallet_balance', interceptor, { currency: currency })
       end
 
       # Get the transaction history of the account

@@ -35,7 +35,7 @@ module Cryptomarket
     def make_post_request(method:, endpoint:, params: nil)
       uri = URI(@@API_URL + @@API_VERSION + endpoint)
       payload = build_payload(params)
-      do_request(method, uri, payload, build_post_headers(endpoint, payload), is_json: true)
+      do_request(method, uri, payload, build_post_headers(endpoint, payload))
     end
 
     def build_headers(method, endpoint, params, public)
@@ -52,11 +52,10 @@ module Cryptomarket
       payload
     end
 
-    def do_request(method, uri, payload, headers, is_json: false)
+    def do_request(method, uri, payload, headers)
       response = RestClient::Request.execute(
         method: method.downcase.to_sym, url: uri.to_s, payload: payload.to_json, headers: headers
       )
-      response[:content_type] = :json if is_json
       handle_response(response)
     rescue RestClient::ExceptionWithResponse => e
       handle_response(e.response)

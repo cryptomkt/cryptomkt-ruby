@@ -19,23 +19,7 @@ end
 def good_params(a_hash, fields)
   return false if a_hash.nil?
 
-  fields.each do |field|
-    return false unless defined(a_hash, field)
-  end
-  true
-end
-
-def good_list(check_fn, list)
-  list.each do |elem|
-    return false unless check_fn.call(elem)
-  end
-  true
-end
-
-def good_hash(_check_fn, hash)
-  hash.each_value do |elem|
-    return false unless check_fn(elem)
-  end
+  fields.each { |field| return false unless defined(a_hash, field) }
   true
 end
 
@@ -51,9 +35,7 @@ module Checks # rubocop:disable Style/Documentation
                        ])
     return false unless good
 
-    currency['networks'].each do |level|
-      return false unless good_network(level)
-    end
+    currency['networks'].each { |level| return false unless good_network(level) }
     true
   end
 
@@ -85,9 +67,7 @@ module Checks # rubocop:disable Style/Documentation
     good = good_params(price_history, %w[currency history])
     return false unless good
 
-    price_history['history'].each do |point|
-      return false unless good_history_point(point)
-    end
+    price_history['history'].each { |point| return false unless good_history_point(point) }
     true
   end
 
@@ -104,16 +84,11 @@ module Checks # rubocop:disable Style/Documentation
   end
 
   def good_orderbook(orderbook)
-    good_orderbook = good_params(orderbook,
-                                 %w[timestamp ask bid])
+    good_orderbook = good_params(orderbook, %w[timestamp ask bid])
     return false unless good_orderbook
 
-    orderbook['ask'].each do |level|
-      return false unless good_orderbook_level(level)
-    end
-    orderbook['bid'].each do |level|
-      return false unless good_orderbook_level(level)
-    end
+    orderbook['ask'].each { |level| return false unless good_orderbook_level(level) }
+    orderbook['bid'].each { |level| return false unless good_orderbook_level(level) }
     true
   end
 
@@ -131,23 +106,22 @@ module Checks # rubocop:disable Style/Documentation
                    quantity price quantity_cumulative created_at updated_at])
   end
 
-  def self.good_trade
+  def good_trade
     lambda { |trade|
       good_params(trade, %w[id orderId clientOrderId symbol side quantity
                             price fee timestamp])
     }
   end
 
-  def good_native_transaction(native_transaction)
+  def self.good_native_transaction(native_transaction)
     good_params(native_transaction, %w[tx_id index currency amount])
   end
 
-  def good_transaction(transaction)
-    good = good_params(transaction,
-                       %w[id status type subtype created_at updated_at])
+  def self.good_transaction(transaction)
+    good = good_params(transaction, %w[id status type subtype created_at updated_at])
     return false unless good
 
-    return false if transaction.key?('native') && !good_native_transaction(transaction['native'])
+    return false if transaction.key?('native') && !Checks.good_native_transaction(transaction['native'])
 
     true
   end
@@ -182,12 +156,8 @@ module WSChecks # rubocop:disable Style/Documentation
     lambda { |orderbook|
       return false unless good_params(orderbook, %w[t s a b])
 
-      orderbook['a'].each do |level|
-        return false unless good_orderbook_level(level)
-      end
-      orderbook['b'].each do |level|
-        return false unless good_orderbook_level(level)
-      end
+      orderbook['a'].each { |level| return false unless good_orderbook_level(level) }
+      orderbook['b'].each { |level| return false unless good_orderbook_level(level) }
       true
     }
   end
@@ -199,18 +169,30 @@ module WSChecks # rubocop:disable Style/Documentation
   def self.good_price_rate
     ->(price_rate) { good_params(price_rate, %w[t r]) }
   end
-end
 
-class VeredictChecker # rubocop:disable Style/Documentation
-  def initialize
-    @veredict = true
+  def self.good_report
+    lambda { |report|
+      good_params(report,
+                  %w[id client_order_id symbol side status type time_in_force
+                     quantity price quantity_cumulative created_at updated_at])
+    }
   end
 
-  def good_veredict?
-    @veredict
+  def self.good_balance
+    ->(balance) { good_params(balance, %w[currency available reserved]) }
   end
 
-  def append(veredict)
-    @veredict &&= veredict
+  def self.good_commission
+    ->(commission) { good_params(commission, %w[symbol take_rate make_rate]) }
+  end
+
+  def self.good_transaction
+    ->(transaction) { Checks.good_transaction(transaction) }
+  end
+
+  def self.print
+    lambda { |reports|
+      puts reports
+    }
   end
 end
