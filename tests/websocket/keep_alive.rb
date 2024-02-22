@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test/unit'
 require_relative '../../lib/cryptomarket/websocket/market_data_client'
 require_relative '../key_loader'
@@ -17,7 +19,7 @@ class TestWStrading < Test::Unit::TestCase
     end
   }
   @@feed_callback = proc { |_feed|
-    puts 'feed: ' + Time.now.to_s
+    puts "feed: #{Time.now}"
   }
 
   def test_keep_socket_alive

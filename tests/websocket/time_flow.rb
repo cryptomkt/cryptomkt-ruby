@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'time'
 
 class TimeFlow
@@ -5,10 +7,10 @@ class TimeFlow
     @last_time = nil
   end
 
-  def checkNextTime(timestamp)
+  def check_next_time(timestamp)
     current_time = Time.parse(timestamp)
     good_flow = true
-    if !@last_time.nil? and current_time - @last_time <= 0
+    if !@last_time.nil? && (current_time - @last_time <= 0)
       puts "last:#{@last_time}\tcurrent:#{current_time}"
       good_flow = false
     end

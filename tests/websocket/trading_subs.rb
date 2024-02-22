@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test/unit'
 require_relative '../../lib/cryptomarket/websocket/trading_client'
 require_relative '../key_loader'
@@ -20,10 +22,10 @@ class TestWSTradingSubs < Test::Unit::TestCase
     sleep(2)
   end
 
-  def test_reports
+  def test_reports # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     puts '***REPORT TESTS***'
     callback = proc { |feed|
-      puts Time.now.to_s + ' report'
+      puts "#{Time.now} report"
       puts feed
     }
     @wsclient.subscribe_to_reports(callback: callback)
@@ -39,16 +41,16 @@ class TestWSTradingSubs < Test::Unit::TestCase
       end
     }
     @wsclient.create_spot_order(symbol: symbol, price: '10000', quantity: '0.01', side: 'sell',
-                                client_order_id: timestamp)
+                                client_order_id: timestamp, callback: callback)
     sleep(10 * @@SECOND)
     @wsclient.cancel_spot_order(client_order_id: timestamp)
     sleep(5 * @@SECOND)
   end
 
-  def test_spot_balance
+  def test_spot_balance # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     puts '***REPORT TESTS***'
     callback = proc { |feed|
-      puts Time.now.to_s + ' balance'
+      puts "#{Time.now} balance"
       puts feed
     }
     @wsclient.subscribe_to_spot_balance(callback: callback)

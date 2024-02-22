@@ -24,29 +24,29 @@ module Cryptomarket
         @thread = Thread.new do
           EM.run do
             @ws = Faye::WebSocket::Client.new(@url)
-            @ws.onopen = @on_open
-            @ws.onclose = @on_close
-            @ws.onerror = @on_error
-            @ws.onmessage = @on_message
+            @ws.onopen = method(:_on_open)
+            @ws.onclose = method(:_on_close)
+            @ws.onerror = method(:_on_error)
+            @ws.onmessage = method(:_on_message)
           end
         end
       end
 
-      @on_open = lambda do |_event|
+      def _on_open(_open_event)
         @connected = true
         @handler.on_open
       end
 
-      @on_close = lambda do |_close|
+      def _on_close(_close_event)
         @handler.on_close
         EM.stop
       end
 
-      @on_error = lambda do |error|
+      def _on_error(error)
         @handler.on_error(error)
       end
 
-      @on_message = lambda do |message|
+      def _on_message(message)
         @handler.handle(JSON.parse(message.data.to_s))
       end
 

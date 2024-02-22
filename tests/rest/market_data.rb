@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test/unit'
 require_relative '../../lib/cryptomarket/client'
 require_relative '../checks'
@@ -72,14 +74,14 @@ class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Docum
     result.each_value { |val| assert(good_price_history(val)) }
   end
 
-  def test_get_ticker_price
+  def test_get_ticker_prices
     result = @client.get_ticker_prices symbols: %w[PAXGUSDT ETHBTC]
     assert(false, 'wrong number of ticker prices') if result.length != 2
     result.each_value { |val| assert(good_ticker_price(val)) }
   end
 
-  def test_get_ticker_price_of_symbol
-    result = @client.get_ticker_price_of_symbol symbol: 'PAXGUSDT'
+  def test_get_ticker_price
+    result = @client.get_ticker_price symbol: 'PAXGUSDT'
     assert(good_ticker_price(result))
   end
 
@@ -90,8 +92,8 @@ class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Docum
     end
   end
 
-  def test_get_trades_of_symbol
-    result = @client.get_trades_of_symbol(symbol: 'USDTDAI', limit: 5, offset: 10)
+  def test_get_trades_by_symbol
+    result = @client.get_trades_by_symbol(symbol: 'USDTDAI', limit: 5, offset: 10)
     result.each { |val| assert(good_public_trade(val)) }
   end
 
@@ -102,13 +104,13 @@ class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Docum
     end
   end
 
-  def test_get_orderbook_of_symbol
-    result = @client.get_orderbook_of_symbol(symbol: 'EOSETH')
+  def test_get_orderbook
+    result = @client.get_orderbook(symbol: 'EOSETH')
     assert(good_orderbook(result))
   end
 
-  def test_get_orderbook_volume_of_symbol
-    result = @client.get_orderbook_volume_of_symbol(symbol: 'EOSETH', volume: '100')
+  def test_get_orderbook_volume
+    result = @client.get_orderbook_volume(symbol: 'EOSETH', volume: '100')
     assert(good_orderbook(result))
   end
 
@@ -119,8 +121,8 @@ class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Docum
     end
   end
 
-  def test_get_candles_of_symbol
-    result = @client.get_candles_of_symbol(symbol: 'EOSETH', limit: 2)
+  def test_get_candles_by_symbol
+    result = @client.get_candles_by_symbol(symbol: 'EOSETH', limit: 2)
     result.each do |candle|
       assert(good_candle(candle))
     end

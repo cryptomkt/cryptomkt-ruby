@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test/unit'
 require_relative '../../lib/cryptomarket/websocket/wallet_client'
 require_relative '../../lib/cryptomarket/client'
@@ -16,7 +18,7 @@ class TestWSaccount < Test::Unit::TestCase
     sleep(2)
   end
 
-  def test_transaction_subscription
+  def test_transaction_subscription # rubocop:disable Metrics/MethodLength
     msg = ''
     callback = proc { |notification, _type|
       print notification

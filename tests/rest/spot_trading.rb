@@ -9,13 +9,13 @@ class TestRestTradingMethods < Test::Unit::TestCase
     @client = Cryptomarket::Client.new api_key: Keyloader.api_key, api_secret: Keyloader.api_secret
   end
 
-  def test_get_spot_trading_balance
-    result = @client.get_spot_trading_balance
+  def test_get_spot_trading_balances
+    result = @client.get_spot_trading_balances
     assert(good_list(->(val) do good_balance(val) end, result))
   end
 
-  def test_get_spot_trading_balance_of_currency
-    result = @client.get_spot_trading_balance_of_currency currency: 'USDT'
+  def test_get_spot_trading_balance
+    result = @client.get_spot_trading_balance currency: 'USDT'
     assert(good_balance(result))
   end
 

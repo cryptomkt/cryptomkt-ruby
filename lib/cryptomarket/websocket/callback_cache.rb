@@ -9,6 +9,7 @@ module Cryptomarket
     class CallbackCache
       def initialize
         @reusable_callbacks = {}
+        @subscription_callbacks = {}
         @next_id = 1
       end
 
@@ -34,19 +35,19 @@ module Cryptomarket
       end
 
       def store_subscription_callback(key, callback)
-        @reusable_callbacks[key] = callback
+        @subscription_callbacks[key] = callback
       end
 
       def get_subscription_callback(key)
-        return nil unless @reusable_callbacks.key? key
+        return nil unless @subscription_callbacks.key? key
 
-        @reusable_callbacks[key]
+        @subscription_callbacks[key]
       end
 
       def delete_subscription_callback(key)
-        return unless @reusable_callbacks.key? key
+        return unless @subscription_callbacks.key? key
 
-        @reusable_callbacks.delete(key)
+        @subscription_callbacks.delete(key)
       end
     end
   end

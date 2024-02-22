@@ -18,9 +18,7 @@ module Cryptomarket
       def send_channel_subscription(channel, callback, result_callback, params = {})
         params = params.compact unless params.nil?
         payload = { 'method' => 'subscribe', 'ch' => channel, 'params' => params }
-
-        key = channel
-        @callback_cache.store_subscription_callback(key, callback)
+        @callback_cache.store_subscription_callback(channel, callback)
         unless result_callback.nil?
           id = @callback_cache.store_callback(result_callback)
           payload['id'] = id

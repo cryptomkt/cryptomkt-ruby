@@ -275,7 +275,7 @@ module Cryptomarket
       # +String+ +symbol+:: The symbol of the commission rate
       # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a commission for a symbol for the user
 
-      def get_spot_commission_of_symbol(symbol:, callback:)
+      def get_spot_commission(symbol:, callback:)
         request('spot_fee', callback, { symbol: symbol })
       end
     end

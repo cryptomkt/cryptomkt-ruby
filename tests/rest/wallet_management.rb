@@ -8,16 +8,16 @@ class TestRestTradingMethods < Test::Unit::TestCase
     @client = Cryptomarket::Client.new api_key: Keyloader.api_key, api_secret: Keyloader.api_secret
   end
 
-  def test_get_wallet_balance
-    result = @client.get_wallet_balance
+  def test_get_wallet_balances
+    result = @client.get_wallet_balances
     assert(good_list(
              ->(balance) do good_balance(balance) end,
              result
            ))
   end
 
-  def test_get_wallet_balance_of_currency
-    result = @client.get_wallet_balance_of_currency currency: 'EOS'
+  def test_get_wallet_balance
+    result = @client.get_wallet_balance currency: 'EOS'
     assert(good_params(result, %w[reserved available]))
   end
 
@@ -29,8 +29,8 @@ class TestRestTradingMethods < Test::Unit::TestCase
            ))
   end
 
-  def test_get_deposit_crypto_address_of_currency
-    result = @client.get_deposit_crypto_address_of_currency currency: 'ADA'
+  def test_get_deposit_crypto_address
+    result = @client.get_deposit_crypto_address currency: 'ADA'
     assert(good_address(result))
   end
 
@@ -56,7 +56,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
   end
 
   def test_withdraw_crypto
-    ada_address = @client.get_deposit_crypto_address_of_currency(currency: 'ADA')['address']
+    ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
     transaction_id = @client.withdraw_crypto(
       currency: 'ADA',
       amount: '0.1',
@@ -66,7 +66,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
   end
 
   def test_withdraw_crypto_commit
-    ada_address = @client.get_deposit_crypto_address_of_currency(currency: 'ADA')['address']
+    ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
     transaction_id = @client.withdraw_crypto(
       currency: 'ADA',
       amount: '0.1',
@@ -78,7 +78,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
   end
 
   def test_withdraw_crypto_rollback
-    ada_address = @client.get_deposit_crypto_address_of_currency(currency: 'ADA')['address']
+    ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
     transaction_id = @client.withdraw_crypto(
       currency: 'ADA',
       amount: '0.1',
@@ -100,7 +100,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
   end
 
   def test_crypto_address_belongs_to_current_account
-    ada_address = @client.get_deposit_crypto_address_of_currency(currency: 'ADA')['address']
+    ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
     it_belongs = @client.crypto_address_belongs_to_current_account? address: ada_address
     assert(it_belongs)
   end
@@ -138,7 +138,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
   end
 
   def test_offchain_available
-    eos_address = @client.get_deposit_crypto_address_of_currency(currency: 'EOS')['address']
+    eos_address = @client.get_deposit_crypto_address(currency: 'EOS')['address']
     result = @client.offchain_available?(
       currency: 'EOS',
       address: eos_address

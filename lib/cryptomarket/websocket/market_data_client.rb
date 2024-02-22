@@ -31,7 +31,7 @@ module Cryptomarket
 
       def subscribe_to_trades(callback:, symbols:, limit: nil, result_callback: nil)
         params = { 'symbols' => symbols, 'limit' => limit }
-        send_channel_subscription('trades', params, callback, intercept_result_callback(result_callback))
+        send_channel_subscription('trades', callback, intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of candles
@@ -56,8 +56,8 @@ module Cryptomarket
 
       def subscribe_to_candles(callback:, period:, symbols:, limit: nil, result_callback: nil)
         params = { 'symbols' => symbols, 'limit' => limit }
-        send_channel_subscription("candles/#{period}", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("candles/#{period}", callback,
+                                  intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of mini tickers
@@ -78,8 +78,8 @@ module Cryptomarket
 
       def subscribe_to_mini_ticker(callback:, speed:, symbols: ['*'], result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription("ticker/price/#{speed}", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("ticker/price/#{speed}", callback,
+                                  intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of mini tickers
@@ -100,8 +100,8 @@ module Cryptomarket
 
       def subscribe_to_mini_ticker_in_batches(callback:, speed:, symbols: ['*'], result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription("ticker/price/#{speed}/batch", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("ticker/price/#{speed}/batch", callback,
+                                  intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of tickers
@@ -122,7 +122,7 @@ module Cryptomarket
 
       def subscribe_to_ticker(callback:, speed:, symbols: ['*'], result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription("ticker/#{speed}", params, callback, intercept_result_callback(result_callback))
+        send_channel_subscription("ticker/#{speed}", callback, intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of tickers
@@ -143,8 +143,7 @@ module Cryptomarket
 
       def subscribe_to_ticker_in_batches(callback:, speed:, symbols: ['*'], result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription("ticker/#{speed}/batch", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("ticker/#{speed}/batch", callback, intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of a full orderbook
@@ -167,7 +166,7 @@ module Cryptomarket
 
       def subscribe_to_full_order_book(callback:, symbols:, result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription('orderbook/full', params, callback, intercept_result_callback(result_callback))
+        send_channel_subscription('orderbook/full', callback, intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of a partial orderbook
@@ -189,8 +188,8 @@ module Cryptomarket
 
       def subscribe_to_partial_order_book(callback:, depth:, speed:, symbols: ['*'], result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription("orderbook/#{depth}/#{speed}", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("orderbook/#{depth}/#{speed}", callback,
+                                  intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of a partial orderbook in batches
@@ -211,8 +210,8 @@ module Cryptomarket
       def subscribe_to_partial_order_book_in_batches(callback:, depth:, speed:, symbols: ['*'],
                                                      result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription("orderbook/#{depth}/#{speed}/batch", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("orderbook/#{depth}/#{speed}/batch", callback,
+                                  intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of the top of the orderbook
@@ -231,8 +230,8 @@ module Cryptomarket
 
       def subscribe_to_top_of_book(callback:, speed:, symbols: ['*'], result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription("orderbook/top/#{speed}", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("orderbook/top/#{speed}", callback,
+                                  intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of the top of the orderbook
@@ -251,8 +250,8 @@ module Cryptomarket
 
       def subscribe_to_top_of_book_in_batches(callback:, speed:, symbols: ['*'], result_callback: nil)
         params = { 'symbols' => symbols }
-        send_channel_subscription("orderbook/top/#{speed}/batch", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("orderbook/top/#{speed}/batch", callback,
+                                  intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of the top of the orderbook
@@ -272,8 +271,7 @@ module Cryptomarket
         params = {
           speed: speed, target_currency: target_currency, currencies: currencies
         }
-        send_channel_subscription("price/rate/#{speed}", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("price/rate/#{speed}", callback, intercept_result_callback(result_callback), params)
       end
 
       # subscribe to a feed of the top of the orderbook
@@ -296,8 +294,8 @@ module Cryptomarket
         params = {
           speed: speed, target_currency: target_currency, currencies: currencies
         }
-        send_channel_subscription("price/rate/#{speed}/batch", params, callback,
-                                  intercept_result_callback(result_callback))
+        send_channel_subscription("price/rate/#{speed}/batch", callback,
+                                  intercept_result_callback(result_callback), params)
       end
     end
   end

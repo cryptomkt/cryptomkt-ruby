@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
+require 'concurrent'
 require 'test/unit'
 require_relative '../../lib/cryptomarket/websocket/trading_client'
 require_relative '../key_loader'
 require_relative '../checks'
 
-class TestWStrading < Test::Unit::TestCase
+#
+class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
   def setup
     @wsclient = Cryptomarket::Websocket::TradingClient.new api_key: Keyloader.api_key, api_secret: Keyloader.api_secret
     @wsclient.connect
@@ -12,6 +16,17 @@ class TestWStrading < Test::Unit::TestCase
   def teardown
     @wsclient.close
     sleep(2)
+  end
+
+  def gen_check_result_callback(_check_fn)
+    future = Concurrent::Promises.resolvable_future
+    callback = proc { |err, _result|
+      err_msg = ''
+      err_msg = err unless err.nil?
+      # err_msg = "check failed: #{result}" if check_fn.call(result)
+      future.fulfill err_msg
+    }
+    [callback, future]
   end
 
   def gen_list_checker_callback(checker)
@@ -51,7 +66,7 @@ class TestWStrading < Test::Unit::TestCase
     assert(hash[:msg] == '', hash[:msg])
   end
 
-  def test_order_work_flow
+  def test_order_work_flow # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     timestamp = Time.now.to_i.to_s
     symbol = 'EOSETH'
     hash = gen_checker_callback(->(order) { good_order(order) })
@@ -66,7 +81,7 @@ class TestWStrading < Test::Unit::TestCase
     sleep(3)
     assert(hash[:msg] == '', hash[:msg])
     hash2 = gen_checker_callback(lambda { |result|
-      for order in result
+      result.each do |order|
         return true if order['client_order_id'] == timestamp
       end
       false
@@ -86,7 +101,7 @@ class TestWStrading < Test::Unit::TestCase
     sleep(3)
     assert(hash[:msg] == '', hash[:msg])
     hash3 = gen_checker_callback(lambda { |result|
-      for order in result
+      result.each do |order|
         return true if order['client_order_id'] == new_timestamp
       end
       false
@@ -100,7 +115,7 @@ class TestWStrading < Test::Unit::TestCase
     assert(hash[:msg] == '', hash[:msg])
   end
 
-  def test_cancel_spot_orders
+  def test_cancel_spot_orders # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
     @wsclient.cancel_spot_orders
     symbol = 'EOSETH'
     @wsclient.create_spot_order(
@@ -131,7 +146,7 @@ class TestWStrading < Test::Unit::TestCase
       end
     )
     sleep(3)
-    @wsclient.get_active_spot_orders(callback: proc do |error, orderList|
+    @wsclient.get_active_spot_orders(callback: proc do |error, _order_list|
       unless error.nil?
         puts error
         return
@@ -141,7 +156,7 @@ class TestWStrading < Test::Unit::TestCase
     sleep(3)
     @wsclient.cancel_spot_orders
     sleep(3)
-    @wsclient.get_active_spot_orders(callback: proc do |error, orderList|
+    @wsclient.get_active_spot_orders(callback: proc do |error, _order_list|
       unless error.nil?
         puts error
         return
@@ -150,7 +165,7 @@ class TestWStrading < Test::Unit::TestCase
         puts 'nil order list'
         return
       end
-      puts 'wrong number of orders' if orderList.length != 0
+      puts 'wrong number of orders' unless orderList.empty?
     end)
   end
 
@@ -161,17 +176,17 @@ class TestWStrading < Test::Unit::TestCase
     assert(hash[:msg] == '', hash[:msg])
   end
 
-  def test_get_spot_commission_of_symbol
+  def test_get_spot_commission
     hash = gen_checker_callback(->(commission) { good_trading_commission(commission) })
-    @wsclient.get_spot_commission_of_symbol(symbol: 'EOS', callback: hash[:callback])
+    @wsclient.get_spot_commission(symbol: 'EOS', callback: hash[:callback])
     sleep(3)
     assert(hash[:msg] == '', hash[:msg])
   end
 
-  def test_create_spot_order_list
-    firstOrderID = Time.now.to_s
+  def test_create_spot_order_list # rubocop:disable Metrics/MethodLength
+    first_order_id = Time.now.to_s
     @wsclient.create_spot_order_list(
-      order_list_id: firstOrderID,
+      order_list_id: first_order_id,
       contingency_type: Cryptomarket::Args::Contingency::AON,
       orders: [
         {

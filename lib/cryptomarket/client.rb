@@ -185,7 +185,7 @@ module Cryptomarket
     # ==== Params
     # +String+ +symbol+:: A symbol id
 
-    def get_ticker_price_of_symbol(symbol:)
+    def get_ticker_price(symbol:)
       public_get("public/price/ticker/#{symbol}")
     end
 
@@ -227,7 +227,7 @@ module Cryptomarket
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1000
     # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100000
 
-    def get_trades_of_symbol(symbol: nil, by: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
+    def get_trades_by_symbol(symbol: nil, by: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
       public_get(
         "public/trades/#{symbol}",
         { by: by, sort: sort, from: from, till: till, limit: limit, offset: offset }
@@ -260,7 +260,7 @@ module Cryptomarket
     # +String+ +symbol+:: A symbol id
     # +Integer+ +depth+:: Optional. Order Book depth. Default value is 100. Set to 0 to view the full Order Book
 
-    def get_orderbook_of_symbol(symbol:, depth: nil)
+    def get_orderbook(symbol:, depth: nil)
       public_get("public/orderbook/#{symbol}", { depth: depth })
     end
 
@@ -275,7 +275,7 @@ module Cryptomarket
     # +String+ +symbol+:: A symbol id
     # +float+ +volume+:: Optional. Desired volume for market depth search
 
-    def get_orderbook_volume_of_symbol(symbol:, volume: nil)
+    def get_orderbook_volume(symbol:, volume: nil)
       public_get("public/orderbook/#{symbol}", { volume: volume })
     end
 
@@ -319,7 +319,7 @@ module Cryptomarket
     # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1000
     # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100000
 
-    def get_candles_of_symbol(symbol:, period: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
+    def get_candles_by_symbol(symbol:, period: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
       public_get(
         "public/candles/#{symbol}",
         { period: period, sort: sort, from: from, till: till, limit: limit, offset: offset }
@@ -336,7 +336,7 @@ module Cryptomarket
     #
     # https://api.exchange.cryptomkt.com/#get-spot-trading-balance
 
-    def get_spot_trading_balance # rubocop:disable Naming/AccessorMethodName
+    def get_spot_trading_balances # rubocop:disable Naming/AccessorMethodName
       get('spot/balance')
     end
 
@@ -349,7 +349,7 @@ module Cryptomarket
     # ==== Params
     # +String+ +currency+:: The currency code to query the balance
 
-    def get_spot_trading_balance_of_currency(currency:)
+    def get_spot_trading_balance(currency:)
       balance = get("spot/balance/#{currency}")
       balance['currency'] = currency
       balance
