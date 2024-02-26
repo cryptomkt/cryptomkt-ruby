@@ -7,7 +7,7 @@ require_relative '../constants'
 module Cryptomarket
   module Websocket
     # TradingClient connects via websocket to cryptomarket to enable the user to manage orders.
-    # uses SHA256 as auth method and authenticates automatically.
+    # uses SHA256 as auth method and authenticates automatically after ceonnection.
     class TradingClient < AuthClient
       # Creates a new client
       # ==== Params
@@ -42,7 +42,6 @@ module Cryptomarket
       # ==== Params
       # +Proc+ +callback+:: A +Proc+ that recieves notifications as a list of reports, and the type of notification (either 'snapshot' or 'update')
       # +Proc+ +result_callback+:: Optional. A +Proc+ called with a boolean value, indicating the success of the subscription
-
       def subscribe_to_reports(callback:, result_callback: nil)
         interceptor = proc { |notification, type|
           if type == Args::NotificationType::SNAPSHOT
@@ -60,7 +59,6 @@ module Cryptomarket
       #
       # ==== Params
       # +Proc+ +callback+:: Optional. A +Proc+ called with a boolean value, indicating the success of the unsubscription
-
       def unsubscribe_to_reports(callback: nil)
         send_unsubscription('spot_unsubscribe', callback, nil)
       end
@@ -75,7 +73,7 @@ module Cryptomarket
       # +Proc+ +result_callback+:: Optional. A +Proc+ called with a boolean value, indicating the success of the subscription
       # +Proc+ +String+ +mode+:: Optional. The type of subscription, Either 'updates' or 'batches'. Update messages arrive after an update. Batch messages arrive at equal intervals after a first update
       def subscribe_to_spot_balance(callback:, mode: nil, result_callback: nil)
-        interceptor = proc { |notification, _type|
+        interceptor = lambda { |notification, _type|
           callback.call(notification)
         }
         send_subscription('spot_balance_subscribe', interceptor, { mode: mode }, result_callback)
@@ -87,7 +85,6 @@ module Cryptomarket
       #
       # ==== Params
       # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a boolean value indicating the success of the unsubscription
-
       def unsubscribe_to_spot_balance(result_callback: nil)
         send_unsubscription(
           'spot_balance_unsubscribe',
@@ -102,7 +99,6 @@ module Cryptomarket
       #
       # ==== Params
       # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of reports for all active spot orders
-
       def get_active_spot_orders(callback:)
         request('spot_get_orders', callback)
       end
@@ -128,7 +124,6 @@ module Cryptomarket
       # +String+ +take_rate+:: Optional. Liquidity taker fee, a fraction of order volume, such as 0.001 (for 0.1% fee). Can only increase the fee. Used for fee markup.
       # +String+ +make_rate+:: Optional. Liquidity provider fee, a fraction of order volume, such as 0.001 (for 0.1% fee). Can only increase the fee. Used for fee markup.
       # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, the report of the created order
-
       def create_spot_order( # rubocop:disable Metrics/ParameterLists
         symbol:, side:, quantity:, client_order_id: nil, type: nil, time_in_force: nil, price: nil, stop_price: nil,
         expire_time: nil, strict_validate: nil, post_only: nil, take_rate: nil, make_rate: nil, callback: nil
@@ -142,10 +137,10 @@ module Cryptomarket
       # creates a list of spot orders
       #
       # = Types or contingency
-      # - Contingency::ALL_OR_NONE (AON)
-      # - Contingency::ONE_CANCEL_OTHER (OCO)
-      # - Contingency::ONE_TRIGGER_OTHER (OTO)
-      # - Contingency::ONE_TRIGGER_ONE_CANCEL_OTHER (OTOCO)
+      # - 'allOrNone' (AON)
+      # - 'oneCancelAnother' (OCO)
+      # - 'oneTriggerOther' (OTO)
+      # - 'oneTriggerOneCancelOther' (OTOCO)
       #
       # = Restriction in the number of orders:
       # - An AON list must have 2 or 3 orders
@@ -160,23 +155,21 @@ module Cryptomarket
       # - For an OTOCO order list, the symbol code of orders must be the same for all orders in the list (placing orders in different order books is not supported).
       #
       # = OrderType restrictions
-      # - For an AON order list, orders must be OrderType.LIMIT or OrderType.Market
-      # - For an OCO order list, orders must be OrderType.LIMIT, OrderType.STOP_LIMIT, OrderType.STOP_MARKET, OrderType.TAKE_PROFIT_LIMIT or OrderType.TAKE_PROFIT_MARKET.
+      # - For an AON order list, orders must be 'limit' or 'market'
+      # - For an OCO order list, orders must be 'limit', 'stopLimit', 'stopMarket', takeProfitLimit or takeProfitMarket.
       # - An OCO order list cannot include more than one limit order (the same
       # applies to secondary orders in an OTOCO order list).
       # - For OTO order list, there are no order type restrictions.
-      # - For an OTOCO order list, the first order must be OrderType.LIMIT, OrderType.MARKET, OrderType.STOP_LIMIT, OrderType.STOP_MARKET, OrderType.TAKE_PROFIT_LIMIT or OrderType.TAKE_PROFIT_MARKET.
+      # - For an OTOCO order list, the first order must be 'limit', 'market', 'stopLimit', 'stopMarket', takeProfitLimit or takeProfitMarket.
       # - For an OTOCO order list, the secondary orders have the same restrictions as an OCO order
-      # - Default is OrderType.Limit
+      # - Default is 'limit'
       #
-      # https://api.exchange.cryptomkt.com/#create-new-spot-order-list-2
+      # https://api.exchange.cryptomkt.com/#create-new-spot-order-list
       #
       # ==== Params
       # +String+ +order_list_id+:: order list identifier. If ommited, it will be generated by the system. Must be equal to the client order id of the first order in the request
-      # +String+ +contingency_type+:: order list type. allOrNone, oneCancelOther or oneTriggerOneCancelOther
-      # +Array[]+ +orders+:: the list of orders
-      # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of reports of the created orders
-
+      # +String+ +contingency_type+:: order list type. 'allOrNone', 'oneCancelOther' or 'oneTriggerOneCancelOther'
+      # +Array[]+ +orders+:: the list of orders. aech order in the list has the same parameters of a new spot order
       def create_spot_order_list(
         orders:, contingency_type:, order_list_id: nil, callback: nil
       )
@@ -203,7 +196,6 @@ module Cryptomarket
       #
       # ==== Params
       # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a report of the canceled order
-
       def cancel_spot_orders(callback: nil)
         request('spot_cancel_orders', callback)
       end
@@ -274,7 +266,6 @@ module Cryptomarket
       # ==== Params
       # +String+ +symbol+:: The symbol of the commission rate
       # +Proc+ +callback+:: A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a commission for a symbol for the user
-
       def get_spot_commission(symbol:, callback:)
         request('spot_fee', callback, { symbol: symbol })
       end

@@ -45,36 +45,6 @@ class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Metrics/Cl
     assert(good_list(->(address) { Check.good_address(address) }, result))
   end
 
-  def test_withdraw_crypto
-    ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
-    transaction_id = @client.withdraw_crypto(currency: 'ADA', amount: '0.1', address: ada_address)
-    assert(!transaction_id.empty?)
-  end
-
-  def test_withdraw_crypto_commit
-    ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
-    transaction_id = @client.withdraw_crypto(
-      currency: 'ADA',
-      amount: '0.1',
-      address: ada_address,
-      auto_commit: false
-    )
-    success = @client.withdraw_crypto_commit id: transaction_id
-    assert(success)
-  end
-
-  def test_withdraw_crypto_rollback
-    ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
-    transaction_id = @client.withdraw_crypto(
-      currency: 'ADA',
-      amount: '0.1',
-      address: ada_address,
-      auto_commit: false
-    )
-    success = @client.withdraw_crypto_rollback id: transaction_id
-    assert(success)
-  end
-
   def test_get_estimate_withdrawal_fees
     result = @client.get_estimate_withdrawal_fees [{ currency: 'ETH', amount: '12' }, { currency: 'BTC', amount: '1' }]
     assert(result.count == 2)

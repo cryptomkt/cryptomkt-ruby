@@ -7,7 +7,7 @@ require_relative '../key_loader'
 require_relative '../checks'
 require_relative '../checker_generator'
 
-class TestWSaccount < Test::Unit::TestCase
+class TestWSWalletClientSubscriptions < Test::Unit::TestCase # rubocop:disable Style/Documentation
   def setup
     @wsclient = Cryptomarket::Websocket::WalletClient.new api_key: KeyLoader.api_key, api_secret: KeyLoader.api_secret
     @wsclient.connect
@@ -22,12 +22,12 @@ class TestWSaccount < Test::Unit::TestCase
 
   def test_transaction_and_balance_subscription # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     @wsclient.subscribe_to_transactions(
-      callback: gen_check_notification_w_n_type_callback(WSCheck.good_transaction, @veredict_checker),
+      callback: gen_check_notification_callback(WSCheck.good_transaction, @veredict_checker),
       result_callback: gen_result_callback(@veredict_checker)
     )
     sleep(3)
     @restclient.transfer_between_wallet_and_exchange(
-      currency: 'EOS',
+      currency: 'CRO',
       amount: '0.1',
       source: 'spot',
       destination: 'wallet'
@@ -39,7 +39,7 @@ class TestWSaccount < Test::Unit::TestCase
     )
     sleep(3)
     @restclient.transfer_between_wallet_and_exchange(
-      currency: 'EOS',
+      currency: 'CRO',
       amount: '0.1',
       source: 'wallet',
       destination: 'spot'

@@ -8,15 +8,16 @@ module Cryptomarket
   class APIException < SDKException
     def initialize(hash)
       @code = hash['code']
-      @message = hash['message']
-      @description = hash['description']
+      raw_message = hash['message']
+      @description = hash.key?('description') ? hash['description'] : ''
+      @message = "#{self.class.name} (code=#{@code}): #{raw_message}. #{@description}"
       super
     end
 
     attr_reader :code, :message, :description
 
     def to_s
-      "#{self.class.name} (code=#{@code}): #{@message}: #{@description}"
+      @message
     end
   end
 end

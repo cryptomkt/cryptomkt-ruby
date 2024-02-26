@@ -83,6 +83,10 @@ def gen_check_notification_w_n_type_callback(check_fn, veredict_checker)
   ->(notification, _notification_type) { check_val(notification, check_fn, veredict_checker) }
 end
 
+def gen_check_notification_callback(check_fn, veredict_checker)
+  ->(notification) { check_val(notification, check_fn, veredict_checker) }
+end
+
 def gen_check_notification_list_callback(check_fn, veredict_checker)
   ->(notification) { check_list(notification, check_fn, veredict_checker) }
 end

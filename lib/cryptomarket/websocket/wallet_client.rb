@@ -6,13 +6,15 @@ require_relative '../constants'
 
 module Cryptomarket
   module Websocket
-    # WalletClient connects via websocket to cryptomarket to get wallet information of the user. uses SHA256 as auth method and authenticates automatically.
+    # WalletClient connects via websocket to cryptomarket to get wallet information of the user.
+    # Uses SHA256 as auth method and authenticates automatically.
     class WalletClient < AuthClient
       # Creates a new client and authenticates it to the server
       # ==== Params
       # +String+ +api_key+:: the user api key
       # +String+ +api_secret+:: the user api secret
       # +Integer+ +window+:: Maximum difference between the creation of the request and the moment of request processing in milliseconds. Max is 60_000. Defaul is 10_000
+
       def initialize(api_key:, api_secret:, window: nil)
         super(
           url: 'wss://api.exchange.cryptomkt.com/api/3/ws/wallet',
@@ -44,7 +46,10 @@ module Cryptomarket
       # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a boolean value, indicating the success of the subscription
 
       def subscribe_to_transactions(callback:, result_callback: nil)
-        send_subscription('subscribe_transactions', callback, nil, result_callback)
+        interceptor = lambda { |notification, _type|
+          callback.call(notification)
+        }
+        send_subscription('subscribe_transactions', interceptor, nil, result_callback)
       end
 
       # stop recieving the feed of transactions changes

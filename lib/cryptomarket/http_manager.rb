@@ -89,10 +89,8 @@ module Cryptomarket
       parsed_result = JSON.parse result
       if (response.code != 200) && !parsed_result['error'].nil?
         error = parsed_result['error']
-        msg = "(code=#{error['code']}): #{error['message']}"
-        msg += ": #{error['description']}" unless error['description'].nil?
         exception = Cryptomarket::APIException.new error
-        raise exception, msg
+        raise exception
       end
       parsed_result
     end
