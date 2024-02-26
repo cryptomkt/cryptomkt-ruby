@@ -1,19 +1,18 @@
+# frozen_string_literal: true
+
 require 'test/unit'
 require_relative '../key_loader'
 require_relative '../checks'
 require_relative '../../lib/cryptomarket/client'
 
-class TestRestTradingMethods < Test::Unit::TestCase
+class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength,Style/Documentation
   def setup
-    @client = Cryptomarket::Client.new api_key: Keyloader.api_key, api_secret: Keyloader.api_secret
+    @client = Cryptomarket::Client.new api_key: KeyLoader.api_key, api_secret: KeyLoader.api_secret
   end
 
   def test_get_wallet_balances
     result = @client.get_wallet_balances
-    assert(good_list(
-             ->(balance) do good_balance(balance) end,
-             result
-           ))
+    assert(good_list(->(balance) { Check.good_balance(balance) }, result))
   end
 
   def test_get_wallet_balance
@@ -23,45 +22,32 @@ class TestRestTradingMethods < Test::Unit::TestCase
 
   def test_get_deposit_crypto_addresses
     result = @client.get_deposit_crypto_addresses
-    assert(good_list(
-             ->(address) do good_address(address) end,
-             result
-           ))
+    assert(good_list(->(address) { Check.good_address(address) }, result))
   end
 
   def test_get_deposit_crypto_address
     result = @client.get_deposit_crypto_address currency: 'ADA'
-    assert(good_address(result))
+    assert(Check.good_address(result))
   end
 
   def test_create_deposit_crypto_address
     result = @client.create_deposit_crypto_address currency: 'ADA'
-    assert(good_address(result))
+    assert(Check.good_address(result))
   end
 
   def test_get_last_10_deposit_crypto_addresses
     result = @client.get_last_10_deposit_crypto_addresses currency: 'ADA'
-    assert(good_list(
-             ->(address) do good_address(address) end,
-             result
-           ))
+    assert(good_list(->(address) { Check.good_address(address) }, result))
   end
 
   def test_get_last_10_withdrawal_crypto_addresses
     result = @client.get_last_10_withdrawal_crypto_addresses currency: 'CLP'
-    assert(good_list(
-             ->(address) do good_address(address) end,
-             result
-           ))
+    assert(good_list(->(address) { Check.good_address(address) }, result))
   end
 
   def test_withdraw_crypto
     ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
-    transaction_id = @client.withdraw_crypto(
-      currency: 'ADA',
-      amount: '0.1',
-      address: ada_address
-    )
+    transaction_id = @client.withdraw_crypto(currency: 'ADA', amount: '0.1', address: ada_address)
     assert(!transaction_id.empty?)
   end
 
@@ -105,7 +91,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
     assert(it_belongs)
   end
 
-  def test_transfer_between_wallet_and_exchange
+  def test_transfer_between_wallet_and_exchange # rubocop:disable Metrics/MethodLength
     result = @client.transfer_between_wallet_and_exchange(
       currency: 'CRO',
       amount: '0.1',
@@ -125,7 +111,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
   def test_get_transaction_history
     result = @client.get_transaction_history
     assert(good_list(
-             ->(transaction) do good_transaction(transaction) end,
+             ->(transaction) do Check.good_transaction(transaction) end,
              result
            ))
   end
@@ -134,7 +120,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
     transaction_list = @client.get_transaction_history
     first_transaction_id = transaction_list[0]['native']['tx_id']
     result = @client.get_transaction id: first_transaction_id
-    assert(good_transaction(result))
+    assert(Check.good_transaction(result))
   end
 
   def test_offchain_available

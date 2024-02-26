@@ -98,3 +98,7 @@ end
 def gen_check_notification_hash_callback(check_fn, veredict_checker)
   ->(notification, _notification_type) { check_hash(notification, check_fn, veredict_checker) }
 end
+
+def gen_check_notification_list_w_n_type_callback(check_fn, veredict_checker)
+  ->(notification, _notification_type) { check_list(notification, check_fn, veredict_checker) }
+end

@@ -9,6 +9,22 @@ require 'date'
 require_relative 'exceptions'
 require_relative 'credentials_factory'
 
+def post?(method)
+  method.upcase == 'POST'
+end
+
+def get?(method)
+  method.upcase == 'GET'
+end
+
+def put?(method)
+  method.upcase == 'PUT'
+end
+
+def patch?(method)
+  method.upcase == 'PATCH'
+end
+
 module Cryptomarket
   # Manager of http requests to the cryptomarket server
   class HttpManager
@@ -24,7 +40,7 @@ module Cryptomarket
     def make_request(method:, endpoint:, params: nil, public: false)
       uri = URI(@@API_URL + @@API_VERSION + endpoint)
       payload = build_payload(params)
-      headers = build_headers(method, endpoint, params, public)
+      headers = build_headers(method, endpoint, payload, public)
       if ((method.upcase == 'GET') || (method.upcase == 'PUT')) && !payload.nil?
         uri.query = URI.encode_www_form payload
         payload = nil
@@ -48,14 +64,16 @@ module Cryptomarket
       return nil if params.nil?
 
       payload = params.compact
-      payload = Hash[params.sort_by { |key, _val| key.to_s }] if params.is_a?(Hash)
+      payload = Hash[payload.sort_by { |key, _val| key.to_s }] if payload.is_a?(Hash)
       payload
     end
 
     def do_request(method, uri, payload, headers)
-      response = RestClient::Request.execute(
-        method: method.downcase.to_sym, url: uri.to_s, payload: payload.to_json, headers: headers
-      )
+      args = { method: method.downcase.to_sym, url: uri.to_s, headers: headers }
+      if post?(method) || patch?(method)
+        args[:payload] = post?(method) ? payload.to_json : payload
+      end
+      response = RestClient::Request.execute(**args)
       handle_response(response)
     rescue RestClient::ExceptionWithResponse => e
       handle_response(e.response)

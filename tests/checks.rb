@@ -13,9 +13,10 @@ def defined(a_hash, key)
   true
 end
 
-# good_params checks all of the values in the fields list to be present in the dict, and if they are
-# present, check the defined() condition to be true. if any of the fields fails to be defined(), then
-# this def returns false
+def good_list(check_fn, val_list)
+  val_list.each { |val| check_fn.call(val) }
+end
+
 def good_params(a_hash, fields)
   return false if a_hash.nil?
 
@@ -29,10 +30,9 @@ end
 
 module Check # rubocop:disable Style/Documentation
   def self.good_currency(currency)
-    good = good_params(currency, %w[
-                         full_name payin_enabled payout_enabled transfer_enabled
-                         precision_transfer networks
-                       ])
+    good = good_params(currency,
+                       %w[full_name crypto payin_enabled payout_enabled transfer_enabled sign
+                          crypto_payment_id_name crypto_explorer precision_transfer delisted networks])
     return false unless good
 
     currency['networks'].each { |level| return false unless good_network(level) }
@@ -40,19 +40,15 @@ module Check # rubocop:disable Style/Documentation
   end
 
   def self.good_network(network)
-    good_params(network,
-                %w[
-                  network default payin_enabled payout_enabled precision_payout
-                  payout_fee payout_is_payment_id payin_payment_id payin_confirmations
-                ])
+    good_params(network, %w[code network_name network protocol default is_ens_available payin_enabled payout_enabled
+                            precision_payout payout_is_payment_id payin_payment_id payin_confirmations
+                            is_multichain])
   end
 
   def self.good_symbol(symbol)
     good_params(symbol,
-                %w[
-                  type base_currency quote_currency status quantity_increment
-                  tick_size take_rate make_rate fee_currency
-                ])
+                %w[type base_currency quote_currency status quantity_increment tick_size take_rate make_rate
+                   fee_currency])
   end
 
   def self.good_ticker(ticker)

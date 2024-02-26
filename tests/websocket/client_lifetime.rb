@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'test/unit'
 require_relative '../../lib/cryptomarket/websocket/market_data_client'
 require_relative '../key_loader'
 require_relative '../checks'
-require_relative 'sequence_flow'
-require_relative 'time_flow'
 
 class TestWSClientLifetime < Test::Unit::TestCase
   @@SECOND = 1

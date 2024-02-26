@@ -13,7 +13,7 @@ class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Style/Docu
   def test_not_authorized_exception
     @client = Cryptomarket::Client.new api_key: 'not a key', api_secret: 'not a key'
     begin
-      @client.get_spot_trading_balance
+      @client.get_spot_trading_balances
     rescue Cryptomarket::APIException => e
       assert_equal(e.code, 1_002)
     end

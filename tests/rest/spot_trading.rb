@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test/unit'
 require_relative '../../lib/cryptomarket/client'
 require_relative '../../lib/cryptomarket/constants'
@@ -6,36 +8,32 @@ require_relative '../checks'
 
 class TestRestTradingMethods < Test::Unit::TestCase
   def setup
-    @client = Cryptomarket::Client.new api_key: Keyloader.api_key, api_secret: Keyloader.api_secret
+    @client = Cryptomarket::Client.new api_key: KeyLoader.api_key, api_secret: KeyLoader.api_secret
   end
 
   def test_get_spot_trading_balances
     result = @client.get_spot_trading_balances
-    assert(good_list(->(val) do good_balance(val) end, result))
+    assert(good_list(->(val) { Check.good_balance(val) }, result))
   end
 
   def test_get_spot_trading_balance
     result = @client.get_spot_trading_balance currency: 'USDT'
-    assert(good_balance(result))
+    assert(Check.good_balance(result))
   end
 
   def get_all_active_spot_orders
     result = @client.getActiveOrders
-    result.each { |val| assert(good_order(val)) }
+    result.each { |val| assert(Check.good_order(val)) }
   end
 
   def test_spot_order_lifecycle
     timestamp = Time.now.to_i.to_s
     order = @client.create_spot_order(
-      symbol: 'EOSETH',
-      price: '10000',
-      quantity: '0.01',
-      side: 'sell',
-      client_order_id: timestamp
+      symbol: 'EOSETH', price: '10000', quantity: '0.01', side: 'sell', client_order_id: timestamp
     )
-    assert(good_order(order))
+    assert(Check.good_order(order))
     order = @client.get_active_spot_order client_order_id: timestamp
-    assert(good_order(order))
+    assert(Check.good_order(order))
 
     new_client_order_id = Time.now.to_i.to_s + '1'
     order = @client.replace_spot_order(
@@ -44,25 +42,25 @@ class TestRestTradingMethods < Test::Unit::TestCase
       quantity: '0.02',
       price: '999'
     )
-    assert(good_order(order))
+    assert(Check.good_order(order))
     order = @client.cancel_spot_order client_order_id: new_client_order_id
-    assert(good_order(order))
+    assert(Check.good_order(order))
     assert(order['status'] == 'canceled')
   end
 
   def test_cancel_all_spot_orders
     result = @client.cancel_all_spot_orders
-    assert(good_list(->(val) do good_order(val) end, result))
+    assert(good_list(->(val) { Check.good_order(val) }, result))
   end
 
   def test_get_all_trading_commission
     result = @client.get_all_trading_commission
-    assert(good_list(->(val) do good_trading_commission(val) end, result))
+    assert(good_list(->(val) { Check.good_trading_commission(val) }, result))
   end
 
   def test_get_trading_commission
     result = @client.get_trading_commission symbol: 'EOSETH'
-    assert(good_trading_commission(result))
+    assert(Check.good_trading_commission(result))
   end
 
   def test_create_order_list
@@ -85,5 +83,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
         }
       ]
     )
+    # TODO: check missing
   end
+
 end
