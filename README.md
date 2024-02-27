@@ -21,7 +21,7 @@ This sdk makes use of the [api version 2](https://api.exchange.cryptomkt.com/v2)
 ## rest client
 
 ```ruby
-require "cryptomarket"
+require "cryptomarket-sdk"
 
 # instance a client
 api_key='AB32B3201'
@@ -62,7 +62,7 @@ order = client.create_spot_order(
 
 ## Websocket Clients
 
-there are three websocket clients, `MarketDataClient`, the `SpotTradingClient` and the `WalletManagementClient`. The `MarketDataClient` is public, while the others require authentication to be used.
+Ahere are three websocket clients, the `MarketDataClient`, the `TradingClient` and the `WalletClient`. The `MarketDataClient` is public, while the others require authentication to be used.
 
 All websocket methods take Procs for their callbacks. These procs take two argument, the first is a possible error in the call (such as missing arguments), and the result data of the method.
 
@@ -70,7 +70,7 @@ Subscriptions also take in a Proc of two parameters, the notification data, and 
 
 The documentation of a specific subscriptions explains with of this types of notification uses.
 
-### MarketDataClient
+### Websocket Market Data Client
 
 There are no unsubscriptions methods for the `MarketDataClient`. To stop recieving messages is recomended to close the `MarketDataClient`.
 
@@ -122,7 +122,9 @@ client.subscribe_to_ticker(
 )
 ```
 
-### SpotTradingClient
+### Websocket Trading Client
+
+Subscription callback to spot trading balances takes only one argument, a list of balances (see example below)
 
 ```ruby
 # instance a client with a 15 seconds window
@@ -136,7 +138,7 @@ client.connect
 client.close
 
 # subscribe to order reports
-client.subscribeToReports(
+client.subscribe_to_reports(
   callback:Proc.new {|notification, type|
       if type == Args::NotificationType::UPDATE
         puts "a lonely report in a list"
@@ -149,6 +151,12 @@ client.subscribeToReports(
 )
 # unsubscribe from order reports
 client.unsubscribe_to_reports
+
+@wsclient.subscribe_to_spot_balance(
+  callback: ->(balances) {puts balances},
+  result_callback: ->(_) {},
+  mode: 'updates'
+)
 
 client_order_id = Time.now.to_i.to_s
 
@@ -166,7 +174,9 @@ client.cancel_spot_order(client_order_id)
 
 ```
 
-### WalletManagementClient
+### Websocket Wallet Management Client
+
+Subscription callback to transactions takes only one argument, a transaction (see example below)
 
 ```ruby
 # instance a client with a default window of 10 seconds
@@ -177,11 +187,14 @@ defer client.close
 
 # subscribe to wallet transactions
 def callback(transaction):
-  print(transaction)
+  ->(transaction) { puts(transaction) }
+
 client.subscribe_to_transactions(callback)
 
 # unsubscribe from wallet transactions
-err = client.unsubscribe_to_transactions()
+client.unsubscribe_to_transactions(lambda { |is_success| 
+  puts('successful unsubscription') if is_success
+})
 
 # get wallet balances
 client.get_wallet_balances(->(balances){ puts balances})
@@ -218,7 +231,7 @@ end
 
 wsclient = Cryptomarket::Websocket::TradingClient.new api_key:api_key, api_secret:api_secret
 
-# websocket errors are passed as the first argument to the callback
+# websocket errors are passed as the first argument to the callback. valid for all non subscription methods
 my_callback = Proc.new {|err, data|
     if not err.nil?
         puts err # deal with error
