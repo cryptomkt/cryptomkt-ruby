@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/cryptomkt/cryptomkt-ruby"
   s.summary     = %q{Cryptomarket sdk for ruby}
   s.description = %q{Cryptomarket sdk for rest connection and websocket connection for the ruby language}
-
+  s.license     = "Apache-2.0"
   s.files = %w[LICENSE.md README.md] + Dir.glob('lib/**/*.rb')
 
   s.add_dependency 'rest-client', '~> 2.1.0'
