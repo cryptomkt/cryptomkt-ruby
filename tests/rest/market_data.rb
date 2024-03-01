@@ -136,4 +136,9 @@ class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Docum
       candles.each { |val| assert(Check.good_candle(val)) }
     end
   end
+
+  def test_get_converted_candles_by_symbol
+    result = @client.get_converted_candles_by_symbol(symbol: 'eoseth', limit: 2, target_currency: 'usdt')
+    result['data'].each { |val| assert(Check.good_candle(val)) }
+  end
 end

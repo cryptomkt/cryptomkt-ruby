@@ -154,7 +154,7 @@ module Cryptomarket
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +String+ +since+:: Optional. Initial value of the queried interval
     # +String+ +until+:: Optional. Last value of the queried interval
-    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 1. Min is 1. Max is 1000
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 1. Min is 1. Max is 1_000
 
     def get_price_history(to:, from: nil, till: nil, since: nil, limit: nil, period: nil, sort: nil) # rubocop:disable Metrics/ParameterLists
       public_get(
@@ -202,7 +202,7 @@ module Cryptomarket
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +String+ +since+:: Optional. Initial value of the queried interval
     # +String+ +until+:: Optional. Last value of the queried interval
-    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1000
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1_000
 
     def get_trades(symbols: nil, by: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
       public_get(
@@ -224,8 +224,8 @@ module Cryptomarket
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +String+ +since+:: Optional. Initial value of the queried interval
     # +String+ +until+:: Optional. Last value of the queried interval
-    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1000
-    # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100000
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1_000
+    # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100_000
 
     def get_trades_by_symbol(symbol: nil, by: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
       public_get(
@@ -280,7 +280,7 @@ module Cryptomarket
     end
 
     # Get a Hash of candles for all symbols or for specified symbols
-    # Candels are used for OHLC representation
+    # Candles are used for OHLC representation
     # The result contains candles with non-zero volume only (no trades = no candles)
     #
     # Requires no API key Access Rights
@@ -293,7 +293,7 @@ module Cryptomarket
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +String+ +from+:: Optional. Initial value of the queried interval. As DateTime
     # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
-    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1000
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 10. Min is 1. Max is 1_000
 
     def get_candles(symbols: nil, period: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
       public_get(
@@ -303,7 +303,7 @@ module Cryptomarket
     end
 
     # Get candles of a symbol
-    # Candels are used for OHLC representation
+    # Candles are used for OHLC representation
     # The result contains candles with non-zero volume only (no trades = no candles)
     #
     # Requires no API key Access Rights
@@ -316,8 +316,8 @@ module Cryptomarket
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +String+ +from+:: Optional. Initial value of the queried interval. As DateTime
     # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
-    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1000
-    # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100000
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1_000
+    # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100_000
 
     def get_candles_by_symbol(symbol:, period: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
       public_get(
@@ -328,7 +328,9 @@ module Cryptomarket
 
     # Gets OHLCV data regarding the last price converted to the target currency for all symbols or for the specified symbols
     #
-    # Candles are used for the representation of a specific symbol as an OHLC chart
+    # Candles are used for OHLC representation
+    #
+    # The result contains candles with non-zero volume only (no trades = no candles)
     #
     #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid of ask price, the last price is returned.
     #
@@ -337,17 +339,45 @@ module Cryptomarket
     # https://api.exchange.cryptomkt.com/#candles
     #
     # +String+ +target_currency+:: Target currency for conversion
-    # +String+ +period+:: Optional. A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month). Default is 'M30'
     # +Array[String]+ +symbols+:: Optional. A list of symbols
+    # +String+ +period+:: Optional. A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month). Default is 'M30'
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +String+ +from+:: Optional. Initial value of the queried interval. As DateTime
     # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
-    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1000
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1_000
 
-    def get_converted_candles(target_currency:, period: nil, symbols: nil, sort: nil, from: nil, till: nil, limit: nil) # rubocop:disable Metrics/ParameterLists
+    def get_converted_candles(target_currency:, symbols: nil, period: nil, sort: nil, from: nil, till: nil, limit: nil) # rubocop:disable Metrics/ParameterLists
       public_get(
         'public/converted/candles',
         { target_currency: target_currency, symbols: symbols, period: period, sort: sort, from: from, till: till, limit: limit }
+      )
+    end
+
+    # Gets OHLCV data regarding the last price converted to the target currency for the specified symbol
+    #
+    # Candles are used for OHLC representation
+    #
+    # The result contains candles with non-zero volume only (no trades = no candles)
+    #
+    #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid of ask price, the last price is returned.
+    #
+    # Requires no API key Access Rights
+    #
+    # https://api.exchange.cryptomkt.com/#candles
+    #
+    # +String+ +target_currency+:: Target currency for conversion
+    # +String+ +symbol+::  A symbol id
+    # +String+ +period+:: Optional. A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month). Default is 'M30'
+    # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
+    # +String+ +from+:: Optional. Initial value of the queried interval. As DateTime
+    # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1_000
+    # +Integer+ +offset+:: Optional. Default is 0. Min is 0. Max is 100_000
+
+    def get_converted_candles_by_symbol(target_currency:, symbol:, period: nil, sort: nil, from: nil, till: nil, limit: nil, offset: nil) # rubocop:disable Metrics/ParameterLists
+      public_get(
+        "public/converted/candles/#{symbol}",
+        { target_currency: target_currency, period: period, sort: sort, from: from, till: till, limit: limit, offset: offset }
       )
     end
 
@@ -592,8 +622,8 @@ module Cryptomarket
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +String+ +from+:: Optional. Initial value of the queried interval
     # +String+ +till+:: Optional. Last value of the queried interval
-    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Max is 1000
-    # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Max is 1_000
+    # +Integer+ +offset+:: Optional. Default is 0. Max is 100_000
 
     def get_spot_orders_history( # rubocop:disable Metrics/ParameterLists
       client_order_id: nil, symbol: nil, sort: nil, by: nil, from: nil,
@@ -619,8 +649,8 @@ module Cryptomarket
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
     # +String+ +from+:: Optional. Initial value of the queried interval
     # +String+ +till+:: Optional. Last value of the queried interval
-    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Max is 1000
-    # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Max is 1_000
+    # +Integer+ +offset+:: Optional. Default is 0. Max is 100_000
 
     def get_spot_trades_history( # rubocop:disable Metrics/ParameterLists
       order_id: nil, symbol: nil, sort: nil, by: nil, from: nil,
@@ -931,8 +961,8 @@ module Cryptomarket
     # +String+ +id_from+:: Optional. Interval initial value when ordering by id. Min is 0
     # +String+ +id_till+:: Optional. Interval end value when ordering by id. Min is 0
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
-    # +Integer+ +limit+:: Optional. Transactions per query. Defaul is 100. Max is 1000
-    # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
+    # +Integer+ +limit+:: Optional. Transactions per query. Defaul is 100. Max is 1_000
+    # +Integer+ +offset+:: Optional. Default is 0. Max is 100_000
     # +bool+ +group_transactions+:: Optional. Flag indicating whether the returned transactions will be parts of a single operation. Default is false
 
     def get_transaction_history( # rubocop:disable Metrics/ParameterLists
@@ -996,7 +1026,7 @@ module Cryptomarket
     # ==== Params
     # +String+ +currency+:: Optional. Currency code
     # +bool+ +active+:: Optional. value showing whether the lock is active
-    # +Integer+ +limit+:: Optional. Dafault is 100. Min is 0. Max is 1000
+    # +Integer+ +limit+:: Optional. Dafault is 100. Min is 0. Max is 1_000
     # +Integer+ +offset+:: Optional. Default is 0. Min is 0
     # +String+ +from+:: Optional. Interval initial value. As Datetime
     # +String+ +till+:: Optional. Interval end value. As Datetime
