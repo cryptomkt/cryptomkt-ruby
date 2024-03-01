@@ -258,7 +258,7 @@ module Cryptomarket
       #
       # subscription is for all currencies or for the specified currencies
       #
-      # https://api.exchange.cryptomkt.com/#subscribe-to-top-of-book-in-batches
+      # https://api.exchange.cryptomkt.com/#subscribe-to-price-rates
       #
       # ==== Params
       # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of top of orderbooks indexed by symbol, and the type of notification (only 'data')
