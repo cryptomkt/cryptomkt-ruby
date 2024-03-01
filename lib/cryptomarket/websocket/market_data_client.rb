@@ -72,7 +72,7 @@ module Cryptomarket
       #
       # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of candles indexed by symbol, and the type of notification (either 'snapshot' or 'update')
       # +String+ +target_currency+:: Target currency for conversion
-      # +Array[String]+ +symbols+:: Optional. A list of symbols
+      # +Array[String]+ +symbols+:: A list of symbols
       # +String+ +period+:: A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month). Default is 'M30'
       # +String+ +from+:: Optional. Initial value of the queried interval. As DateTime
       # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
