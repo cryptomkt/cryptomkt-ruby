@@ -60,6 +60,29 @@ module Cryptomarket
                                   intercept_result_callback(result_callback), params)
       end
 
+      # Gets OHLCV data regarding the last price converted to the target currency for all symbols or for the specified symbols
+      #
+      # Candles are used for the representation of a specific symbol as an OHLC chart
+      #
+      #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid of ask price, the last price is returned.
+      #
+      # Requires no API key Access Rights
+      #
+      # https://api.exchange.cryptomkt.com/#candles
+      #
+      # +String+ +target_currency+:: Target currency for conversion
+      # +String+ +period+:: A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month). Default is 'M30'
+      # +Array[String]+ +symbols+:: Optional. A list of symbols
+      # +String+ +from+:: Optional. Initial value of the queried interval. As DateTime
+      # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
+      # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1000
+
+      def subscribe_to_converted_candles(callback:, target_currency:, period:, symbols:, limit: nil, result_callback: nil) # rubocop:disable Metrics/ParameterLists
+        params = { 'target_currency' => target_currency, 'symbols' => symbols, 'limit' => limit }
+        send_channel_subscription("converted/candles/#{period}", callback,
+                                  intercept_result_callback(result_callback), params)
+      end
+
       # subscribe to a feed of mini tickers
       #
       # subscription is for all symbols or for the specified symbols

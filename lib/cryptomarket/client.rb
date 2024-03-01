@@ -326,6 +326,31 @@ module Cryptomarket
       )
     end
 
+    # Gets OHLCV data regarding the last price converted to the target currency for all symbols or for the specified symbols
+    #
+    # Candles are used for the representation of a specific symbol as an OHLC chart
+    #
+    #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid of ask price, the last price is returned.
+    #
+    # Requires no API key Access Rights
+    #
+    # https://api.exchange.cryptomkt.com/#candles
+    #
+    # +String+ +target_currency+:: Target currency for conversion
+    # +String+ +period+:: Optional. A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month). Default is 'M30'
+    # +Array[String]+ +symbols+:: Optional. A list of symbols
+    # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
+    # +String+ +from+:: Optional. Initial value of the queried interval. As DateTime
+    # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
+    # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1000
+
+    def get_converted_candles(target_currency:, period: nil, symbols: nil, sort: nil, from: nil, till: nil, limit: nil) # rubocop:disable Metrics/ParameterLists
+      public_get(
+        'public/converted/candles',
+        { target_currency: target_currency, symbols: symbols, period: period, sort: sort, from: from, till: till, limit: limit }
+      )
+    end
+
     ######################
     # Spot Trading calls #
     ######################
