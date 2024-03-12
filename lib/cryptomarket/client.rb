@@ -39,6 +39,37 @@ module Cryptomarket
       @http_manager.make_request(method: 'delete', endpoint: endpoint, params: params)
     end
 
+    ###########
+    # aliases #
+    ###########
+
+    # market data
+
+    # alias of get ticker
+    alias get_ticker_by_symbol get_ticker
+    alias get_ticker_of_symbol get_ticker
+    alias get_ticker_price_by_symbol get_ticker_price
+    alias get_ticker_price_of_symbol get_ticker_price
+    alias get_trades_of_symbol get_trades_by_symbol
+    alias get_orderbook_by_symbol get_orderbook
+    alias get_orderbook_of_symbol get_orderbook
+    alias get_orderbook_volume_by_symbol get_orderbook_volume
+    alias get_orderbook_volume_of_symbol get_orderbook_volume
+    alias get_candles_of_symbol get_candles_by_symbol
+    alias get_converted_candles_of_symbol get_converted_candles_by_symbol
+    #  spot trading
+    alias get_spot_trading_balance_of_currency get_spot_trading_balance
+    alias get_spot_trading_balance_by_currency get_spot_trading_balance
+    alias get_all_trading_commissions get_all_trading_commission
+    alias get_trading_commission get_all_trading_commission
+    alias get_trading_commission_of_symbol get_trading_commission
+    alias get_trading_commission_by_symbol get_trading_commission
+    # wallet management
+    alias get_wallet_balance_of_currency get_wallet_balance
+    alias get_wallet_balance_by_currency get_wallet_balance
+    alias get_deposit_crypto_address_of_cyrrency get_deposit_crypto_address
+    alias get_deposit_crypto_address_by_cyrrency get_deposit_crypto_address
+
     ################
     # public calls #
     ################
@@ -332,7 +363,7 @@ module Cryptomarket
     #
     # The result contains candles with non-zero volume only (no trades = no candles)
     #
-    #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid of ask price, the last price is returned.
+    #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid or ask price, the last price is returned.
     #
     # Requires no API key Access Rights
     #
@@ -359,7 +390,7 @@ module Cryptomarket
     #
     # The result contains candles with non-zero volume only (no trades = no candles)
     #
-    #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid of ask price, the last price is returned.
+    #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid or ask price, the last price is returned.
     #
     # Requires no API key Access Rights
     #
