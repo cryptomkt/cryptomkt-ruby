@@ -4,7 +4,7 @@ require 'test/unit'
 require_relative '../../lib/cryptomarket/client'
 require_relative '../checks'
 
-class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Documentation
+class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Documentation,Metrics/ClassLength
   def setup
     @client = Cryptomarket::Client.new
   end
@@ -126,5 +126,19 @@ class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Docum
     result.each do |candle|
       assert(Check.good_candle(candle))
     end
+  end
+
+  def test_get_converted_candles
+    symbols = %w[EOSETH BTCUSDT]
+    result = @client.get_converted_candles(symbols: symbols, limit: 2, target_currency: 'usdt')
+    result['data'].each do |symbol, candles|
+      assert(symbols.include?(symbol))
+      candles.each { |val| assert(Check.good_candle(val)) }
+    end
+  end
+
+  def test_get_converted_candles_by_symbol
+    result = @client.get_converted_candles_by_symbol(symbol: 'eoseth', limit: 2, target_currency: 'usdt')
+    result['data'].each { |val| assert(Check.good_candle(val)) }
   end
 end

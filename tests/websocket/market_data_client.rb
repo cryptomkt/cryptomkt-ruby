@@ -45,6 +45,17 @@ class TestWSPublicSubs < Test::Unit::TestCase # rubocop:disable Metrics/ClassLen
     assert(veredict_checker.good_veredict?)
   end
 
+  def test_converted_candles_subscription
+    veredict_checker = VeredictChecker.new
+    @wsclient.subscribe_to_converted_candles(
+      period: 'M1', target_currency: 'usdt', symbols: %w[eoseth ethbtc], limit: 2,
+      callback: gen_check_notification_hash_list_callback(WSCheck.good_ws_public_candle, veredict_checker),
+      result_callback: gen_result_callback(veredict_checker)
+    )
+    sleep(10 * @@SECOND)
+    assert(veredict_checker.good_veredict?)
+  end
+
   def test_subscribe_to_mini_ticker
     veredict_checker = VeredictChecker.new
     @wsclient.subscribe_to_mini_ticker(

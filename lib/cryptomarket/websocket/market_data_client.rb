@@ -26,7 +26,7 @@ module Cryptomarket
       # ==== Params
       # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of trades indexed by symbol, and the type of notification (either 'snapshot' or 'update')
       # +Array[String]+ +symbols+:: A list of symbol ids
-      # +Integer+ +limit+:: Number of historical entries returned in the first feed. Min is 0. Max is 1000. Default is 0
+      # +Integer+ +limit+:: Number of historical entries returned in the first feed. Min is 0. Max is 1_000. Default is 0
       # +Proc+ +result_callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, a list of subscribed symbols
 
       def subscribe_to_trades(callback:, symbols:, limit: nil, result_callback: nil)
@@ -40,23 +40,45 @@ module Cryptomarket
       #
       # normal subscriptions have one update message per symbol
       #
-      # the first notification are n candles, with n defined by the limit argument,
-      # the next notification are updates, with one candle at a time
-      #
       # Requires no API key Access Rights
       #
       # https://api.exchange.cryptomkt.com/#subscribe-to-candles
       #
       # ==== Params
       # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of candles indexed by symbol, and the type of notification (either 'snapshot' or 'update')
-      # +String+ +period+:: Optional. A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month). Default is 'M30'
+      # +String+ +period+:: Optional. A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month).
       # +Array[String]+ +symbols+:: Optional. A list of symbol ids
-      # +Integer+ +limit+:: Number of historical entries returned in the first feed. Min is 0. Max is 1000. Default is 0
+      # +Integer+ +limit+:: Number of historical entries returned in the first feed. Min is 0. Max is 1_000. Default is 0
       # +Proc+ +result_callback+:: Optional. A +Proc+ called with a list of subscribed symbols
 
       def subscribe_to_candles(callback:, period:, symbols:, limit: nil, result_callback: nil)
         params = { 'symbols' => symbols, 'limit' => limit }
         send_channel_subscription("candles/#{period}", callback,
+                                  intercept_result_callback(result_callback), params)
+      end
+
+      # subscribes to a feed of candles regarding the last price converted to the target currency for all symbols or for the specified symbols
+      #
+      # Candles are used for the representation of a specific symbol as an OHLC chart
+      #
+      #  Conversion from the symbol quote currency to the target currency is the mean of "best" bid price and "best" ask price in the order book. If there is no "best" bid or ask price, the last price is returned.
+      #
+      # Requires no API key Access Rights
+      #
+      # https://api.exchange.cryptomkt.com/#subscribe-to-converted-candles
+      #
+      # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of candles indexed by symbol, and the type of notification (either 'snapshot' or 'update')
+      # +String+ +target_currency+:: Target currency for conversion
+      # +Array[String]+ +symbols+:: A list of symbols
+      # +String+ +period+:: A valid tick interval. 'M1' (one minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M' (one month).
+      # +String+ +from+:: Optional. Initial value of the queried interval. As DateTime
+      # +String+ +till+:: Optional. Last value of the queried interval. As DateTime
+      # +Integer+ +limit+:: Optional. Prices per currency pair. Defaul is 100. Min is 1. Max is 1_000
+      # +Proc+ +result_callback+:: Optional. A +Proc+ called with a list of subscribed symbols
+
+      def subscribe_to_converted_candles(callback:, target_currency:, symbols:, period:, limit: nil, result_callback: nil) # rubocop:disable Metrics/ParameterLists
+        params = { 'target_currency' => target_currency, 'symbols' => symbols, 'limit' => limit }
+        send_channel_subscription("converted/candles/#{period}", callback,
                                   intercept_result_callback(result_callback), params)
       end
 
@@ -258,7 +280,7 @@ module Cryptomarket
       #
       # subscription is for all currencies or for the specified currencies
       #
-      # https://api.exchange.cryptomkt.com/#subscribe-to-top-of-book-in-batches
+      # https://api.exchange.cryptomkt.com/#subscribe-to-price-rates
       #
       # ==== Params
       # +Proc+ +callback+:: A +Proc+ that recieves notifications as a hash of top of orderbooks indexed by symbol, and the type of notification (only 'data')
