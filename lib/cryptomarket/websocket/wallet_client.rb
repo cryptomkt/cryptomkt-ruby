@@ -37,6 +37,9 @@ module Cryptomarket
           'wallet_balance_update' => [balance, Args::NotificationType::UPDATE] }
       end
 
+      alias get_wallet_balance_of_currency get_wallet_balance
+      alias get_wallet_balance_by_currency get_wallet_balance
+
       # A transaction notification occurs each time a transaction has been changed, such as creating a transaction, updating the pending state (e.g., the hash assigned) or completing a transaction
       #
       # https://api.exchange.cryptomkt.com/#subscribe-to-transactions
@@ -151,8 +154,8 @@ module Cryptomarket
       # +String+ +id_till+:: Optional. Interval end value when ordering by id. Min is 0
       # +String+ +order_by+:: Optional. sorting parameter.'created_at' or 'id'. Default is 'created_at'
       # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
-      # +Integer+ +limit+:: Optional. Transactions per query. Defaul is 100. Max is 1000
-      # +Integer+ +offset+:: Optional. Default is 0. Max is 100000
+      # +Integer+ +limit+:: Optional. Transactions per query. Defaul is 100. Max is 1_000
+      # +Integer+ +offset+:: Optional. Default is 0. Max is 100_000
       # +bool+ +group_transactions+:: Optional. Flag indicating whether the returned transactions will be parts of a single operation. Default is false
 
       def get_transactions( # rubocop:disable Metrics/ParameterLists

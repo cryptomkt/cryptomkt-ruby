@@ -48,7 +48,7 @@ module Cryptomarket
       # err is None for successful calls, result is None for calls with error: Proc.new {|err, result| ...}
 
       def authenticate(callback = nil)
-        timestamp = Time.now.to_i * 1000
+        timestamp = Time.now.to_i * 1_000
         digest = OpenSSL::Digest.new 'sha256'
         message = timestamp.to_s
         message += @window.to_s unless @window.nil?
