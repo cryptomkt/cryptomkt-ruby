@@ -39,36 +39,13 @@ module Cryptomarket
       @http_manager.make_request(method: 'delete', endpoint: endpoint, params: params)
     end
 
-    ###########
-    # aliases #
-    ###########
+    def change_credentials(api_key:, api_secret:)
+      @credential_factory.change_credentials(api_key, api_secret)
+    end
 
-    # market data
-
-    # alias of get ticker
-    alias get_ticker_by_symbol get_ticker
-    alias get_ticker_of_symbol get_ticker
-    alias get_ticker_price_by_symbol get_ticker_price
-    alias get_ticker_price_of_symbol get_ticker_price
-    alias get_trades_of_symbol get_trades_by_symbol
-    alias get_orderbook_by_symbol get_orderbook
-    alias get_orderbook_of_symbol get_orderbook
-    alias get_orderbook_volume_by_symbol get_orderbook_volume
-    alias get_orderbook_volume_of_symbol get_orderbook_volume
-    alias get_candles_of_symbol get_candles_by_symbol
-    alias get_converted_candles_of_symbol get_converted_candles_by_symbol
-    #  spot trading
-    alias get_spot_trading_balance_of_currency get_spot_trading_balance
-    alias get_spot_trading_balance_by_currency get_spot_trading_balance
-    alias get_all_trading_commissions get_all_trading_commission
-    alias get_trading_commission get_all_trading_commission
-    alias get_trading_commission_of_symbol get_trading_commission
-    alias get_trading_commission_by_symbol get_trading_commission
-    # wallet management
-    alias get_wallet_balance_of_currency get_wallet_balance
-    alias get_wallet_balance_by_currency get_wallet_balance
-    alias get_deposit_crypto_address_of_cyrrency get_deposit_crypto_address
-    alias get_deposit_crypto_address_by_cyrrency get_deposit_crypto_address
+    def change_window(window:)
+      @credential_factory.change_window(window)
+    end
 
     ################
     # public calls #
@@ -863,9 +840,23 @@ module Cryptomarket
     # ==== Params
     # +Array[]+ +fee_requests+:: the list of fee requests, each request is a Hash in the form {currency:"string", amount:"string", network_code:"optional string"}
 
-    def get_estimate_withdrawal_fees(fee_requests)
+    def get_estimate_withdrawal_fees(fee_requests:)
       params = fee_requests
       post('wallet/crypto/fees/estimate', params)
+    end
+
+    # Get an estimates for withdrawal fees of currencies
+    #
+    # Requires the "Payment information" API key Access Right
+    #
+    # https://api.exchange.cryptomkt.com/#bulk-estimate-withdrawal-fee
+    #
+    # ==== Params
+    # +Array[]+ +fee_requests+:: the list of fee requests, each request is a Hash in the form {currency:"string", amount:"string", network_code:"optional string"}
+
+    def get_bulk_estimate_withdrawal_fees(fee_requests:)
+      params = fee_requests
+      post('wallet/crypto/fee/estimate/bulk', params)
     end
 
     # Get an estimate of the withdrawal fee
@@ -881,6 +872,34 @@ module Cryptomarket
     def get_estimate_withdrawal_fee(currency:, amount:, network_code: nil)
       params = { amount: amount, currency: currency, network_code: network_code }
       get('wallet/crypto/fee/estimate', params)['fee']
+    end
+
+    # Get an estimates for deposit fees of currencies
+    #
+    # Requires the "Payment information" API key Access Right
+    #
+    # https://api.exchange.cryptomkt.com/#bulk-estimate-deposit-fee
+    #
+    # ==== Params
+    # +Array[]+ +fee_requests+:: the list of fee requests, each request is a Hash in the form {currency:"string", amount:"string", network_code:"optional string"}
+    def get_bulk_estimate_deposit_fees(fee_requests:)
+      params = fee_requests
+      post('wallet/crypto/fee/deposit/estimate/bulk', params)
+    end
+
+    # Get an estimate of the deposit fee
+    #
+    # Requires the "Payment information" API key Access Right
+    #
+    # https://api.exchange.cryptomkt.com/#estimate-deposit-fee
+    #
+    # ==== Params
+    # +String+ +currency+:: the currency code for deposit
+    # +float+ +amount+:: the expected deposit amount
+
+    def get_estimate_deposit_fee(currency:, amount:, network_code: nil)
+      params = { amount: amount, currency: currency, network_code: network_code }
+      get('wallet/crypto/fee/deposit/estimate', params)['fee']
     end
 
     # Converts between currencies
@@ -986,9 +1005,9 @@ module Cryptomarket
     # +Array[String]+ +statuses+:: Optional. List of statuses to query. valid subtypes are: 'CREATED', 'PENDING', 'FAILED', 'SUCCESS' and 'ROLLED_BACK'
     # +Array[String]+ +currencies+:: Optional. Currency codes of the transactions to fetch
     # +Array[String]+ +networks+:: Optional. Network codes of the transactions to fetch
-    # +String+ +order_by+:: Optional. sorting parameter.'created_at' or 'id'. Default is 'created_at'
-    # +String+ +from+:: Optional. Interval initial value when ordering by 'created_at'. As Datetime
-    # +String+ +till+:: Optional. Interval end value when ordering by 'created_at'. As Datetime
+    # +String+ +order_by+:: Optional. sorting parameter.'created_at', 'updated_at', 'last_activity_at' 'or 'id'.
+    # +String+ +from+:: Optional. Optional. Interval initial value (inclusive). The value type depends on order_by
+    # +String+ +till+:: Optional. Interval end value (inclusive). The value type depends on order_BY
     # +String+ +id_from+:: Optional. Interval initial value when ordering by id. Min is 0
     # +String+ +id_till+:: Optional. Interval end value when ordering by id. Min is 0
     # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
@@ -1238,5 +1257,38 @@ module Cryptomarket
         "sub-account/crypto/address/#{sub_account_id}/#{currency}"
       )['result']['address']
     end
+
+    ###########
+    # aliases #
+    ###########
+
+    # market data
+    alias get_ticker_by_symbol get_ticker
+    alias get_ticker_of_symbol get_ticker
+    alias get_ticker_price_by_symbol get_ticker_price
+    alias get_ticker_price_of_symbol get_ticker_price
+    alias get_trades_of_symbol get_trades_by_symbol
+    alias get_orderbook_by_symbol get_orderbook
+    alias get_orderbook_of_symbol get_orderbook
+    alias get_orderbook_volume_by_symbol get_orderbook_volume
+    alias get_orderbook_volume_of_symbol get_orderbook_volume
+    alias get_candles_of_symbol get_candles_by_symbol
+    alias get_converted_candles_of_symbol get_converted_candles_by_symbol
+
+    #  spot trading
+    alias get_spot_trading_balance_of_currency get_spot_trading_balance
+    alias get_spot_trading_balance_by_currency get_spot_trading_balance
+    alias get_all_trading_commissions get_all_trading_commission
+    alias get_trading_commissions get_all_trading_commission
+    alias get_trading_commission_of_symbol get_trading_commission
+    alias get_trading_commission_by_symbol get_trading_commission
+
+    # wallet management
+    alias get_wallet_balance_of_currency get_wallet_balance
+    alias get_wallet_balance_by_currency get_wallet_balance
+    alias get_deposit_crypto_address_of_cyrrency get_deposit_crypto_address
+    alias get_deposit_crypto_address_by_cyrrency get_deposit_crypto_address
   end
 end
+
+# rubocop:enable Layout/LineLength

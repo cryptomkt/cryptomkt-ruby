@@ -18,6 +18,15 @@ module Cryptomarket
       @window = window
     end
 
+    def change_credentials(api_key:, api_secret:)
+      @api_key = api_key
+      @api_secret = api_secret
+    end
+
+    def change_window(window:)
+      @window = window
+    end
+
     def get_credential(http_method, method, params)
       timestamp = DateTime.now.strftime('%Q')
       msg = build_credential_message(http_method, method, timestamp, params)
