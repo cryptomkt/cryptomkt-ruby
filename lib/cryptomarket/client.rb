@@ -39,12 +39,23 @@ module Cryptomarket
       @http_manager.make_request(method: 'delete', endpoint: endpoint, params: params)
     end
 
+    # Changes the user credentials used for authentication in calls
+    #
+    # ==== Params
+    # +String+ +api_key+:: The user public key used in new calls
+    # +String+ +api_secret+:: The user secret key used in new calls
+
     def change_credentials(api_key:, api_secret:)
-      @credential_factory.change_credentials(api_key, api_secret)
+      @http_manager.change_credentials(api_key: api_key, api_secret: api_secret)
     end
 
+    # Changes the window used in authenticated calls
+    #
+    # ==== Params
+    # +Integer+ +window+:: Acceptable time between request and server execution in millis
+
     def change_window(window:)
-      @credential_factory.change_window(window)
+      @http_manager.change_window(window: window)
     end
 
     ################

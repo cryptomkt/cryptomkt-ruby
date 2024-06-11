@@ -46,7 +46,7 @@ module Cryptomarket
                not_post_params(http_method, params)
              end
       msg += timestamp
-      msg += @window unless @window.nil?
+      msg += @window.to_s unless @window.nil?
       msg
     end
 
