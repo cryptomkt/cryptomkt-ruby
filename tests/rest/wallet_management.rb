@@ -103,6 +103,17 @@ class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Style/Docu
            ))
   end
 
+  def test_get_transaction_history_with_params
+    result = @client.get_transaction_history(
+      order_by: 'CREATED_AT', sort: 'DESC', limit: 100, offset: 1, from: '1614815872000'
+    )
+    assert(!result.empty?)
+    assert(good_list(
+             ->(transaction) do Check.good_transaction(transaction) end,
+             result
+           ))
+  end
+
   def test_get_transaction
     transaction_list = @client.get_transaction_history
     first_transaction_id = transaction_list[0]['native']['tx_id']

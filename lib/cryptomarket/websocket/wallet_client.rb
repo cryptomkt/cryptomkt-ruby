@@ -37,9 +37,6 @@ module Cryptomarket
           'wallet_balance_update' => [balance, Args::NotificationType::UPDATE] }
       end
 
-      alias get_wallet_balance_of_currency get_wallet_balance
-      alias get_wallet_balance_by_currency get_wallet_balance
-
       # A transaction notification occurs each time a transaction has been changed, such as creating a transaction, updating the pending state (e.g., the hash assigned) or completing a transaction
       #
       # https://api.exchange.cryptomkt.com/#subscribe-to-transactions
@@ -168,6 +165,9 @@ module Cryptomarket
                   limit: limit, offset: offset, group_transactions: group_transactions
                 })
       end
+
+      alias get_wallet_balance_of_currency get_wallet_balance
+      alias get_wallet_balance_by_currency get_wallet_balance
     end
   end
 end
