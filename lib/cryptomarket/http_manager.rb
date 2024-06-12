@@ -37,6 +37,14 @@ module Cryptomarket
       )
     end
 
+    def change_credentials(api_key:, api_secret:)
+      @credential_factory.change_credentials(api_key: api_key, api_secret: api_secret)
+    end
+
+    def change_window(window:)
+      @credential_factory.change_window(window: window)
+    end
+
     def make_request(method:, endpoint:, params: nil, public: false)
       uri = URI(@@API_URL + @@API_VERSION + endpoint)
       payload = build_payload(params)

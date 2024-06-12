@@ -9,7 +9,7 @@
 To install Cryptomarket use gem
 
 ```
-gem install cryptomarket-sdk
+gem install cryptomarket-sdk -v 3.2.0
 ```
 
 # Documentation

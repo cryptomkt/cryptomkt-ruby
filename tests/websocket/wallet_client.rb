@@ -6,6 +6,7 @@ require_relative '../key_loader'
 require_relative '../checks'
 require_relative '../checker_generator'
 
+# test class for wallet client
 class TestWSWalletClient < Test::Unit::TestCase
   def setup
     @wsclient = Cryptomarket::Websocket::WalletClient.new api_key: KeyLoader.api_key, api_secret: KeyLoader.api_secret
@@ -39,6 +40,15 @@ class TestWSWalletClient < Test::Unit::TestCase
   def test_get_transactions
     @wsclient.get_transactions(
       callback: gen_check_result_list_callback(WSCheck.good_transaction, @veredict_checker)
+    )
+    sleep(2)
+    assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)
+  end
+
+  def test_get_transactions_with_params
+    @wsclient.get_transactions(
+      callback: gen_check_result_list_callback(WSCheck.good_transaction, @veredict_checker),
+      order_by: 'CREATED_AT', sort: 'DESC', limit: 100, offset: 1, from: '1614815872000'
     )
     sleep(2)
     assert(@veredict_checker.good_veredict?, @veredict_checker.err_msg)

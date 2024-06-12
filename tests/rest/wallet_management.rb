@@ -5,7 +5,7 @@ require_relative '../key_loader'
 require_relative '../checks'
 require_relative '../../lib/cryptomarket/client'
 
-class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength,Style/Documentation
+class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Style/Documentation
   def setup
     @client = Cryptomarket::Client.new api_key: KeyLoader.api_key, api_secret: KeyLoader.api_secret
   end
@@ -46,7 +46,14 @@ class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Metrics/Cl
   end
 
   def test_get_estimate_withdrawal_fees
-    result = @client.get_estimate_withdrawal_fees [{ currency: 'ETH', amount: '12' }, { currency: 'BTC', amount: '1' }]
+    result = @client.get_estimate_withdrawal_fees fee_requests: [{ currency: 'ETH', amount: '12' },
+                                                                 { currency: 'BTC', amount: '1' }]
+    assert(result.count == 2)
+  end
+
+  def test_get_bulk_estimate_withdrawal_fees
+    result = @client.get_bulk_estimate_withdrawal_fees fee_requests: [{ currency: 'ETH', amount: '12' },
+                                                                      { currency: 'BTC', amount: '1' }]
     assert(result.count == 2)
   end
 
@@ -54,6 +61,17 @@ class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Metrics/Cl
     result = @client.get_estimate_withdrawal_fee currency: 'XLM', amount: '3'
     assert(!result.empty?)
   end
+
+  # def test_get_bulk_estimate_deposit_fees
+  #   result = @client.get_bulk_estimate_deposit_fees fee_requests: [{ currency: 'ETH', amount: '12' },
+  #                                                                  { currency: 'BTC', amount: '1' }]
+  #   assert(result.count == 2)
+  # end
+
+  # def test_get_estimate_deposit_fee
+  #   result = @client.get_estimate_deposit_fee currency: 'XLM', amount: '3'
+  #   assert(!result.empty?)
+  # end
 
   def test_crypto_address_belongs_to_current_account
     ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']
@@ -80,6 +98,17 @@ class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Metrics/Cl
 
   def test_get_transaction_history
     result = @client.get_transaction_history
+    assert(good_list(
+             ->(transaction) do Check.good_transaction(transaction) end,
+             result
+           ))
+  end
+
+  def test_get_transaction_history_with_params
+    result = @client.get_transaction_history(
+      order_by: 'CREATED_AT', sort: 'DESC', limit: 100, offset: 1, from: '1614815872000'
+    )
+    assert(!result.empty?)
     assert(good_list(
              ->(transaction) do Check.good_transaction(transaction) end,
              result

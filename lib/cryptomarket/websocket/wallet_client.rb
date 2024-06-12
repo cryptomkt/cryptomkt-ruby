@@ -37,9 +37,6 @@ module Cryptomarket
           'wallet_balance_update' => [balance, Args::NotificationType::UPDATE] }
       end
 
-      alias get_wallet_balance_of_currency get_wallet_balance
-      alias get_wallet_balance_by_currency get_wallet_balance
-
       # A transaction notification occurs each time a transaction has been changed, such as creating a transaction, updating the pending state (e.g., the hash assigned) or completing a transaction
       #
       # https://api.exchange.cryptomkt.com/#subscribe-to-transactions
@@ -148,11 +145,11 @@ module Cryptomarket
       # +Array[String]+ +subtyes+:: Optional. List of subtypes to query. valid subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN', 'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO', 'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT', 'WALLET_TO_SPOT', 'SPOT_TO_WALLET', 'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET', 'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and 'INSTANT_EXCHANGE'
       # +Array[String]+ +statuses+:: Optional. List of statuses to query. valid subtypes are: 'CREATED', 'PENDING', 'FAILED', 'SUCCESS' and 'ROLLED_BACK'
       # +Array[String] +currencies+:: Optional. List of currencies ids.
-      # +String+ +from+:: Optional. Interval initial value when ordering by 'created_at'. As Datetime
-      # +String+ +till+:: Optional. Interval end value when ordering by 'created_at'. As Datetime
+      # +String+ +from+:: Optional. Optional. Interval initial value (inclusive). The value type depends on order_by
+      # +String+ +till+:: Optional. Interval end value (inclusive). The value type depends on order_by
       # +String+ +id_from+:: Optional. Interval initial value when ordering by id. Min is 0
       # +String+ +id_till+:: Optional. Interval end value when ordering by id. Min is 0
-      # +String+ +order_by+:: Optional. sorting parameter.'created_at' or 'id'. Default is 'created_at'
+      # +String+ +order_by+:: Optional. sorting parameter.'created_at', 'updated_at', 'last_activity_at' 'or 'id'.
       # +String+ +sort+:: Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
       # +Integer+ +limit+:: Optional. Transactions per query. Defaul is 100. Max is 1_000
       # +Integer+ +offset+:: Optional. Default is 0. Max is 100_000
@@ -168,6 +165,9 @@ module Cryptomarket
                   limit: limit, offset: offset, group_transactions: group_transactions
                 })
       end
+
+      alias get_wallet_balance_of_currency get_wallet_balance
+      alias get_wallet_balance_by_currency get_wallet_balance
     end
   end
 end
