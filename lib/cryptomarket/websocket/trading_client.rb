@@ -35,11 +35,6 @@ module Cryptomarket
           'spot_balance' => [balances, Args::NotificationType::SNAPSHOT] }
       end
 
-      alias get_spot_trading_balance_of_currency get_spot_trading_balance
-      alias get_spot_trading_balance_by_currency get_spot_trading_balance
-      alias get_spot_commission_of_symbol get_spot_commission
-      alias get_spot_commission_by_symbol get_spot_commission
-
       # subscribe to a feed of execution reports of the user's orders
       #
       # https://api.exchange.cryptomkt.com/#socket-spot-trading
@@ -274,6 +269,11 @@ module Cryptomarket
       def get_spot_commission(symbol:, callback:)
         request('spot_fee', callback, { symbol: symbol })
       end
+
+      alias get_spot_trading_balance_of_currency get_spot_trading_balance
+      alias get_spot_trading_balance_by_currency get_spot_trading_balance
+      alias get_spot_commission_of_symbol get_spot_commission
+      alias get_spot_commission_by_symbol get_spot_commission
     end
   end
 end
