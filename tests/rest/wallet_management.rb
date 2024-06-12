@@ -62,16 +62,16 @@ class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Style/Docu
     assert(!result.empty?)
   end
 
-  def test_get_bulk_estimate_deposit_fees
-    result = @client.get_bulk_estimate_deposit_fees fee_requests: [{ currency: 'ETH', amount: '12' },
-                                                                   { currency: 'BTC', amount: '1' }]
-    assert(result.count == 2)
-  end
+  # def test_get_bulk_estimate_deposit_fees
+  #   result = @client.get_bulk_estimate_deposit_fees fee_requests: [{ currency: 'ETH', amount: '12' },
+  #                                                                  { currency: 'BTC', amount: '1' }]
+  #   assert(result.count == 2)
+  # end
 
-  def test_get_estimate_deposit_fee
-    result = @client.get_estimate_deposit_fee currency: 'XLM', amount: '3'
-    assert(!result.empty?)
-  end
+  # def test_get_estimate_deposit_fee
+  #   result = @client.get_estimate_deposit_fee currency: 'XLM', amount: '3'
+  #   assert(!result.empty?)
+  # end
 
   def test_crypto_address_belongs_to_current_account
     ada_address = @client.get_deposit_crypto_address(currency: 'ADA')['address']

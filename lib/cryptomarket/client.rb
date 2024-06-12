@@ -885,33 +885,33 @@ module Cryptomarket
       get('wallet/crypto/fee/estimate', params)['fee']
     end
 
-    # Get an estimates for deposit fees of currencies
-    #
-    # Requires the "Payment information" API key Access Right
-    #
-    # https://api.exchange.cryptomkt.com/#bulk-estimate-deposit-fee
-    #
-    # ==== Params
-    # +Array[]+ +fee_requests+:: the list of fee requests, each request is a Hash in the form {currency:"string", amount:"string", network_code:"optional string"}
-    def get_bulk_estimate_deposit_fees(fee_requests:)
-      params = fee_requests
-      post('wallet/crypto/fee/deposit/estimate/bulk', params)
-    end
+    # # Get an estimates for deposit fees of currencies
+    # #
+    # # Requires the "Payment information" API key Access Right
+    # #
+    # # https://api.exchange.cryptomkt.com/#bulk-estimate-deposit-fee
+    # #
+    # # ==== Params
+    # # +Array[]+ +fee_requests+:: the list of fee requests, each request is a Hash in the form {currency:"string", amount:"string", network_code:"optional string"}
+    # def get_bulk_estimate_deposit_fees(fee_requests:)
+    #   params = fee_requests
+    #   post('wallet/crypto/fee/deposit/estimate/bulk', params)
+    # end
 
-    # Get an estimate of the deposit fee
-    #
-    # Requires the "Payment information" API key Access Right
-    #
-    # https://api.exchange.cryptomkt.com/#estimate-deposit-fee
-    #
-    # ==== Params
-    # +String+ +currency+:: the currency code for deposit
-    # +float+ +amount+:: the expected deposit amount
+    # # Get an estimate of the deposit fee
+    # #
+    # # Requires the "Payment information" API key Access Right
+    # #
+    # # https://api.exchange.cryptomkt.com/#estimate-deposit-fee
+    # #
+    # # ==== Params
+    # # +String+ +currency+:: the currency code for deposit
+    # # +float+ +amount+:: the expected deposit amount
 
-    def get_estimate_deposit_fee(currency:, amount:, network_code: nil)
-      params = { amount: amount, currency: currency, network_code: network_code }
-      get('wallet/crypto/fee/deposit/estimate', params)['fee']
-    end
+    # def get_estimate_deposit_fee(currency:, amount:, network_code: nil)
+    #   params = { amount: amount, currency: currency, network_code: network_code }
+    #   get('wallet/crypto/fee/deposit/estimate', params)['fee']
+    # end
 
     # Converts between currencies
     # Successful response to the request does not necessarily mean the resulting transaction got executed immediately. It has to be processed first and may eventually be rolled back
