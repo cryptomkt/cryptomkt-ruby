@@ -46,7 +46,8 @@ class TestRestTradingMethods < Test::Unit::TestCase # rubocop:disable Style/Docu
   end
 
   def test_get_estimate_withdrawal_fees
-    result = @client.get_estimate_withdrawal_fees [{ currency: 'ETH', amount: '12' }, { currency: 'BTC', amount: '1' }]
+    result = @client.get_estimate_withdrawal_fees fee_requests: [{ currency: 'ETH', amount: '12' },
+                                                                 { currency: 'BTC', amount: '1' }]
     assert(result.count == 2)
   end
 
