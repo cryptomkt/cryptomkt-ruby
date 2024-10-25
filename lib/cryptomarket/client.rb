@@ -709,6 +709,15 @@ module Cryptomarket
       get("wallet/balance/#{currency}")
     end
 
+    # Gets the list of whitelisted addresses
+    # 
+    # Requires the "Payment information" API key Access Right
+    # 
+    # https://api.exchange.cryptomkt.com/#get-whitelisted-addresses
+    def get_whitelisted_addresses # rubocop:disable Naming/AccessorMethodName
+      get('wallet/crypto/address/white-list')
+    end
+
     # Get a list with the current addresses of the user
     #
     # Requires the "Payment information" API key Access Right
