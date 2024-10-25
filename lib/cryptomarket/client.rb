@@ -877,7 +877,7 @@ module Cryptomarket
     # https://api.exchange.cryptomkt.com/#get-withdrawal-fees-hash
     
     def get_withdrawal_fees_hash()
-      get('wallet/crypto/fee/withdraw/hash')
+      get('wallet/crypto/fee/withdraw/hash')['hash']
     end
 
     # Get an estimate of the withdrawal fee
