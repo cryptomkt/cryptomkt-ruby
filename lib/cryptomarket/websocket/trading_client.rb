@@ -234,7 +234,7 @@ module Cryptomarket
       # +String+ +new_client_order_id+:: the new client order id for the modified order. must be unique within the trading day
       # +String+ +quantity+:: new order quantity
       # +String+ +price+:: new order price
-      # +String+ +stop_price+:: Required if order type is 'stopLimit', 'stopMarket', 'takeProfitLimit', or 'takeProfitMarket'. Order price
+      # +String+ +stop_price+:: Required if order type is 'stopLimit', 'stopMarket', 'takeProfitLimit', or 'takeProfitMarket'. Order stop price
       # +Bool+ +strict_validate+::  price and quantity will be checked for the incrementation with tick size and quantity step. See symbol's tick_size and quantity_increment
       # +Proc+ +callback+:: Optional. A +Proc+ of two arguments, An exception and a result, called either with the exception or with the result, the new version of the order
       def replace_spot_order( # rubocop:disable Metrics/ParameterLists

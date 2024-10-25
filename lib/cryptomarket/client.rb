@@ -555,7 +555,7 @@ module Cryptomarket
     # +String+ +quantity+:: Order quantity
     # +bool+ +strict_validate+:: Price and quantity will be checked for incrementation within the symbol’s tick size and quantity step. See the symbol's tick_size and quantity_increment
     # +String+ +price+:: Required if order type is 'limit', 'stopLimit', or 'takeProfitLimit'. Order price
-    # +String+ +stop_price+:: Required if order type is 'stopLimit', 'stopMarket', 'takeProfitLimit', or 'takeProfitMarket'. Order price
+    # +String+ +stop_price+:: Required if order type is 'stopLimit', 'stopMarket', 'takeProfitLimit', or 'takeProfitMarket'. Order stop price
 
     def replace_spot_order(
       client_order_id:,
