@@ -1198,6 +1198,66 @@ module Cryptomarket
       )['result']
     end
 
+    # Creates and commits a transfer from a subaccount to its super account
+    # 
+    # Call is being sent by a subaccount
+    # 
+    # Created but not committed transfer will reserve pending amount on the sender
+    # wallet affecting their ability to withdraw or transfer crypto to another
+    # account. Incomplete withdrawals affect subaccount transfers the same way
+    # 
+    # Requires the "Withdraw cryptocurrencies" API key Access Right
+    # 
+    # https://api.exchange.cryptomkt.com/#transfer-to-super-account
+    #
+    # ==== Params
+    # +String+ +amount+:: amount to transfer
+    # +String+ +currency+:: currency to transfer
+    def transfer_to_super_account(
+      amount:,
+      currency:,
+    )
+      post(
+        'sub-account/transfer/sub-to-super',
+        {
+          amount: amount,
+          currency: currency,
+        }
+      )['result']
+    end
+
+    # Creates and commits a transfer between the user (subaccount) and another
+    # subaccount.
+    # 
+    # Call is being sent by a subaccount
+    # 
+    # Created but not committed transfer will reserve pending amount on the sender
+    # wallet affecting their ability to withdraw or transfer crypto to another
+    # account. Incomplete withdrawals affect subaccount transfers the same way
+    # 
+    # Requires the "Withdraw cryptocurrencies" API key Access Right
+    # 
+    # https://api.exchange.cryptomkt.com/#transfer-across-subaccounts
+    #
+    # ==== Params
+    # +String+ +sub_account_ids+:: id of the sub-account to transfer funds from/to
+    # +String+ +amount+:: amount to transfer
+    # +String+ +currency+:: currency to transfer
+    def transfer_to_another_subaccount(
+      sub_account_id:,
+      amount:,
+      currency:,
+    )
+      post(
+        'sub-account/transfer/sub-to-sub',
+        {
+          sub_account_id: sub_account_id,
+          amount: amount,
+          currency: currency,
+        }
+      )['result']
+    end
+
     # Returns a list of withdrawal settings for sub-accounts listed
     #
     # Requires the "Payment information" API key Access Right
