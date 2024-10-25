@@ -870,6 +870,16 @@ module Cryptomarket
       post('wallet/crypto/fee/estimate/bulk', params)
     end
 
+    # Gets the hash of withdrawal fees
+    # 
+    # Requires the "Payment information" API key Access Right
+    # 
+    # https://api.exchange.cryptomkt.com/#get-withdrawal-fees-hash
+    
+    def get_withdrawal_fees_hash()
+      get('wallet/crypto/fee/withdraw/hash')
+    end
+
     # Get an estimate of the withdrawal fee
     #
     # Requires the "Payment information" API key Access Right
