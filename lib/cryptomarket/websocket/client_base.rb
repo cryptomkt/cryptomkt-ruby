@@ -11,7 +11,7 @@ module Cryptomarket
       def initialize(url:, subscription_keys:, on_connect: -> {}, on_error: ->(error) {}, on_close: -> {})
         @subscription_keys = subscription_keys
         @callback_cache = CallbackCache.new
-        @ws_manager = WSManager.new self, url: url
+        @ws_manager = WSManager.new(self, url:)
         @on_connect = on_connect
         @on_error = on_error
         @on_close = on_close

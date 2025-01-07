@@ -38,7 +38,7 @@ class TestRestTradingMethods < Test::Unit::TestCase
     new_client_order_id = Time.now.to_i.to_s + '1'
     order = @client.replace_spot_order(
       client_order_id: order['client_order_id'],
-      new_client_order_id: new_client_order_id,
+      new_client_order_id:,
       quantity: '0.02',
       price: '999'
     )
@@ -85,5 +85,4 @@ class TestRestTradingMethods < Test::Unit::TestCase
     )
     # TODO: check missing
   end
-
 end
