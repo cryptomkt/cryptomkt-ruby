@@ -31,7 +31,7 @@ class TestWSTradingSubs < Test::Unit::TestCase
     timestamp = Time.now.to_i.to_s
     symbol = 'EOSETH'
     @wsclient.create_spot_order(
-      symbol: symbol, price: '10000', quantity: '0.01', side: 'sell', client_order_id: timestamp,
+      symbol:, price: '10000', quantity: '0.01', side: 'sell', client_order_id: timestamp,
       callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(10 * @@SECOND)
@@ -52,7 +52,7 @@ class TestWSTradingSubs < Test::Unit::TestCase
     timestamp = Time.now.to_i.to_s
     symbol = 'EOSETH'
     @wsclient.create_spot_order(
-      symbol: symbol, price: '10000', quantity: '0.01', side: 'sell', client_order_id: timestamp,
+      symbol:, price: '10000', quantity: '0.01', side: 'sell', client_order_id: timestamp,
       callback: gen_result_callback(@veredict_checker)
     )
     sleep(5 * @@SECOND)

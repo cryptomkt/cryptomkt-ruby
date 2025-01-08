@@ -145,7 +145,9 @@ module WSCheck # rubocop:disable Style/Documentation
   end
 
   def self.good_ticker
-    ->(ticker) { good_params(ticker, %w[t o c h l v q p P L]) } # missing a A b B in some responses
+    lambda { |ticker|
+      good_params(ticker, %w[t h l v q L])
+    } # missing a A b B o c p P in some responses
   end
 
   def self.good_orderbook

@@ -39,7 +39,7 @@ class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
     timestamp = Time.now.to_i.to_s
     symbol = 'EOSETH'
     @wsclient.create_spot_order(
-      client_order_id: timestamp, symbol: symbol, side: 'sell', price: '10000', quantity: '0.01',
+      client_order_id: timestamp, symbol:, side: 'sell', price: '10000', quantity: '0.01',
       callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(3)
@@ -68,12 +68,12 @@ class TestWStrading < Test::Unit::TestCase # rubocop:disable Metrics/ClassLength
     @wsclient.cancel_spot_orders
     symbol = 'EOSETH'
     @wsclient.create_spot_order(
-      client_order_id: Time.now.to_i.to_s, symbol: symbol, side: 'sell', price: '10000', quantity: '0.01',
+      client_order_id: Time.now.to_i.to_s, symbol:, side: 'sell', price: '10000', quantity: '0.01',
       callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(3)
     @wsclient.create_spot_order(
-      client_order_id: Time.now.to_i.to_s, symbol: symbol, side: 'sell', price: '10000', quantity: '0.01',
+      client_order_id: Time.now.to_i.to_s, symbol:, side: 'sell', price: '10000', quantity: '0.01',
       callback: gen_check_result_callback(WSCheck.good_report, @veredict_checker)
     )
     sleep(3)

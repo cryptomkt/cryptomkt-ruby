@@ -130,7 +130,7 @@ class TestMarketDataMethods < Test::Unit::TestCase # rubocop:disable Style/Docum
 
   def test_get_converted_candles
     symbols = %w[EOSETH BTCUSDT]
-    result = @client.get_converted_candles(symbols: symbols, limit: 2, target_currency: 'usdt')
+    result = @client.get_converted_candles(symbols:, limit: 2, target_currency: 'usdt')
     result['data'].each do |symbol, candles|
       assert(symbols.include?(symbol))
       candles.each { |val| assert(Check.good_candle(val)) }

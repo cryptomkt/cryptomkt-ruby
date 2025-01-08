@@ -18,9 +18,9 @@ module Cryptomarket
       def initialize(api_key:, api_secret:, window: nil)
         super(
           url: 'wss://api.exchange.cryptomkt.com/api/3/ws/wallet',
-          api_key: api_key,
-          api_secret: api_secret,
-          window: window,
+          api_key:,
+          api_secret:,
+          window:,
           subscription_keys: build_subscription_hash)
       end
 
@@ -125,7 +125,7 @@ module Cryptomarket
           balance['currency'] = currency
           callback.call(err, balance)
         }
-        request('wallet_balance', interceptor, { currency: currency })
+        request('wallet_balance', interceptor, { currency: })
       end
 
       # Get the transaction history of the account
@@ -160,9 +160,9 @@ module Cryptomarket
         id_from: nil, id_till: nil, order_by: nil, sort: nil, limit: nil, offset: nil, group_transactions: nil
       )
         request('get_transactions', callback, {
-                  tx_ids: tx_ids, types: types, subtypes: subtypes, statuses: statuses, currencies: currencies,
-                  from: from, till: till, id_from: id_from, id_till: id_till, order_by: order_by, sort: sort,
-                  limit: limit, offset: offset, group_transactions: group_transactions
+                  tx_ids:, types:, subtypes:, statuses:, currencies:,
+                  from:, till:, id_from:, id_till:, order_by:, sort:,
+                  limit:, offset:, group_transactions:
                 })
       end
 

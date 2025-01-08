@@ -33,16 +33,16 @@ module Cryptomarket
 
     def initialize(api_key:, api_secret:, window: nil)
       @credential_factory = Cryptomarket::CredentialsFactory.new(
-        api_version: @@API_VERSION, api_key: api_key, api_secret: api_secret, window: window
+        api_version: @@API_VERSION, api_key:, api_secret:, window:
       )
     end
 
     def change_credentials(api_key:, api_secret:)
-      @credential_factory.change_credentials(api_key: api_key, api_secret: api_secret)
+      @credential_factory.change_credentials(api_key:, api_secret:)
     end
 
     def change_window(window:)
-      @credential_factory.change_window(window: window)
+      @credential_factory.change_window(window:)
     end
 
     def make_request(method:, endpoint:, params: nil, public: false)
@@ -77,7 +77,7 @@ module Cryptomarket
     end
 
     def do_request(method, uri, payload, headers)
-      args = { method: method.downcase.to_sym, url: uri.to_s, headers: headers }
+      args = { method: method.downcase.to_sym, url: uri.to_s, headers: }
       if post?(method) || patch?(method)
         args[:payload] = post?(method) ? payload.to_json : payload
       end
