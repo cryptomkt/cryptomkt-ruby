@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "cryptomarket-sdk"
-  s.version     = "3.2.0"
+  s.version     = "3.3.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["T. Ismael Verdugo"]
   s.email       = ["ismael@dysopsis.com"]

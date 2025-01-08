@@ -12,7 +12,7 @@ module Cryptomarket
         @api_key = api_key
         @api_secret = api_secret
         @window = window
-        super url: url, subscription_keys: subscription_keys
+        super(url:, subscription_keys:)
         @authed = false
       end
 
